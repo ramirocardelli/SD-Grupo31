@@ -13,6 +13,8 @@ export const getAnimals = () => {
   }
 };
 
-export const writeAnimals = (games) => {
-  writeFileSync(FILE_PATH, JSON.stringify(games, null, 2));
+export const writeAnimals = (animal) => {
+  const resultado = getAnimals();
+  resultado.push(animal);
+  writeFileSync(FILE_PATH, JSON.stringify(resultado, null, 2));
 };

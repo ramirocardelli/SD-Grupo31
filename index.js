@@ -1,7 +1,7 @@
 import http from "http";
 import fs from "fs";
 import { v4 as uuidv4 } from "uuid";
-import { getAllAnimals } from "./controllers/animals.controller.js";
+import { addAnimal, getAllAnimals } from "./controllers/animals.controller.js";
 import { getAllCheckpoints } from "./controllers/checkpoints.controller.js";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
@@ -19,16 +19,6 @@ import { parse } from "path";
 const HTTP_PORT = process.env.PORT;
 const secret = process.env.SECRET;
 
-//documentar
-const hasSameName = (array, newObject) => {
-  for (const obj of array) {
-    if (obj.name === newObject.name) {
-      return true;
-    }
-  }
-  return false;
-};
-
 //raiz de la api
 const server = http.createServer((req, res) => {
   res.statusCode = 200;
@@ -41,7 +31,7 @@ const server = http.createServer((req, res) => {
   req.on("end", () => {
     //ruta publica
     if (req.url === "/login") {
-      onLogin(req, res, body);
+      onLogin(req.method, res, body);
     } else {
       if (tokenIsValid(req)) {
         // Rutas privadas
@@ -54,12 +44,10 @@ const server = http.createServer((req, res) => {
           onCheckpoints(req, res);
         } else {
           res.writeHead(404, "Path invalido");
-          res.statusCode = 404;
           res.end();
         }
       } else {
         res.writeHead(401, "Token invalido");
-        res.statusCode = 401;
         res.end();
       }
     }
@@ -76,18 +64,28 @@ function tokenIsValid(req) {
   }
 }
 
-function onLogin(req, res, data) {
+function onLogin(metodo, res, data) {
   const parsedBody = JSON.parse(data);
-  const userClient = parsedBody["user"];
-  const passClient = parsedBody["pass"];
-  if (req.method === "GET") {
-    if (loginUser(req, res, userClient, passClient)) {
+  const userClient = parsedBody["name"];
+  const passClient = parsedBody["password"];
+  if (metodo === "GET") {
+    try {
+      loginUser(userClient, passClient);
       res.statusCode = 200;
       res.end(JSON.stringify(tokenGenerator(userClient, passClient)));
+    } catch (e) {
+      res.writeHead(401, e.message);
+      res.end();
     }
   }
-  if (req.method === "POST") {
-    registerUser(req, res, userClient, passClient);
+  if (metodo === "POST") {
+    try {
+      registerUser(userClient, passClient);
+      res.end();
+    } catch (e) {
+      res.writeHead(401, e.message);
+      res.end();
+    }
   }
 }
 
@@ -96,39 +94,35 @@ function tokenGenerator(user, pass) {
   const data = {
     sub: user,
     name: pass,
-    exp: Math.floor(Date.now() / 1000) + 3600,
+    exp: Math.floor(Date.now() / 1000) + 36000,
   };
   return jwt.sign(data, secret);
 }
 
 function onAnimals(req, res, data) {
   if (req.method === "GET") {
-    getAllAnimals(req, res);
-    res.end();
+    try {
+      const resultado = getAllAnimals(req, res);
+      res.end(JSON.stringify(resultado));
+    } catch (e) {
+      res.statusCode = 500;
+      res.end();
+    }
   }
   if (req.method === "POST") {
     const parsedBody = JSON.parse(data);
     if (!parsedBody.name || !parsedBody.description) {
-      res.writeHead(400, "Invalid request, missing animal name or description");
+      res.writeHead(400, "Credenciales del animal invalidas");
       res.end();
       return;
     }
-    const newAnimal = {
-      uid: uuidv4(),
-      name: parsedBody.name,
-      description: parsedBody.description,
-    };
-    const existingAnimals = getAnimals();
-    if (hasSameName(existingAnimals, newAnimal)) {
-      res.writeHead(400, "Invalid request, animal name already exists.");
+    try {
+      addAnimal(parsedBody.name, parsedBody.description);
       res.end();
-      return;
+    } catch (e) {
+      res.writeHead(400, e.message);
+      res.end();
     }
-    existingAnimals.push(newAnimal);
-
-    writeAnimals(existingAnimals);
-    res.end();
-    return;
   }
 }
 
