@@ -2,9 +2,11 @@ import { getUsers, writeUser } from "../repositories/users.repositories.js";
 import { v4 as uuidv4 } from "uuid";
 
 export const loginUser = (user, pass) => {
-  const usuarios = getUsers();
-  let i = 0;
-  const registrado = existUser(user);
+  const usuario = {
+    name: user,
+    password: pass,
+  };
+  const registrado = existUser(usuario);
   if (registrado) {
     if (registrado.password != pass) throw new Error("contraseña incorrecta");
   } else {
@@ -31,7 +33,7 @@ function existUser(user) {
   let i = 0;
   const usuarios = getUsers();
   for (i; i < usuarios.length; i++) {
-    if (usuarios[i].name == user.name) return true;
+    if (usuarios[i].name == user.name) return usuarios[i];
   }
   return false;
 }
