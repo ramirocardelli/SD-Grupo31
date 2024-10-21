@@ -16,7 +16,6 @@ export const addAnimal = (name, description) => {
     description: description,
   };
   if (existAnimal(animal)) {
-    console.log("xd");
     writeAnimals(animal);
   } else throw new Error("ya existe animal con ese nombre");
 };

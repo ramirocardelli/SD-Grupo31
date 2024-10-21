@@ -2,7 +2,10 @@ import http from "http";
 import fs from "fs";
 import { v4 as uuidv4 } from "uuid";
 import { addAnimal, getAllAnimals } from "./controllers/animals.controller.js";
-import { getAllCheckpoints } from "./controllers/checkpoints.controller.js";
+import {
+  addCheckpoint,
+  getAllCheckpoints,
+} from "./controllers/checkpoints.controller.js";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 import { loginUser, registerUser } from "./controllers/user.controller.js";
@@ -41,7 +44,7 @@ const server = http.createServer((req, res) => {
         }
         // El sistema deberá permitir a los Administradores dar de alta, baja, modificar y mostrar Puntos de Control
         else if (req.url === "/checkpoints") {
-          onCheckpoints(req, res);
+          onCheckpoints(req, res, body);
         } else {
           res.writeHead(404, "Path invalido");
           res.end();
@@ -126,37 +129,30 @@ function onAnimals(req, res, data) {
   }
 }
 
-function onCheckpoints(req, res) {
+function onCheckpoints(req, res, data) {
   if (req.method === "GET") {
-    getAllCheckpoints(req, res);
-    res.end();
+    try {
+      const resultado = getAllCheckpoints(req, res);
+      res.end(JSON.stringify(resultado));
+    } catch (e) {
+      res.statusCode = 500;
+      res.end();
+    }
   }
   if (req.method === "POST") {
-    const parsedBody = JSON.parse(body);
+    const parsedBody = JSON.parse(data);
     if (!parsedBody.name || !parsedBody.description) {
-      res.writeHead(
-        400,
-        "Invalid request, missing checkpoint name or description"
-      );
+      res.writeHead(400, "credenciales de checkpoint invalida/s");
       res.end();
       return;
     }
-    const newCheckpoint = {
-      uid: uuidv4(),
-      name: parsedBody.name,
-      description: parsedBody.description,
-    };
-    const existingCheckpoints = getCheckpoints();
-    if (hasSameName(existingCheckpoints, newCheckpoint)) {
-      res.writeHead(400, "Invalid request, checkpoint name already exists.");
+    try {
+      addCheckpoint(parsedBody.name, parsedBody.description);
       res.end();
-      return;
+    } catch (e) {
+      res.writeHead(400, e.message);
+      res.end();
     }
-    existingCheckpoints.push(newCheckpoint);
-
-    writeCheckpoints(existingCheckpoints);
-    res.end();
-    return;
   }
 }
 

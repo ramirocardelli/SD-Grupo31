@@ -13,6 +13,8 @@ export const getCheckpoints = () => {
   }
 };
 
-export const writeCheckpoints = (games) => {
-  writeFileSync(FILE_PATH, JSON.stringify(games, null, 2));
+export const writeCheckpoints = (checkpoint) => {
+  const checkpoints = getCheckpoints();
+  checkpoints.push(checkpoint);
+  writeFileSync(FILE_PATH, JSON.stringify(checkpoints, null, 2));
 };
