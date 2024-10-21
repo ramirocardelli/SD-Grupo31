@@ -13,7 +13,7 @@ const secret = process.env.SECRET;
 
 //raiz de la api
 const server = http.createServer((req, res) => {
-  res.statusCode = 200;
+  res.writeHead(200, "Operacion exitosa");
 
   let body = "";
   req.on("data", (chunk) => {
