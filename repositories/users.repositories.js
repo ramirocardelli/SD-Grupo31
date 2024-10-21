@@ -13,6 +13,8 @@ export const getUsers = () => {
   }
 };
 
-export const writeUsers = (user) => {
-  writeFileSync(FILE_PATH, JSON.stringify(user, null, 2));
+export const writeUser = (user) => {
+  let usuarios = getUsers();
+  usuarios.push(user);
+  writeFileSync(FILE_PATH, JSON.stringify(usuarios, null, 2));
 };
