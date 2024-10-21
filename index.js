@@ -1,6 +1,4 @@
 import http from "http";
-import fs from "fs";
-import { v4 as uuidv4 } from "uuid";
 import { addAnimal, getAllAnimals } from "./controllers/animals.controller.js";
 import {
   addCheckpoint,
@@ -9,15 +7,6 @@ import {
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 import { loginUser, registerUser } from "./controllers/user.controller.js";
-import {
-  getAnimals,
-  writeAnimals,
-} from "./repositories/animals.repositories.js";
-import {
-  getCheckpoints,
-  writeCheckpoints,
-} from "./repositories/checkpoints.repositories.js";
-import { parse } from "path";
 
 const HTTP_PORT = process.env.PORT;
 const secret = process.env.SECRET;
@@ -34,7 +23,7 @@ const server = http.createServer((req, res) => {
   req.on("end", () => {
     //ruta publica
     if (req.url === "/login") {
-      onLogin(req.method, res, body);
+      onLogin(req, res, body);
     } else {
       if (tokenIsValid(req)) {
         // Rutas privadas
@@ -58,7 +47,7 @@ const server = http.createServer((req, res) => {
 });
 
 function tokenIsValid(req) {
-  const token = req.headers["authorization"].split(" ")[1];
+  const token = req.headers["authorization"]?.split(" ")[1];
   try {
     const verify = jwt.verify(token, secret);
     return true;
@@ -67,11 +56,21 @@ function tokenIsValid(req) {
   }
 }
 
-function onLogin(metodo, res, data) {
-  const parsedBody = JSON.parse(data);
+function onLogin(req, res, data) {
+  let parsedBody;
+  if (data != "") {
+    parsedBody = JSON.parse(data);
+  }
+
   const userClient = parsedBody["name"];
   const passClient = parsedBody["password"];
-  if (metodo === "GET") {
+
+  if (!parsedBody?.name || !parsedBody?.password) {
+    res.writeHead(400, "Credenciales de usuario invalidas");
+    res.end();
+    return;
+  }
+  if (req.method === "GET") {
     try {
       loginUser(userClient, passClient);
       res.statusCode = 200;
@@ -81,7 +80,7 @@ function onLogin(metodo, res, data) {
       res.end();
     }
   }
-  if (metodo === "POST") {
+  if (req.method === "POST") {
     try {
       registerUser(userClient, passClient);
       res.end();
@@ -89,6 +88,10 @@ function onLogin(metodo, res, data) {
       res.writeHead(401, e.message);
       res.end();
     }
+  }
+  if (req.method != "GET" || req.method != "POST") {
+    res.writeHead(404, "Metodo invalido");
+    res.end();
   }
 }
 
@@ -113,8 +116,11 @@ function onAnimals(req, res, data) {
     }
   }
   if (req.method === "POST") {
-    const parsedBody = JSON.parse(data);
-    if (!parsedBody.name || !parsedBody.description) {
+    let parsedBody;
+    if (data != "") {
+      parsedBody = JSON.parse(data);
+    }
+    if (!parsedBody?.name || !parsedBody?.description) {
       res.writeHead(400, "Credenciales del animal invalidas");
       res.end();
       return;
@@ -126,6 +132,10 @@ function onAnimals(req, res, data) {
       res.writeHead(400, e.message);
       res.end();
     }
+  }
+  if (req.method != "GET" || req.method != "POST") {
+    res.writeHead(404, "Metodo invalido");
+    res.end();
   }
 }
 
@@ -140,8 +150,11 @@ function onCheckpoints(req, res, data) {
     }
   }
   if (req.method === "POST") {
-    const parsedBody = JSON.parse(data);
-    if (!parsedBody.name || !parsedBody.description) {
+    let parsedBody;
+    if (data != "") {
+      parsedBody = JSON.parse(data);
+    }
+    if (!parsedBody?.name || !parsedBody?.description) {
       res.writeHead(400, "credenciales de checkpoint invalida/s");
       res.end();
       return;
@@ -153,6 +166,10 @@ function onCheckpoints(req, res, data) {
       res.writeHead(400, e.message);
       res.end();
     }
+  }
+  if (req.method != "GET" || req.method != "POST") {
+    res.writeHead(404, "Metodo invalido");
+    res.end();
   }
 }
 
