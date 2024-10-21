@@ -81,6 +81,8 @@ function onLogin(req, res, data) {
     try {
       //Si el logeo es correcto le devolvemos al usuario su token JWT
       //de lo contrario se lanza una excepcion
+      //habria que generar un refresh token si el token inicial sigue en pie
+      //o por cada accion refrescar el token, VER
       loginUser(userClient, passClient);
       res.statusCode = 200;
       res.end(JSON.stringify(tokenGenerator(userClient, passClient)));
@@ -109,7 +111,8 @@ function tokenGenerator(user, pass) {
   const data = {
     sub: user,
     name: pass,
-    exp: Math.floor(Date.now() / 1000) + 36000,
+    //lo que le sumamos es la cantidad de segundos en la que es valido
+    exp: Math.floor(Date.now() / 1000) + 30,
   };
   return jwt.sign(data, secret);
 }

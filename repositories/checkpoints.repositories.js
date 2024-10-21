@@ -1,6 +1,7 @@
 import { readFileSync, writeFileSync, existsSync } from "fs";
+import "dotenv/config";
 
-export const FILE_PATH = "./json/checkpoints.json";
+const FILE_PATH = process.env.CHECKREP;
 
 export const getCheckpoints = () => {
   const fileExist = existsSync(FILE_PATH);

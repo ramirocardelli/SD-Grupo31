@@ -1,6 +1,7 @@
 import { readFileSync, writeFileSync, existsSync } from "fs";
+import "dotenv/config";
 
-export const FILE_PATH = "./json/users.json";
+const FILE_PATH = process.env.USERREP;
 
 export const getUsers = () => {
   const fileExist = existsSync(FILE_PATH);

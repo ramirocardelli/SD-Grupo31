@@ -1,6 +1,7 @@
 import { readFileSync, writeFileSync, existsSync } from "fs";
+import "dotenv/config";
 
-export const FILE_PATH = "./json/animals.json";
+const FILE_PATH = process.env.ANIMREP;
 
 export const getAnimals = () => {
   const fileExist = existsSync(FILE_PATH);
