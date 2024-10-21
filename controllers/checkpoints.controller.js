@@ -8,7 +8,9 @@ export const getAllCheckpoints = () => {
   const result = getCheckpoints();
   return result;
 };
-
+//se intenta agregar un checkpoint, preguntando antes si existe, si existiera
+//se lanza una excepcion y el index la maneja, si no se continua con el flujo y se
+//agrega el checkpoint
 export const addCheckpoint = (name, description) => {
   const checkpoint = {
     uuid: uuidv4(),

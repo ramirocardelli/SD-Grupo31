@@ -11,24 +11,27 @@ export const loginUser = (user, pass) => {
     throw new Error("usuario inexistente");
   }
 };
+//se intenta agregar un usuario, preguntando antes si existe, si existiera
+//se lanza una excepcion y el index la maneja, si no se continua con el flujo y se
+//agrega el usuario
 export const registerUser = (user, pass) => {
-  if (existUser(user)) {
+  const usuario = {
+    uuid: uuidv4(),
+    name: user,
+    password: pass,
+  };
+  if (existUser(usuario)) {
     throw new Error("usuario existente");
   } else {
-    const usuario = {
-      uuid: uuidv4(),
-      name: user,
-      password: pass,
-    };
     writeUser(usuario);
   }
 };
 
-function existUser(name) {
+function existUser(user) {
   let i = 0;
   const usuarios = getUsers();
   for (i; i < usuarios.length; i++) {
-    if (usuarios[i].name == name) return usuarios[i];
+    if (usuarios[i].name == user.name) return true;
   }
   return false;
 }

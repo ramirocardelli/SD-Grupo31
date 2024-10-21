@@ -14,7 +14,8 @@ const secret = process.env.SECRET;
 //raiz de la api
 const server = http.createServer((req, res) => {
   res.writeHead(200, "Operacion exitosa");
-
+  //sea una solicitud get, post etc, siempre se intentara primero, reeconstruir
+  //el cuerpo de la solicitud
   let body = "";
   req.on("data", (chunk) => {
     body = body + chunk;
@@ -46,9 +47,13 @@ const server = http.createServer((req, res) => {
   });
 });
 
+//analizamos si el token JWT del usuario es valido, lo podemos ver en el campo
+//"authoriation" del header de la solicitud, de la forma:
+// ["authorization"]="bearer [tokenJWT]"
 function tokenIsValid(req) {
   const token = req.headers["authorization"]?.split(" ")[1];
   try {
+    //si es valido, jwt.verify no tira ninguna excepcion
     const verify = jwt.verify(token, secret);
     return true;
   } catch (e) {
@@ -56,6 +61,8 @@ function tokenIsValid(req) {
   }
 }
 
+//asumimos que los datos de logeo vienen el el body de la solicitud
+//igualmente esto no es correcto, deberia venir en el header.
 function onLogin(req, res, data) {
   let parsedBody;
   if (data != "") {
@@ -72,6 +79,8 @@ function onLogin(req, res, data) {
   }
   if (req.method === "GET") {
     try {
+      //Si el logeo es correcto le devolvemos al usuario su token JWT
+      //de lo contrario se lanza una excepcion
       loginUser(userClient, passClient);
       res.statusCode = 200;
       res.end(JSON.stringify(tokenGenerator(userClient, passClient)));
