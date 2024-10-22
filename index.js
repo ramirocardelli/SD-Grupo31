@@ -12,6 +12,7 @@ import { connectToBroker } from "./controllers/mqtt.controller.js";
 const HTTP_PORT = process.env.PORT;
 const secret = process.env.SECRET;
 
+//nos conectamos al broker mqtt
 connectToBroker();
 
 //raiz de la api
