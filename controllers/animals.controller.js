@@ -1,6 +1,8 @@
 import {
   getAnimals,
   writeAnimals,
+  deleteAnimal,
+  modifyAnimal,
 } from "../repositories/animals.repositories.js";
 import { v4 as uuidv4 } from "uuid";
 
@@ -9,7 +11,7 @@ export const getAllAnimals = () => {
   return result;
 };
 //se intenta agregar un animal, preguntando antes si existe, si existiera
-//se lanza una excepcion y el index la maneja, si no se continua con el flujo y se
+//se MODIFICA el animal, si no se continua con el flujo y se
 //agrega el animal
 export const addAnimal = (name, description) => {
   const animal = {
@@ -17,16 +19,26 @@ export const addAnimal = (name, description) => {
     name: name,
     description: description,
   };
-  if (existAnimal(animal)) {
+  if (existAnimal(animal.name)) {
     writeAnimals(animal);
-  } else throw new Error("ya existe animal con ese nombre");
+    return "animal creado";
+  } else {
+    modifyAnimal(animal);
+    return "animal modificado";
+  }
+};
+
+export const removeAnimal = (name) => {
+  if (!existAnimal(name)) {
+    deleteAnimal(name);
+  } else throw new Error("no existe animal con ese nombre");
 };
 
 //documentar
-function existAnimal(animal) {
+function existAnimal(name) {
   const animales = getAllAnimals();
   for (let i = 0; i < animales.length; i++) {
-    if (animales[i].name == animal.name) return false;
+    if (animales[i].name == name) return false;
   }
   return true;
 }

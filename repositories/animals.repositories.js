@@ -19,3 +19,25 @@ export const writeAnimals = (animal) => {
   resultado.push(animal);
   writeFileSync(FILE_PATH, JSON.stringify(resultado, null, 2));
 };
+
+export const deleteAnimal = (name) => {
+  const resultado = getAnimals();
+  const vec = [];
+  for (let i = 0; i < resultado.length; i++) {
+    if (resultado[i].name != name) {
+      vec.push(resultado[i]);
+    }
+  }
+  writeFileSync(FILE_PATH, JSON.stringify(vec, null, 2));
+};
+
+export const modifyAnimal = (animal) => {
+  const resultado = getAnimals();
+  for (let i = 0; i < resultado.length; i++) {
+    if (resultado[i].name == animal.name) {
+      resultado[i].description = animal.description;
+      break;
+    }
+  }
+  writeFileSync(FILE_PATH, JSON.stringify(resultado, null, 2));
+};

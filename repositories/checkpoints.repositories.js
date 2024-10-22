@@ -19,3 +19,25 @@ export const writeCheckpoints = (checkpoint) => {
   checkpoints.push(checkpoint);
   writeFileSync(FILE_PATH, JSON.stringify(checkpoints, null, 2));
 };
+
+export const deleteCheckpoint = (name) => {
+  const resultado = getCheckpoints();
+  const vec = [];
+  for (let i = 0; i < resultado.length; i++) {
+    if (resultado[i].name != name) {
+      vec.push(resultado[i]);
+    }
+  }
+  writeFileSync(FILE_PATH, JSON.stringify(vec, null, 2));
+};
+
+export const modifyCheckpoint = (checkpoint) => {
+  const resultado = getCheckpoints();
+  for (let i = 0; i < resultado.length; i++) {
+    if (resultado[i].name == checkpoint.name) {
+      resultado[i].description = checkpoint.description;
+      break;
+    }
+  }
+  writeFileSync(FILE_PATH, JSON.stringify(resultado, null, 2));
+};

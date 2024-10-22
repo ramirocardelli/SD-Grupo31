@@ -1,8 +1,13 @@
 import http from "http";
-import { addAnimal, getAllAnimals } from "./controllers/animals.controller.js";
+import {
+  addAnimal,
+  getAllAnimals,
+  removeAnimal,
+} from "./controllers/animals.controller.js";
 import {
   addCheckpoint,
   getAllCheckpoints,
+  removeCheckpoint,
 } from "./controllers/checkpoints.controller.js";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
@@ -119,7 +124,7 @@ function tokenGenerator(user, pass) {
     sub: user,
     name: pass,
     //lo que le sumamos es la cantidad de segundos en la que es valido
-    exp: Math.floor(Date.now() / 1000) + 30,
+    exp: Math.floor(Date.now() / 1000) + 3000,
   };
   return jwt.sign(data, secret);
 }
@@ -138,28 +143,45 @@ function onAnimals(req, res, data) {
       res.statusCode = 500;
       res.end();
     }
-  }
-  if (req.method === "POST") {
+  } else {
     let parsedBody;
     if (data != "") {
       parsedBody = JSON.parse(data);
     }
-    if (!parsedBody?.name || !parsedBody?.description) {
-      res.writeHead(400, "Credenciales del animal invalidas");
-      res.end();
-      return;
+    if (req.method === "POST") {
+      if (!parsedBody?.name || !parsedBody?.description) {
+        res.writeHead(400, "Credenciales del animal invalidas");
+        res.end();
+        return;
+      }
+      try {
+        const mensaje = addAnimal(parsedBody.name, parsedBody.description);
+        res.writeHead(200, mensaje);
+        res.end();
+      } catch (e) {
+        res.writeHead(400, e.message);
+        res.end();
+      }
     }
-    try {
-      addAnimal(parsedBody.name, parsedBody.description);
-      res.end();
-    } catch (e) {
-      res.writeHead(400, e.message);
+    if (req.method === "DELETE") {
+      if (!parsedBody?.name) {
+        res.writeHead(400, "Credenciales del animal invalidas");
+        res.end();
+        return;
+      }
+      try {
+        removeAnimal(parsedBody.name);
+        res.writeHead(200, "se elimino el animal");
+        res.end();
+      } catch (e) {
+        res.writeHead(404, e.message);
+        res.end();
+      }
+    }
+    if (req.method != "POST" || req.method != "DELETE") {
+      res.writeHead(404, "Metodo invalido");
       res.end();
     }
-  }
-  if (req.method != "GET" || req.method != "POST") {
-    res.writeHead(404, "Metodo invalido");
-    res.end();
   }
 }
 
@@ -172,28 +194,45 @@ function onCheckpoints(req, res, data) {
       res.statusCode = 500;
       res.end();
     }
-  }
-  if (req.method === "POST") {
+  } else {
     let parsedBody;
     if (data != "") {
       parsedBody = JSON.parse(data);
     }
-    if (!parsedBody?.name || !parsedBody?.description) {
-      res.writeHead(400, "credenciales de checkpoint invalida/s");
-      res.end();
-      return;
+    if (req.method === "POST") {
+      if (!parsedBody?.name || !parsedBody?.description) {
+        res.writeHead(400, "credenciales de checkpoint invalida/s");
+        res.end();
+        return;
+      }
+      try {
+        const mensaje = addCheckpoint(parsedBody.name, parsedBody.description);
+        res.writeHead(200, mensaje);
+        res.end();
+      } catch (e) {
+        res.writeHead(400, e.message);
+        res.end();
+      }
     }
-    try {
-      addCheckpoint(parsedBody.name, parsedBody.description);
-      res.end();
-    } catch (e) {
-      res.writeHead(400, e.message);
+    if (req.method === "DELETE") {
+      if (!parsedBody?.name) {
+        res.writeHead(400, "credenciales de checkpoint invalida/s");
+        res.end();
+        return;
+      }
+      try {
+        removeCheckpoint(parsedBody.name);
+        res.writeHead(200, "checkpoint eliminado");
+        res.end();
+      } catch (e) {
+        res.writeHead(400, e.message);
+        res.end();
+      }
+    }
+    if (req.method != "POST" || req.method != "DELETE") {
+      res.writeHead(404, "Metodo invalido");
       res.end();
     }
-  }
-  if (req.method != "GET" || req.method != "POST") {
-    res.writeHead(404, "Metodo invalido");
-    res.end();
   }
 }
 

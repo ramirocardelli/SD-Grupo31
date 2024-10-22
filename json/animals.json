@@ -7,6 +7,11 @@
   {
     "uid": "f611c02c-921f-4b6a-b2ec-84b84af78961",
     "name": "Animal 2",
-    "description": "Animal 2!"
+    "description": "Animal 2"
+  },
+  {
+    "uid": "272cfd6c-34db-475e-8ef4-86f41c1d5467",
+    "name": "Animal 3",
+    "description": "Animal 3"
   }
 ]
