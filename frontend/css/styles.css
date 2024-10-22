@@ -1,0 +1,109 @@
+html,
+body {
+    font-family: sans-serif;
+    margin: 0;
+    height: 100%;
+}
+
+p {
+    margin-block-start: 0;
+    text-indent: 1rem;
+}
+
+hr {
+    border: none;
+    height: 1px;
+    background-color: lightgray;
+    width: 40px;
+    margin: 1.5rem 0 1rem 0;
+}
+
+#root {
+    display: flex;
+    height: 100%;
+}
+
+#main-page {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+
+    border-right: 1px solid lightgray;
+}
+
+.sidebar > a {
+    margin: 0.5rem 0;
+}
+
+.page-container {
+    flex-direction: column;
+    padding: 0 1rem;
+}
+
+.socials-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.socials-card {
+    display: flex;
+    align-items: center;
+
+    border: 1px solid lightgray;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    margin: 1rem;
+
+    text-decoration: none;
+    color: unset;
+}
+
+.socials-card:hover {
+    background-color: lightgray;
+}
+
+.socials-card > i {
+    font-size: 1.5rem;
+    margin-right: 0.5rem;
+}
+
+/* login */
+.login-form {
+  background-color: #5d98cf;
+  height: 400px;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  padding: 3em;
+  border-radius: 1em;
+}
+
+.login-form > input {
+  border-radius: 0.3em;
+  border: 0;
+  margin: 0.5em 0;
+  font-size: 1.3em;
+  padding: 1em;
+}
+
+
+.login-form > input:focus{
+  outline: none;
+}
+
+.login-form > button {
+  margin-top: auto;
+  height: 4em;
+  border: 0;
+  border-radius: 0.3em;
+  background-color: azure;
+  cursor: pointer;
+}
