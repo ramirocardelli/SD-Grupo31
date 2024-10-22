@@ -11,7 +11,7 @@ export const getAllAnimals = () => {
   return result;
 };
 //se intenta agregar un animal, preguntando antes si existe, si existiera
-//se MODIFICA el animal, si no se continua con el flujo y se
+//lanza error, si no se continua con el flujo y se
 //agrega el animal
 export const addAnimal = (name, description) => {
   const animal = {
@@ -21,10 +21,21 @@ export const addAnimal = (name, description) => {
   };
   if (existAnimal(animal.name)) {
     writeAnimals(animal);
-    return "animal creado";
   } else {
+    throw Error("animal inexistente");
+  }
+};
+
+export const modAnimal = (name, description) => {
+  const animal = {
+    uid: uuidv4(),
+    name: name,
+    description: description,
+  };
+  if (existAnimal(animal.name)) {
     modifyAnimal(animal);
-    return "animal modificado";
+  } else {
+    throw Error("animal inexistente");
   }
 };
 

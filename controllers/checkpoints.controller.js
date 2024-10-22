@@ -21,10 +21,21 @@ export const addCheckpoint = (name, description) => {
   };
   if (existCheckpoint(checkpoint.name)) {
     writeCheckpoints(checkpoint);
-    return "checkpoint creado";
   } else {
+    throw Error("checkpoint inexistente");
+  }
+};
+
+export const modCheckpoint = (name, description) => {
+  const checkpoint = {
+    uuid: uuidv4(),
+    name: name,
+    description: description,
+  };
+  if (existCheckpoint(checkpoint.name)) {
     modifyCheckpoint(checkpoint);
-    return "checkpoint modificado";
+  } else {
+    throw Error("checkpoint inexistente");
   }
 };
 

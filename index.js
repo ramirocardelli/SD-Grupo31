@@ -2,12 +2,15 @@ import http from "http";
 import {
   addAnimal,
   getAllAnimals,
+  modAnimal,
   removeAnimal,
+  modAnimal,
 } from "./controllers/animals.controller.js";
 import {
   addCheckpoint,
   getAllCheckpoints,
   removeCheckpoint,
+  modCheckpoint,
 } from "./controllers/checkpoints.controller.js";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
@@ -112,7 +115,7 @@ function onLogin(req, res, data) {
       res.end();
     }
   }
-  if (req.method != "GET" || req.method != "POST") {
+  if (req.method != "GET" || req.method != "POST" || req.message != "PUT") {
     res.writeHead(404, "Metodo invalido");
     res.end();
   }
@@ -155,8 +158,18 @@ function onAnimals(req, res, data) {
         return;
       }
       try {
-        const mensaje = addAnimal(parsedBody.name, parsedBody.description);
-        res.writeHead(200, mensaje);
+        addAnimal(parsedBody.name, parsedBody.description);
+        res.writeHead(200, "se creo el animal");
+        res.end();
+      } catch (e) {
+        res.writeHead(400, e.message);
+        res.end();
+      }
+    }
+    if (req.method === "PUT") {
+      try {
+        modAnimal(parsedBody.name, parsedBody.description);
+        res.writeHead(200, "se modifico el animal");
         res.end();
       } catch (e) {
         res.writeHead(400, e.message);
@@ -206,8 +219,23 @@ function onCheckpoints(req, res, data) {
         return;
       }
       try {
-        const mensaje = addCheckpoint(parsedBody.name, parsedBody.description);
-        res.writeHead(200, mensaje);
+        addCheckpoint(parsedBody.name, parsedBody.description);
+        res.writeHead(200, "se creo el checkpoint");
+        res.end();
+      } catch (e) {
+        res.writeHead(400, e.message);
+        res.end();
+      }
+    }
+    if (req.method === "PUT") {
+      if (!parsedBody?.name || !parsedBody?.description) {
+        res.writeHead(400, "credenciales de checkpoint invalida/s");
+        res.end();
+        return;
+      }
+      try {
+        modCheckpoint(parsedBody.name, parsedBody.description);
+        res.writeHead(200, "se modifico el checkpoint");
         res.end();
       } catch (e) {
         res.writeHead(400, e.message);
@@ -229,7 +257,7 @@ function onCheckpoints(req, res, data) {
         res.end();
       }
     }
-    if (req.method != "POST" || req.method != "DELETE") {
+    if (req.method != "POST" || req.method != "DELETE" || req.method != "PUT") {
       res.writeHead(404, "Metodo invalido");
       res.end();
     }
