@@ -7,9 +7,12 @@ import {
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 import { loginUser, registerUser } from "./controllers/user.controller.js";
+import { connectToBroker } from "./controllers/mqtt.controller.js";
 
 const HTTP_PORT = process.env.PORT;
 const secret = process.env.SECRET;
+
+connectToBroker();
 
 //raiz de la api
 const server = http.createServer((req, res) => {
