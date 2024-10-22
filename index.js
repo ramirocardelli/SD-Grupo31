@@ -7,7 +7,10 @@ import {
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 import { loginUser, registerUser } from "./controllers/user.controller.js";
-import { connectToBroker } from "./controllers/mqtt.controller.js";
+import {
+  connectToBroker,
+  getPosiciones,
+} from "./controllers/mqtt.controller.js";
 
 const HTTP_PORT = process.env.PORT;
 const secret = process.env.SECRET;
@@ -125,6 +128,11 @@ function onAnimals(req, res, data) {
   if (req.method === "GET") {
     try {
       const resultado = getAllAnimals(req, res);
+      //le cargo las posiciones a los animales y las enviamos
+      const posicion = getPosiciones();
+      resultado.forEach((animal) => {
+        animal.posicion = posicion.get(animal.name);
+      });
       res.end(JSON.stringify(resultado));
     } catch (e) {
       res.statusCode = 500;
