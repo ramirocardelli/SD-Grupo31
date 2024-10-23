@@ -1,12 +1,81 @@
-<div class="page-container">
-    <form class="login-form">
-        <h2>Registrar Animal</h2>
-        <label for="identificador">Número de Identificador:</label>
-        <input type="text" id="identificador" name="identificador" required>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css"> 
+    <title>Gestión de Animales</title>
+</head>
+<body>
+    <div id="root">
+        <div class="sidebar">
+            <button onclick="showPanel('alta')">Dar de Alta Animal</button>
+            <button onclick="showPanel('baja')">Dar de Baja Animal</button>
+            <button onclick="showPanel('modificacion')">Modificar Animal</button>
+            <button onclick="showPanel('mostrar')">Mostrar Animales</button>
+        </div>
 
-        <label for="nombre">Nombre del Animal:</label>
-        <input type="text" id="nombre" name="nombre" required>
-        
-        <button type="submit">Registrar</button>
-    </form>
-</div>
+        <div class="page-container">
+            <!-- alta -->
+            <div id="alta" class="form-panel" style="display: none;">
+                <form class="login-form">
+                    <h2>Registrar Animal</h2>
+                    <label for="identificador">Número de Identificador:</label>
+                    <input type="text" id="identificador" name="identificador" required>
+
+                    <label for="nombre">Nombre del Animal:</label>
+                    <input type="text" id="nombre" name="nombre" required>
+                    
+                    <button type="submit">Registrar</button>
+                </form>
+            </div>
+
+            <!-- baja -->
+            <div id="baja" class="form-panel" style="display: none;">
+                <form class="login-form">
+                    <h2>Dar de Baja Animal</h2>
+                    <label for="baja-identificador">Número de Identificador:</label>
+                    <input type="text" id="baja-identificador" name="baja-identificador" required>
+
+                    <button type="submit">Eliminar</button>
+                </form>
+            </div>
+
+            <!-- modificacion -->
+            <div id="modificacion" class="form-panel" style="display: none;">
+                <form class="login-form">
+                    <h2>Modificar Animal</h2>
+                    <label for="modificar-identificador">Número de Identificador:</label>
+                    <input type="text" id="modificar-id" name="modificar-id" required>
+
+                    <label for="nuevo-nombre">Nuevo Nombre:</label>
+                    <input type="text" id="nuevo-nombre" name="nuevo-nombre" required>
+                    
+                    <button type="submit">Modificar</button>
+                </form>
+            </div>
+
+            <!-- Mostrar animales TODO MAPA -->
+            <div id="mostrar" class="form-panel" style="display: none;">
+                <h2>Mostrar Animales en el Mapa</h2>
+                <button id="map-button">Cargar Mapa</button>
+                <div id="map" style="height: 400px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showPanel(panelId) {
+            const panels = document.querySelectorAll('.form-panel');
+            panels.forEach(panel => {
+                panel.style.display = 'none';
+            });
+
+            const selectedPanel = document.getElementById(panelId);
+            if (selectedPanel) {
+                selectedPanel.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

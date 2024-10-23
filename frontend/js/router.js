@@ -11,6 +11,7 @@ const routes = {
   "/about": "/pages/about.html",
   "/login": "/pages/login.html",
   "/animal": "/pages/animal.html",
+  "/checkpoints": "/pages/checkpoints.html",
 };
 
 const handleLocation = async () => {
