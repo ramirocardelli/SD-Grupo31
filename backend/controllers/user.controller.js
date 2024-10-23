@@ -1,39 +1,46 @@
-import { getUsers, writeUser } from "../repositories/users.repositories.js";
+import { getUsers } from "../repositories/users.repositories.js";
 import { v4 as uuidv4 } from "uuid";
 
-export const loginUser = (user, pass) => {
+export const login = (user, pass) => {
   const usuario = {
     name: user,
     password: pass,
   };
-  const registrado = existUser(usuario);
+  // TODO: Esto está mal. "registrado" es un boolean, no tiene atributo password.
+  const registrado = userExists(usuario);
   if (registrado) {
     if (registrado.password != pass) throw new Error("contraseña incorrecta");
   } else {
     throw new Error("usuario inexistente");
   }
 };
+
+// No tenemos que registrar usuarios
 //se intenta agregar un usuario, preguntando antes si existe, si existiera
 //se lanza una excepcion y el index la maneja, si no se continua con el flujo y se
 //agrega el usuario
-export const registerUser = (user, pass) => {
+/*
+export const register = (user, pass) => {
   const usuario = {
     uuid: uuidv4(),
     name: user,
     password: pass,
   };
-  if (existUser(usuario)) {
-    throw new Error("usuario existente");
-  } else {
+  if (!userExists(usuario)) {
     writeUser(usuario);
+  } else {
+    throw new Error("usuario existente");
   }
 };
+*/
 
-function existUser(user) {
+// TODO, las contraseñas deberían estar hasheadas
+function userExists(user) {
   let i = 0;
-  const usuarios = getUsers();
-  for (i; i < usuarios.length; i++) {
-    if (usuarios[i].name == user.name) return usuarios[i];
-  }
-  return false;
+  const users = getUsers();
+
+  return users.some(
+    (existingUser) =>
+      existingUser.name === user.name && existingUser.password === user.password
+  );
 }

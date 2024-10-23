@@ -19,7 +19,7 @@ export const addCheckpoint = (name, description) => {
     name: name,
     description: description,
   };
-  if (existCheckpoint(checkpoint.name)) {
+  if (!existCheckpoint(checkpoint.name)) {
     writeCheckpoints(checkpoint);
   } else {
     throw Error("checkpoint inexistente");
@@ -40,7 +40,7 @@ export const modCheckpoint = (name, description) => {
 };
 
 export const removeCheckpoint = (name) => {
-  if (!existCheckpoint(name)) {
+  if (existCheckpoint(name)) {
     deleteCheckpoint(name);
   } else throw new Error("no existe checkpoint con ese nombre");
 };

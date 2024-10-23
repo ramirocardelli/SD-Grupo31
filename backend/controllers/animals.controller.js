@@ -19,7 +19,7 @@ export const addAnimal = (name, description) => {
     name: name,
     description: description,
   };
-  if (existAnimal(animal.name)) {
+  if (!animalExists(animal.name)) {
     writeAnimals(animal);
   } else {
     throw Error("animal inexistente");
@@ -32,7 +32,7 @@ export const modAnimal = (name, description) => {
     name: name,
     description: description,
   };
-  if (existAnimal(animal.name)) {
+  if (animalExists(name)) {
     modifyAnimal(animal);
   } else {
     throw Error("animal inexistente");
@@ -40,16 +40,12 @@ export const modAnimal = (name, description) => {
 };
 
 export const removeAnimal = (name) => {
-  if (!existAnimal(name)) {
+  if (animalExists(name)) {
     deleteAnimal(name);
   } else throw new Error("no existe animal con ese nombre");
 };
 
-//documentar
-function existAnimal(name) {
-  const animales = getAllAnimals();
-  for (let i = 0; i < animales.length; i++) {
-    if (animales[i].name == name) return false;
-  }
-  return true;
+function animalExists(name) {
+  const animals = getAllAnimals();
+  return animals.some((animal) => animal.name === name);
 }
