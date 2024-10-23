@@ -35,15 +35,21 @@ hr {
 }
 
 .sidebar {
-    display: flex;
-    flex-direction: row; 
-    background-color: beige;
-    width: 100%;
-    padding: 1rem;
-    border-bottom: 1px solid lightgray;
-    
-    overflow-x: auto;
-    white-space: nowrap;
+    position: fixed; /* Fijo en la parte superior */
+    top: 0;
+    left: 0;
+    width: 100%; 
+    background-color: #d5d6a8; 
+    padding: 1em; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+    z-index: 1000; 
+    display: flex; 
+    justify-content: space-around; 
+}
+
+.page-container {
+    margin-top: 60px; 
+    padding: 1em;
 }
 
 .sidebar button {
@@ -71,11 +77,12 @@ hr {
     margin-top: 20px;
 }
 
+/*
 .page-container {
     flex-direction: column;
     padding: 0 1rem;
 }
-
+*/
 
 .socials-container {
     display: flex;
@@ -105,51 +112,3 @@ hr {
 }
 
 
-/* login */
-.login-form {
-  background-color: #c4bd97;
-  height: 400px;
-  width: 400px;
-  display: flex;
-  flex-direction: column;
-  padding: 3em;
-  border-radius: 1em;
-  text-align: center;
-}
-
-/*
-.login-form h2 {
-    margin-bottom: 1em; 
-}
-
-.login-form label {
-    margin-top: 0.5em; 
-}
-    */
-
-.login-form > input {
-  border-radius: 0.3em;
-  border: 0;
-  width: 100%;
-  margin: 0.5em 0;
-  font-size: 1.3em;
-  padding: 1em;
-}
-
-
-.login-form > input:focus{
-  outline: none;
-}
-
-.login-form > button {
-  margin-top: auto;
-  height: 4em;
-  border: 0;
-  border-radius: 0.3em;
-  background-color: azure;
-  cursor: pointer;
-}
-
-.login-form button:hover {
-    background-color: #303f9f; 
-}

@@ -1,0 +1,27 @@
+html,
+body {
+    font-family: sans-serif; /* Fuente para toda la página */
+    height: 100%; /* Altura del body llena la ventana */
+    margin: 0; /* Sin márgenes en el body */
+    display: flex; /* Usar flexbox para centrar */
+    align-items: center; /* Centrar verticalmente */
+    justify-content: center; /* Centrar horizontalmente */
+    background-color: #f4f4f4; /* Color de fondo opcional */
+}
+
+/* Texto centrado */
+.full-width-text {
+    text-align: center; /* Centra el texto horizontalmente */
+}
+
+.full-width-text h1 {
+    margin: 0; /* Elimina el margen por defecto del h1 */
+    font-size: 2.5em; /* Tamaño de fuente para el h1 */
+    color: #d9534f; /* Color del texto del h1 (opcional) */
+}
+
+.full-width-text p {
+    margin: 0; /* Elimina el margen por defecto del p */
+    font-size: 1.2em; /* Tamaño de fuente para el párrafo */
+    color: #555; /* Color del texto del párrafo (opcional) */
+}

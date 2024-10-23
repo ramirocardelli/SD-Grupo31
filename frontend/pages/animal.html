@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/styles.css"> 
+    <link rel="stylesheet" href="../css/animal_style.css">
     <title>Gestión de Animales</title>
 </head>
 <body>
     <div id="root">
         <div class="sidebar">
-            <button onclick="showPanel('alta')">Dar de Alta Animal</button>
-            <button onclick="showPanel('baja')">Dar de Baja Animal</button>
-            <button onclick="showPanel('modificacion')">Modificar Animal</button>
-            <button onclick="showPanel('mostrar')">Mostrar Animales</button>
+            <button data-panel="alta">Dar de Alta Animal</button>
+            <button data-panel="baja">Dar de Baja Animal</button>
+            <button data-panel="modificacion">Modificar Animal</button>
+            <button data-panel="mostrar">Mostrar Animales</button>
         </div>
 
         <div class="page-container">
@@ -65,17 +65,27 @@
     </div>
 
     <script>
-        function showPanel(panelId) {
-            const panels = document.querySelectorAll('.form-panel');
-            panels.forEach(panel => {
-                panel.style.display = 'none';
-            });
+        document.addEventListener('DOMContentLoaded', () => {
+            function showPanel(panelId) {
+                const panels = document.querySelectorAll('.form-panel');
+                panels.forEach(panel => {
+                    panel.style.display = 'none'; // Ocultar todos los paneles
+                });
 
-            const selectedPanel = document.getElementById(panelId);
-            if (selectedPanel) {
-                selectedPanel.style.display = 'block';
+                const selectedPanel = document.getElementById(panelId);
+                if (selectedPanel) {
+                    selectedPanel.style.display = 'block'; // Mostrar solo el panel seleccionado
+                }
             }
-        }
+
+            const buttons = document.querySelectorAll('.sidebar button');
+            buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const panelId = button.getAttribute('data-panel');
+                    showPanel(panelId);
+                });
+            });
+        });
     </script>
 </body>
 </html>
