@@ -33,12 +33,9 @@ const server = http.createServer((req, res) => {
     body = body + chunk;
   });
 
-  let parsedBody;
-  if (body != "") {
-    parsedBody = JSON.parse(data);
-  }
-
   req.on("end", () => {
+    const parsedBody = body != "" ? JSON.parse(body) : null;
+
     // Rutas públicas
     if (req.url === "/login") {
       onLogin(req, res, parsedBody);
@@ -92,7 +89,7 @@ function tokenIsValid(req) {
 // Asumimos que los datos de logeo vienen el el body de la solicitud
 // Igualmente esto no es correcto, deberia venir en el header.
 function onLogin(req, res, body) {
-  const username = body?.name;
+  const username = body?.username;
   const password = body?.password;
 
   if (!username || !password) {
@@ -138,7 +135,7 @@ function tokenGenerator(user) {
   const data = {
     user: user,
     //lo que le sumamos es la cantidad de segundos en la que es valido
-    exp: Math.floor(Date.now() / 1000) + 3000,
+    exp: Math.floor(Date.now() / 1000) + 60,
   };
   return jwt.sign(data, secret);
 }

@@ -7,7 +7,7 @@ export const login = (user, pass) => {
     password: pass,
   };
   // TODO: Esto está mal. "registrado" es un boolean, no tiene atributo password.
-  const registrado = userExists(usuario);
+  const registrado = getUser(usuario);
   if (registrado) {
     if (registrado.password != pass) throw new Error("contraseña incorrecta");
   } else {
@@ -35,12 +35,8 @@ export const register = (user, pass) => {
 */
 
 // TODO, las contraseñas deberían estar hasheadas
-function userExists(user) {
-  let i = 0;
+function getUser(user) {
   const users = getUsers();
 
-  return users.some(
-    (existingUser) =>
-      existingUser.name === user.name && existingUser.password === user.password
-  );
+  return users.find((u) => u.name === user.name);
 }
