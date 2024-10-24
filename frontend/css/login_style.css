@@ -11,30 +11,34 @@ body {
 /* login */
 .login-form {
     background-color: #c4bd97;
-    height: 400px; /* Puedes ajustar la altura según tus necesidades */
+    height: auto; 
     width: 400px; /* Ancho fijo */
     display: flex;
     flex-direction: column;
-    padding: 3em;
+    padding: 2em;
     border-radius: 1em;
     text-align: center;
 }
 
 .login-form h2 {
-    margin-bottom: 1em; 
+    margin: 0 0 1em;
+    margin-bottom: 1.3em;
 }
 
 .login-form label {
-    margin-top: 0.5em; 
+    margin: 1em 0 0.5em; 
+    font-size: 1.2em;
+    width: 100%;
+    text-align: left;
 }
 
 .login-form > input {
     border-radius: 0.3em;
     border: 0;
     width: 100%;
-    margin: 0.5em 0;
-    font-size: 1.3em;
-    padding: 1em;
+    font-size: 0.95em;
+    padding: 0.5em;
+    margin-bottom: 1.3em; 
 }
 
 .login-form > input:focus {

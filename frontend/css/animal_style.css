@@ -18,7 +18,6 @@ body {
     z-index: 1000; /* Para que el sidebar siempre esté visible encima */
 }
 
-/* Botones del sidebar */
 .sidebar button {
     background-color: none;
     color: black;
@@ -40,43 +39,82 @@ body {
 
 /* Contenedor principal */
 .page-container {
-    margin-top: 80px; /* Deja espacio para el sidebar */
-    padding: 20px;
+    margin-top: 70px; 
+    padding: 15px;
+    display: flex; 
+    justify-content: center; 
 }
 
 /* Ocultar todos los paneles al inicio */
 .form-panel {
     display: none;
+    background-color: #c4bd97;
+    height: auto; 
+    width: 400px; 
+    display:flex;
+    flex-direction: column;
+    padding: 2em; 
+    border-radius: 1em;
 }
 
 /* Mostrar el panel activo */
 .form-panel.active {
-    display: block;
+   display:flex; 
 }
 
 
-/* Paneles de formularios */
-form {
-    margin-top: 20px;
+.form-panel h2 {
+    margin: 0 0 1em;
+    margin-bottom: 1.3em;
 }
 
-input[type="text"] {
+.form-panel form {
+    display: flex;
+    flex-direction: column;
     width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    box-sizing: border-box;
+}
+ /* campos entrada */
+.form-panel input {
+    border-radius: 0.3em;
+    border: 0;
+    width: 95%;
+    font-size: 0.95em;
+    padding: 0.5em;
+    margin-bottom: 1.3em; 
 }
 
-button[type="submit"] {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 15px;
-    border: none;
+/* labels */
+.form-panel label {
+    margin: 1em 0 0.5em; 
+    font-size: 1.2em;
+    width: 100%;
+    text-align: left;
+}
+
+.form-panel > input:focus {
+    outline: none;
+    font-size: 1.5;
+    margin-bottom: 1.3em;
+}
+
+/* boton */
+.button-container {
+    margin-top: auto; 
+    width: 100%; 
+}
+
+.button-container > button {
+    margin-top: 1em; 
+    height: 4em;
+    border: 0;
+    border-radius: 0.1em;
+    background-color: azure;
     cursor: pointer;
+    width: 100%; /* Asegúrate de que el botón ocupe todo el ancho */
 }
 
-button[type="submit"]:hover {
-    background-color: #45a049;
+.button-container > button:hover {
+    background-color: #e6cb76; 
 }
 
 /* Mapa */
@@ -84,4 +122,9 @@ button[type="submit"]:hover {
     width: 100%;
     height: 400px;
     background-color: #eee; /* Temporal para visualizar el área del mapa */
+}
+
+
+.map-panel {
+    width: 600px; 
 }
