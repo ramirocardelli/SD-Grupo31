@@ -42,6 +42,11 @@ const server = http.createServer((req, res) => {
       return;
     }
 
+    if (req.url === "/refresh") {
+      onRefresh(req, res, parsedBody);
+      return;
+    }
+
     // Para las rutas privadas, si el tóken no es válido, no sigue
     try {
       tokenIsValid(req);
@@ -85,8 +90,13 @@ function tokenIsValid(req) {
 // Asumimos que los datos de logeo vienen el el body de la solicitud
 // Igualmente esto no es correcto, deberia venir en el header.
 function onLogin(req, res, body) {
-  const username = body?.username;
-  const password = body?.password;
+  const base64Credentials = req.headers.authorization.split(" ")[1] || "";
+  const credentials = Buffer.from(base64Credentials, "base64")
+    .toString("ascii")
+    .split(":");
+
+  const username = credentials[0];
+  const password = credentials[1];
 
   if (!username || !password) {
     res.writeHead(400, "Credenciales de usuario invalidas");
@@ -100,8 +110,14 @@ function onLogin(req, res, body) {
       // TODO: Habria que generar un refresh token si el token inicial sigue en pie
       // O por cada accion refrescar el token
       login(username, password);
+
+      const tokens = {
+        accessToken: accessToken(username),
+        refreshToken: refreshToken(username),
+      };
+
       res.writeHead(200);
-      return res.end(JSON.stringify(tokenGenerator(username)));
+      return res.end(JSON.stringify(tokens));
     } catch (e) {
       res.writeHead(401, e.message);
       return res.end();
@@ -126,14 +142,47 @@ function onLogin(req, res, body) {
   return res.end();
 }
 
+function accessToken(username) {
+  return tokenGenerator(username, 60);
+}
+
+function refreshToken(username) {
+  return tokenGenerator(username, 3600);
+}
+
 // TODO hay que modificar la duracion del token
-function tokenGenerator(user) {
+function tokenGenerator(username, seconds) {
   const data = {
-    user: user,
+    username: username,
     //lo que le sumamos es la cantidad de segundos en la que es valido
-    exp: Math.floor(Date.now() / 1000) + 60,
+    exp: Math.floor(Date.now() / 1000) + seconds,
   };
   return jwt.sign(data, secret);
+}
+
+function onRefresh(req, res, body) {
+  const refreshToken = req.headers["authorization"]?.split(" ")[1];
+
+  if (!refreshToken) {
+    res.writeHead(400, "Token invalid");
+    return res.end();
+  }
+
+  try {
+    const decoded = jwt.verify(refreshToken, secret);
+    const newAccessToken = accessToken(decoded?.username);
+
+    const tokens = {
+      accessToken: newAccessToken,
+      refreshToken: refreshToken,
+    };
+
+    res.writeHead(200);
+    return res.end(JSON.stringify(tokens));
+  } catch (e) {
+    res.writeHead(401, e.message);
+    return res.end();
+  }
 }
 
 function onAnimals(req, res, body) {
@@ -188,7 +237,6 @@ function onAnimals(req, res, body) {
   }
 
   if (req.method === "DELETE") {
-    // TODO: Creo que deberían eliminarse por uid, no por name
     const name = body?.name;
     if (!name) {
       res.writeHead(400, "Credenciales del animal invalidas");
