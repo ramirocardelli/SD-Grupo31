@@ -43,8 +43,10 @@ const server = http.createServer((req, res) => {
     }
 
     // Para las rutas privadas, si el tóken no es válido, no sigue
-    if (!tokenIsValid(req)) {
-      res.writeHead(401, "Token invalido");
+    try {
+      tokenIsValid(req);
+    } catch (e) {
+      res.writeHead(401, e.message);
       return res.end();
     }
 
@@ -75,15 +77,9 @@ Analizamos si el token JWT del usuario es valido, lo podemos ver en el campo
 
 function tokenIsValid(req) {
   const token = req.headers["authorization"]?.split(" ")[1];
-  try {
-    // Si es válido, jwt.verify no lanza ninguna excepción
-    const verify = jwt.verify(token, secret);
-    // TODO: Además de ser válido, debe no haber expirado
-    // TODO: Refresh Token
-    return true;
-  } catch (e) {
-    return false;
-  }
+  // Si es válido, jwt.verify no lanza ninguna excepción
+  jwt.verify(token, secret);
+  return;
 }
 
 // Asumimos que los datos de logeo vienen el el body de la solicitud
