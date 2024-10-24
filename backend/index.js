@@ -14,10 +14,7 @@ import {
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 import { login } from "./controllers/user.controller.js";
-import {
-  connectToBroker,
-  getPosiciones,
-} from "./controllers/mqtt.controller.js";
+import { connectToBroker } from "./controllers/mqtt.controller.js";
 
 const HTTP_PORT = process.env.PORT;
 const secret = process.env.SECRET;
@@ -107,7 +104,6 @@ function onLogin(req, res, body) {
     try {
       // Si el logeo es correcto le devolvemos al usuario su token JWT
       // De lo contrario se lanza una excepcion
-      // TODO: Habria que generar un refresh token si el token inicial sigue en pie
       // O por cada accion refrescar el token
       login(username, password);
 
@@ -150,7 +146,6 @@ function refreshToken(username) {
   return tokenGenerator(username, 3600);
 }
 
-// TODO hay que modificar la duracion del token
 function tokenGenerator(username, seconds) {
   const data = {
     username: username,
@@ -188,12 +183,6 @@ function onRefresh(req, res, body) {
 function onAnimals(req, res, body) {
   if (req.method === "GET") {
     const animals = getAllAnimals(req, res);
-    //le cargo las posiciones a los animales y las enviamos
-    // TODO: Esto no debería ser responsabilidad del controller / repository?
-    const posiciones = getPosiciones();
-    animals.forEach((animal) => {
-      animal.posicion = posiciones.get(animal.name);
-    });
     res.writeHead(200);
     return res.end(JSON.stringify(animals));
   }
@@ -303,7 +292,6 @@ function onCheckpoints(req, res, body) {
   }
 
   if (req.method === "DELETE") {
-    // TODO: Creo que deberían eliminarse por uid, no por name
     const name = body?.name;
 
     if (!name) {

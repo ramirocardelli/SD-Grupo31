@@ -6,8 +6,8 @@ const posiciones = new Map();
 
 //Creamos un mapa donde tiene para cada nombre de animal, sus posiciones en X e Y
 //la posicion inicial es 0,0, pero se va actualizando a medida que le llegan mensajes
-const a = getAllAnimals();
-a.forEach((animal) => {
+const animals = getAllAnimals();
+animals.forEach((animal) => {
   const pos = [0, 0];
   posiciones.set(animal.name, pos);
 });
