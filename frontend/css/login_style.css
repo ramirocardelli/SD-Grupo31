@@ -1,0 +1,74 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+#root {
+    display: flex;
+    flex-direction: column; /* Para que la sidebar y el formulario se apilen verticalmente */
+    height: 100%;
+}
+
+.page-container {
+    margin-top: 60px; /* Espacio para la sidebar */
+    display: flex; /* Usar flexbox para centrar el contenido */
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center; /* Centrar verticalmente */
+    height: calc(100vh - 60px); /* Ajustar altura para dejar espacio para la sidebar */
+}
+
+.login-form {
+    background-color: #c4bd97;
+    width: 400px; /* Ancho fijo */
+    display: flex;
+    flex-direction: column;
+    padding: 2em;
+    border-radius: 1em;
+    text-align: center;
+}
+
+.login-form h2 {
+    margin: 0 0 1em;
+}
+
+.login-form label {
+    margin: 1em 0 0.5em; 
+    font-size: 1.2em;
+    text-align: left;
+}
+
+.login-form > input {
+    border-radius: 0.3em;
+    border: 1px solid #ccc; /* Añadido para mejorar la visibilidad */
+    width: 100%; /* Ancho completo */
+    font-size: 0.95em;
+    padding: 0.5em;
+    margin-bottom: 1.3em; /* Espacio entre los inputs y el botón */
+}
+
+.login-form > input:focus {
+    outline: none;
+    border-color: #303f9f; /* Cambia el color del borde al enfocar */
+}
+
+.login-form > button {
+    margin-top: auto;
+    height: 4em;
+    border: 0;
+    border-radius: 0.3em;
+    background-color: azure;
+    cursor: pointer;
+    width: 100%; /* Ancho completo para igualar con los inputs */
+}
+
+.login-form > input,
+.login-form > button {
+    width: 100%; /* Asegura que ambos ocupen el mismo ancho */
+    box-sizing: border-box; /* Incluye el padding y el borde en el ancho total */
+}
+
+.login-form button:hover {
+    background-color: #303f9f; 
+    color: white; /* Cambia el texto a blanco al pasar el mouse */
+}

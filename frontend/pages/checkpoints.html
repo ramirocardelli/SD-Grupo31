@@ -1,12 +1,108 @@
-<div class="page-container">
-    <form class="login-form">
-        <h2>Agregar punto de control</h2>
-        <label for="identificador">Número de punto de control:</label>
-        <input type="text" id="identificador" name="identificador" required>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/checkpoints_style.css">
+    <title>Checkpoints</title>
+</head>
+<body>
+    <div id="root">
+        <div class="sidebar">
+            <button data-panel="alta">Agregar punto de control</button>
+            <button data-panel="baja">Eliminar punto de control</button>
+            <button data-panel="modificacion">Modificar punto de control</button>
+            <button data-panel="mostrar">Mostrar puntos de control</button>
+        </div>
 
-        <label for="nombre">Coordenadas:</label>
-        <input type="text" id="Coordenadas" name="coordenadas" required>  <!--mandar como texto y dps ver de transformar a coordenadas?-->
-        
-        <button type="submit">Agregar</button>
-    </form>
-</div>
+        <div class="page-container">
+            <!-- alta -->
+            <div id="alta" class="form-panel" style="display: none;">
+                <h2>Agregar punto de control</h2>
+                <form class="login-form">
+
+                    <label for="identificador">Número de punto de control:</label>
+                    <input type="text" id="identificador" name="identificador" required>
+
+                    <label for="nombre">Coordenadas latitud:</label> <!-- pasar como texto y dps transformar? chequear dps-->
+                    <input type="text" id="nombre" name="nombre" required>
+                    
+                    <label for="nombre">Coordenadas altitud:</label> <!-- pasar como texto y dps transformar? chequear dps-->
+                    <input type="text" id="nombre" name="nombre" required>
+
+                    <div class="button-container">
+                        <button type="submit">Agregar</button>
+                    </div>  
+
+                </form>
+            </div>
+
+            <!-- baja -->
+            <div id="baja" class="form-panel" style="display: none;">
+                <form class="login-form">
+                    <h2>Eliminar punto de control</h2>
+
+                    <label for="baja-identificador">Número de punto de control:</label>
+                    <input type="text" id="baja-identificador" name="baja-identificador" required>
+
+                    <div class="button-container">
+                        <button type="submit">Eliminar</button>
+                    </div>
+
+                </form>
+            </div>
+
+            <!-- modificacion -->
+            <div id="modificacion" class="form-panel" style="display: none;">
+                <form class="login-form">
+                    <h2>Modificar punto de control</h2>
+
+                    <label for="modificar-identificador">Número de punto de control:</label>
+                    <input type="text" id="modificar-id" name="modificar-id" required>
+
+                    <label for="nuevo-nombre">Nuevo nombre:</label> <!-- o coordenadas? chequear tmb-->
+                    <input type="text" id="nuevo-nombre" name="nuevo-nombre" required>
+                    
+                    <div class="button-container">
+                        <button type="submit">Modificar</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Mostrar checkpoints TODO MAPA -->
+             <!-- en realidad se muestra en mostrar animales los checkpoints y la ubicacion de cada animal - discutir dps-->
+            <div id="mostrar" class="form-panel map-panel" style="display: none;">
+                <h2>Mostrar puntos de control en el Mapa</h2>
+                <div class="button-container">
+                    <button type="submit">Cargar mapa</button>
+                </div>
+                <div id="map" style="height: 400px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            function showPanel(panelId) {
+                const panels = document.querySelectorAll('.form-panel');
+                panels.forEach(panel => {
+                    panel.style.display = 'none'; // Ocultar todos los paneles
+                });
+
+                const selectedPanel = document.getElementById(panelId);
+                if (selectedPanel) {
+                    selectedPanel.style.display = 'block'; // Mostrar solo el panel seleccionado
+                }
+            }
+
+            const buttons = document.querySelectorAll('.sidebar button');
+            buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const panelId = button.getAttribute('data-panel');
+                    showPanel(panelId);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
