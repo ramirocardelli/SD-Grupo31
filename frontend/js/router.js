@@ -14,40 +14,37 @@ const routes = {
   "/checkpoints": "/pages/checkpoints.html",
 };
 
+const cssRoutes = {
+  "/": "../css/styles.css",
+  404: "../css/404_style.css",
+  "/about": "../css/about_style.css",
+  "/login": "../css/login_style.css",
+  "/animal": "../css/animal_style.css",
+  "/checkpoints": "../css/checkpoints_style.css",
+};
+
 const handleLocation = async () => {
   const path = window.location.pathname;
   const route = routes[path] || routes[404]; // Usar 404 si no se encuentra la ruta
   const html = await fetch(route).then((data) => data.text());
   document.getElementById("main-page").innerHTML = html;
 
-  /*
   // Cargar dinámicamente los estilos
   const existingStyles = document.querySelectorAll('link[rel="stylesheet"]');
-  existingStyles.forEach(style => style.remove()); // Eliminar estilos previos
+  existingStyles.forEach((style) => style.remove()); // Eliminar estilos previos
 
-  // CSS correspondiente
-  let cssFile = '';
-  if (path === '/') {
-    cssFile = 'style.css'; // Cambia por el estilo que desees para la página principal
-  } else if (path === '/animal') {
-    cssFile = 'animal_style.css';
-  } else if (path === '/login') {
-    cssFile = 'login_style.css';
-  } else if (path === '/checkpoints') {
-    cssFile = 'checkpoints_style.css';
-  } else if (path === '/about') {
-    cssFile = '404_style.css';
-  }
+  //Agregar styles.css a todos (por sidebar fija)
+  const mainCss = document.createElement("link");
+    mainCss.rel = "stylesheet";
+    mainCss.href = "../css/styles.css";
+    document.head.appendChild(mainCss)
 
-  // Cargar el CSS correspondiente
-  if (cssFile) {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = `css/${cssFile}`;
-    document.head.appendChild(link);
-  }
-
-  */
+  // Append a CSS file to the head
+  const cssRoute = cssRoutes[path] || cssRoutes[404];
+  const css = document.createElement("link");
+  css.rel = "stylesheet";
+  css.href = cssRoute;
+  document.head.appendChild(css);
 };
 
 window.onpopstate = handleLocation; // Para manejar el retroceso del historial
