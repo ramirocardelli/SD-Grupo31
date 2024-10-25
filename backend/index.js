@@ -15,12 +15,18 @@ import jwt from "jsonwebtoken";
 import "dotenv/config";
 import { login } from "./controllers/user.controller.js";
 import { connectToBroker } from "./controllers/mqtt.controller.js";
+import express from "express";
+import cors from "cors";
 
 const HTTP_PORT = process.env.PORT;
 const secret = process.env.SECRET;
 
 // Conexión con el broker MQTT
 connectToBroker();
+
+// usamos express y cors para poder comunicar back/front
+const app = express();
+app.use(cors());
 
 // Raíz de la API
 const server = http.createServer((req, res) => {
