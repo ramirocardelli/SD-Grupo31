@@ -54,6 +54,7 @@ body {
     flex-direction: column;
     padding: 2em; 
     border-radius: 1em;
+    margin-top: 100px;
 }
 
 /* Mostrar el panel activo */

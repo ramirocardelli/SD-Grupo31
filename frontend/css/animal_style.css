@@ -16,6 +16,7 @@ body {
     left: 0;
     padding: 1em;
     z-index: 999; 
+    margin-bottom: 20px;
 }
 
 .sidebar-secundaria-animal button {
@@ -54,6 +55,8 @@ body {
     flex-direction: column;
     padding: 2em; 
     border-radius: 1em;
+    top: 5em;
+    margin-top: 100px;
 }
 
 /* Mostrar el panel activo */
@@ -93,7 +96,7 @@ body {
 
 /* boton */
 .button-container-animal {
-    margin-top: auto; 
+    margin-top: 1.5.em; 
     width: 100%; 
 }
 
@@ -122,3 +125,4 @@ body {
 .map-panel {
     width: 600px; 
 }
+
