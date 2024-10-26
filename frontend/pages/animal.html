@@ -8,18 +8,27 @@
 </head>
 <body>
     <div id="root">
-        <div class="sidebar">
-            <button data-panel="alta">Registrar animal</button>
-            <button data-panel="baja">Eliminar animal</button>
-            <button data-panel="modificacion">Modificar animal</button>
-            <button data-panel="mostrar">Mostrar animales</button>
+        <!-- sidebar principal-->
+        <nav id="main-nav" class="sidebar-principal">
+            <a href="/" onclick="route(event)">Home</a>
+            <a href="/login" onclick="route(event)">Ingresar</a>
+            <a href="/animal" onclick="route(event)">Gestion Animales</a>
+            <a href="/checkpoints" onclick="route(event)">Checkpoints</a>
+            <a href="/404" onclick="route(event)">404</a>
+        </nav>
+
+        <div class="sidebar-secundaria-animal">
+            <button data-panel="alta" onclick="showPanel('alta')">Registrar animal</button>
+            <button data-panel="baja" onclick="showPanel('baja')">Eliminar animal</button>
+            <button data-panel="modificacion" onclick="showPanel('modificacion')">Modificar animal</button>
+            <button data-panel="mostrar" onclick="showPanel('mostrar')">Mostrar animales</button>
         </div>
 
-        <div class="page-container">
+        <div class="page-container-animal">
             <!-- alta -->
-            <div id="alta" class="form-panel" style="display: none;">
+            <div id="alta" class="form-panel-animal" style="display: none;">
                 <h2>Registrar animal</h2>
-                <form class="login-form">
+                <form class="login-form-animal">
 
                     <label for="identificador">Número de identificador:</label>
                     <input type="text" id="identificador" name="identificador" required>
@@ -27,7 +36,7 @@
                     <label for="nombre">Nombre del animal:</label>
                     <input type="text" id="nombre" name="nombre" required>
                     
-                    <div class="button-container">
+                    <div class="button-container-animal">
                         <button type="submit">Registrar</button>
                     </div>  
 
@@ -35,14 +44,14 @@
             </div>
 
             <!-- baja -->
-            <div id="baja" class="form-panel" style="display: none;">
-                <form class="login-form">
+            <div id="baja" class="form-panel-animal" style="display: none;">
+                <form class="login-form-animal">
                     <h2>Eliminar animal</h2>
 
                     <label for="baja-identificador">Número de identificador:</label>
                     <input type="text" id="baja-identificador" name="baja-identificador" required>
 
-                    <div class="button-container">
+                    <div class="button-container-animal">
                         <button type="submit">Eliminar</button>
                     </div>
 
@@ -50,8 +59,8 @@
             </div>
 
             <!-- modificacion -->
-            <div id="modificacion" class="form-panel" style="display: none;">
-                <form class="login-form">
+            <div id="modificacion" class="form-panel-animal" style="display: none;">
+                <form class="login-form-animal">
                     <h2>Modificar animal</h2>
 
                     <label for="modificar-identificador">Número de identificador:</label>
@@ -60,7 +69,7 @@
                     <label for="nuevo-nombre">Nuevo nombre:</label>
                     <input type="text" id="nuevo-nombre" name="nuevo-nombre" required>
                     
-                    <div class="button-container">
+                    <div class="button-container-animal">
                         <button type="submit">Modificar</button>
                     </div>
                 </form>
@@ -76,29 +85,5 @@
             </div>
         </div>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            function showPanel(panelId) {
-                const panels = document.querySelectorAll('.form-panel');
-                panels.forEach(panel => {
-                    panel.style.display = 'none'; // Ocultar todos los paneles
-                });
-
-                const selectedPanel = document.getElementById(panelId);
-                if (selectedPanel) {
-                    selectedPanel.style.display = 'block'; // Mostrar solo el panel seleccionado
-                }
-            }
-
-            const buttons = document.querySelectorAll('.sidebar button');
-            buttons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const panelId = button.getAttribute('data-panel');
-                    showPanel(panelId);
-                });
-            });
-        });
-    </script>
 </body>
 </html>

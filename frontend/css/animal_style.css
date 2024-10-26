@@ -5,19 +5,20 @@ body {
 }
 
 /* Sidebar horizontal */
-.sidebar {
+.sidebar-secundaria-animal {
+    position:fixed;
     width: 100%;
     background-color: #d5d6a8;
     display: flex;
     justify-content: space-around;
     align-items: center;
-    top: 0;
+    top: 3.5em;
     left: 0;
     padding: 1em;
-    z-index: 1000; 
+    z-index: 999; 
 }
 
-.sidebar button {
+.sidebar-secundaria-animal button {
     background-color: none;
     color: black;
     border: none;
@@ -27,16 +28,16 @@ body {
     transition: background-color 0.3s; 
 }
 
-.sidebar button:hover {
+.sidebar-secundaria-animal button:hover {
     background-color: rgba(255,252,255,0.1);
 }
 
-.sidebar button.active {
+.sidebar-secundaria-animal button.active {
     background-color: #4CAF50;
     color: white;
 }
 
-.page-container {
+.page-container-animal {
     margin-top: 70px; 
     padding: 15px;
     display: flex; 
@@ -44,7 +45,7 @@ body {
 }
 
 /* Ocultar todos los paneles al inicio */
-.form-panel {
+.form-panel-animal {
     display: none;
     background-color: #c4bd97;
     height: auto; 
@@ -56,7 +57,7 @@ body {
 }
 
 /* Mostrar el panel activo */
-.form-panel.active {
+.form-panel-animal.active {
    display:flex; 
 }
 
@@ -66,13 +67,8 @@ body {
     margin-bottom: 1.3em;
 }
 
-.form-panel form {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-}
  /* campos entrada */
-.form-panel input {
+.form-panel-animal input {
     border-radius: 0.3em;
     border: 0;
     width: 95%;
@@ -82,26 +78,26 @@ body {
 }
 
 /* labels */
-.form-panel label {
+.form-panel-animal label {
     margin: 1em 0 0.5em; 
     font-size: 1.2em;
     width: 100%;
     text-align: left;
 }
 
-.form-panel > input:focus {
+.form-panel-animal > input:focus {
     outline: none;
     font-size: 1.5;
     margin-bottom: 1.3em;
 }
 
 /* boton */
-.button-container {
+.button-container-animal {
     margin-top: auto; 
     width: 100%; 
 }
 
-.button-container > button {
+.button-container-animal > button {
     margin-top: 1em; 
     height: 4em;
     border: 0;
@@ -111,7 +107,7 @@ body {
     width: 100%;
 }
 
-.button-container > button:hover {
+.button-container-animal > button:hover {
     background-color: #e6cb76; 
 }
 

@@ -52,6 +52,12 @@ const handleLocation = async () => {
       script.src = "../js/checkpoints.js"; 
       document.body.appendChild(script);
     }
+    if (path === "/animal") {
+      const script = document.createElement("script");
+      script.src = "../js/animal.js"; 
+      document.body.appendChild(script);
+    }
+    
 };
 
 window.onpopstate = handleLocation; // Para manejar el retroceso del historial
