@@ -79,7 +79,7 @@ const server = http.createServer((req, res) => {
 
 /*
 Analizamos si el token JWT del usuario es valido, lo podemos ver en el campo
-"authoriation" del header de la solicitud, de la forma:
+"authorization" del header de la solicitud, de la forma:
 ["authorization"]="bearer [tokenJWT]"
 */
 

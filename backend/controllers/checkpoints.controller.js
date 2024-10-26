@@ -21,8 +21,8 @@ export const addCheckpoint = (name, description) => {
   };
   if (!existCheckpoint(checkpoint.name)) {
     writeCheckpoints(checkpoint);
-  } else {
-    throw Error("checkpoint inexistente");
+  } else { // si ya existe se modifica
+    modifyCheckpoint(checkpoint);
   }
 };
 
@@ -45,7 +45,7 @@ export const removeCheckpoint = (name) => {
   } else throw new Error("no existe checkpoint con ese nombre");
 };
 
-//documentar
+//funcion que verifica si el checkpoint existe
 function existCheckpoint(name) {
   const checkpoints = getAllCheckpoints();
   for (let i = 0; i < checkpoints.length; i++) {
