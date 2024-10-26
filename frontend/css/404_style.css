@@ -7,42 +7,42 @@ body {
 
 #root {
     display: flex;
-    flex-direction: column; /* Acomoda los elementos en columna */
-    height: 100%; /* Altura total de la página */
+    flex-direction: column; 
+    height: 100%; 
 }
 
 .sidebar {
-    position: fixed; /* Fija la sidebar en la parte superior */
-    top: 0; /* Desde la parte superior */
-    left: 0; /* Desde la izquierda */
-    right: 0; /* Asegura que ocupe todo el ancho */
-    background-color: #d5d6a8; /* Color de fondo */
-    padding: 1em; /* Espaciado interno */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra */
-    z-index: 1000; /* Asegura que esté encima de otros elementos */
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    right: 0; 
+    background-color: #d5d6a8; 
+    padding: 1em; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+    z-index: 1000; 
     display: flex; 
-    justify-content: space-around; /* Espacio entre los enlaces */
+    justify-content: space-around; 
 }
 
 .full-width-text {
-    text-align: center; /* Centra el texto horizontalmente */
+    text-align: center; 
     margin-top: 80px; /* Espacio para que no se superponga con la sidebar */
-    flex-grow: 1; /* Permite que el contenedor crezca */
-    display: flex; /* Usar flexbox para centrar verticalmente */
-    flex-direction: column; /* Apila elementos verticalmente */
-    align-items: center; /* Centra horizontalmente */
-    justify-content: center; /* Centra verticalmente */
-    height: calc(100vh - 80px); /* Ajustar altura para dejar espacio para la sidebar */
+    flex-grow: 1; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center;
+    height: calc(100vh - 80px);
 }
 
 .full-width-text h1 {
-    margin: 0; /* Elimina el margen por defecto del h1 */
-    font-size: 2.5em; /* Tamaño de fuente para el h1 */
-    color: #d9534f; /* Color del texto del h1 */
+    margin: 0; 
+    font-size: 2.5em; 
+    color: #d9534f; 
 }
 
 .full-width-text p {
-    margin: 0; /* Elimina el margen por defecto del p */
-    font-size: 1.2em; /* Tamaño de fuente para el párrafo */
-    color: #555; /* Color del texto del párrafo */
+    margin: 0;
+    font-size: 1.2em;
+    color: #555; 
 }

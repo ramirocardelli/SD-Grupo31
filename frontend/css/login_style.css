@@ -6,21 +6,21 @@ body {
 
 #root {
     display: flex;
-    flex-direction: column; /* Para que la sidebar y el formulario se apilen verticalmente */
+    flex-direction: column;
     height: 100%;
 }
 
 .page-container {
-    margin-top: 60px; /* Espacio para la sidebar */
-    display: flex; /* Usar flexbox para centrar el contenido */
-    justify-content: center; /* Centrar horizontalmente */
-    align-items: center; /* Centrar verticalmente */
-    height: calc(100vh - 60px); /* Ajustar altura para dejar espacio para la sidebar */
+    margin-top: 60px; 
+    display: flex; /* flexbox para centrar  */
+    justify-content: center; 
+    align-items: center; 
+    height: calc(100vh - 60px); /* dejar espacio para la sidebar */
 }
 
 .login-form {
     background-color: #c4bd97;
-    width: 400px; /* Ancho fijo */
+    width: 400px; 
     display: flex;
     flex-direction: column;
     padding: 2em;
@@ -40,16 +40,16 @@ body {
 
 .login-form > input {
     border-radius: 0.3em;
-    border: 1px solid #ccc; /* Añadido para mejorar la visibilidad */
-    width: 100%; /* Ancho completo */
+    border: 1px solid #ccc; 
+    width: 100%; 
     font-size: 0.95em;
     padding: 0.5em;
-    margin-bottom: 1.3em; /* Espacio entre los inputs y el botón */
+    margin-bottom: 1.3em; 
 }
 
 .login-form > input:focus {
     outline: none;
-    border-color: #303f9f; /* Cambia el color del borde al enfocar */
+    border-color: #303f9f; 
 }
 
 .login-form > button {
@@ -59,16 +59,16 @@ body {
     border-radius: 0.3em;
     background-color: azure;
     cursor: pointer;
-    width: 100%; /* Ancho completo para igualar con los inputs */
+    width: 100%; 
 }
 
 .login-form > input,
 .login-form > button {
-    width: 100%; /* Asegura que ambos ocupen el mismo ancho */
-    box-sizing: border-box; /* Incluye el padding y el borde en el ancho total */
+    width: 100%; 
+    box-sizing: border-box;
 }
 
 .login-form button:hover {
     background-color: #303f9f; 
-    color: white; /* Cambia el texto a blanco al pasar el mouse */
+    color: white; 
 }

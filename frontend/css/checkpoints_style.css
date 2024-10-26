@@ -1,24 +1,24 @@
-/* Estructura general */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
 }
 
-/* Sidebar horizontal */
-.sidebar {
+/* Sidebar secundaria */
+.sidebar-secundaria {
+    position:fixed;
     width: 100%;
     background-color: #d5d6a8;
     display: flex;
     justify-content: space-around;
     align-items: center;
-    top: 0;
-    left: 0;
+    top: 3.5em;
+    left:0;
     padding: 1em;
-    z-index: 1000; /* Para que el sidebar siempre esté visible encima */
+    z-index: 999; /* Para que el sidebar siempre esté visible encima */
 }
 
-.sidebar button {
+.sidebar-secundaria button {
     background-color: none;
     color: black;
     border: none;
@@ -28,17 +28,16 @@ body {
     transition: background-color 0.3s; 
 }
 
-.sidebar button:hover {
+.sidebar-secundaria button:hover {
     background-color: rgba(255,252,255,0.1);
 }
 
-.sidebar button.active {
+.sidebar-secundaria button.active {
     background-color: #4CAF50;
     color: white;
 }
 
-/* Contenedor principal */
-.page-container {
+.page-container-check {
     margin-top: 70px; 
     padding: 15px;
     display: flex; 
@@ -46,7 +45,7 @@ body {
 }
 
 /* Ocultar todos los paneles al inicio */
-.form-panel {
+.form-panel-check {
     display: none;
     background-color: #c4bd97;
     height: auto; 
@@ -58,7 +57,7 @@ body {
 }
 
 /* Mostrar el panel activo */
-.form-panel.active {
+.form-panel-check.active {
    display:flex; 
 }
 
@@ -68,13 +67,15 @@ body {
     margin-bottom: 1.3em;
 }
 
+/*
 .form-panel form {
     display: flex;
     flex-direction: column;
     width: 100%;
 }
+*/
  /* campos entrada */
-.form-panel input {
+.form-panel-check input {
     border-radius: 0.3em;
     border: 0;
     width: 95%;
@@ -84,36 +85,36 @@ body {
 }
 
 /* labels */
-.form-panel label {
+.form-panel-check label {
     margin: 1em 0 0.5em; 
     font-size: 1.2em;
     width: 100%;
     text-align: left;
 }
 
-.form-panel > input:focus {
+.form-panel-check > input:focus {
     outline: none;
     font-size: 1.5;
     margin-bottom: 1.3em;
 }
 
 /* boton */
-.button-container {
+.button-container-check {
     margin-top: auto; 
     width: 100%; 
 }
 
-.button-container > button {
+.button-container-check > button {
     margin-top: 1em; 
     height: 4em;
     border: 0;
     border-radius: 0.1em;
     background-color: azure;
     cursor: pointer;
-    width: 100%; /* Asegúrate de que el botón ocupe todo el ancho */
+    width: 100%; 
 }
 
-.button-container > button:hover {
+.button-container-check > button:hover {
     background-color: #e6cb76; 
 }
 

@@ -45,6 +45,13 @@ const handleLocation = async () => {
   css.rel = "stylesheet";
   css.href = cssRoute;
   document.head.appendChild(css);
+
+    // Agregar el script dinámicamente si se carga checkpoints.html
+    if (path === "/checkpoints") {
+      const script = document.createElement("script");
+      script.src = "../js/checkpoints.js"; 
+      document.body.appendChild(script);
+    }
 };
 
 window.onpopstate = handleLocation; // Para manejar el retroceso del historial
