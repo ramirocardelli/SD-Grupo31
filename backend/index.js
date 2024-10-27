@@ -32,6 +32,11 @@ app.use(cors());
 const server = http.createServer((req, res) => {
   // Sea el tipo de solicitud que sea, siempre se intentara primero, reeconstruir el cuerpo de la solicitud
   let body = "";
+
+  // Separamos el path para poder obtener la direccion principal y el recurso
+  const pathArray=req.url.split("/");
+  pathArray.shift();
+
   req.on("data", (chunk) => {
     body = body + chunk;
   });
