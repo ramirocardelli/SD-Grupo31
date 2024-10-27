@@ -13,5 +13,10 @@
     "uid": "272cfd6c-34db-475e-8ef4-86f41c1d5467",
     "name": "Animal 3",
     "description": "Animal 3"
+  },
+  {
+    "uid": "a4697a4c-1e60-44e4-814f-d8d7287169c3",
+    "name": "Animal 7",
+    "description": "Animal 7 modificado"
   }
 ]

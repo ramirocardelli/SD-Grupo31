@@ -1,5 +1,6 @@
 import {
   getAnimals,
+  getOneAnimal,
   writeAnimals,
   deleteAnimal,
   modifyAnimal,
@@ -10,6 +11,12 @@ export const getAllAnimals = () => {
   const result = getAnimals();
   return result;
 };
+
+export const getAnimal = (name) => {
+  const result = getOneAnimal(name);
+  return result;
+}
+
 //se intenta agregar un animal, preguntando antes si existe, si existiera
 //lanza error, si no se continua con el flujo y se
 //agrega el animal

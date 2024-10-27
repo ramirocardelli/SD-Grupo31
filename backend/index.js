@@ -2,6 +2,7 @@ import http from "http";
 import {
   addAnimal,
   getAllAnimals,
+  getAnimal,
   modAnimal,
   removeAnimal,
 } from "./controllers/animals.controller.js";
@@ -17,6 +18,7 @@ import { login } from "./controllers/user.controller.js";
 import { connectToBroker } from "./controllers/mqtt.controller.js";
 import express from "express";
 import cors from "cors";
+import path from "path";
 
 const HTTP_PORT = process.env.PORT;
 const secret = process.env.SECRET;
@@ -45,13 +47,13 @@ const server = http.createServer((req, res) => {
     const parsedBody = body != "" ? JSON.parse(body) : null;
 
     // Rutas públicas
-    if (req.url === "/login") {
-      onLogin(req, res, parsedBody);
+    if (pathArray[0] === "login") {
+      onLogin(req, res, parsedBody, pathArray);
       return;
     }
 
-    if (req.url === "/refresh") {
-      onRefresh(req, res, parsedBody);
+    if (pathArray[0] === "refresh") {
+      onRefresh(req, res, parsedBody, pathArray);
       return;
     }
 
@@ -66,14 +68,14 @@ const server = http.createServer((req, res) => {
     // Rutas privadas
 
     // El sistema deberá permitir a los Administradores dar de alta, baja, modificar y mostrar Animales.
-    if (req.url === "/animals") {
-      onAnimals(req, res, parsedBody);
+    if (pathArray[0] === "animals") {
+      onAnimals(req, res, parsedBody, pathArray);
       return;
     }
 
     // El sistema deberá permitir a los Administradores dar de alta, baja, modificar y mostrar Puntos de Control
-    if (req.url === "/checkpoints") {
-      onCheckpoints(req, res, parsedBody);
+    if (pathArray[0] === "checkpoints") {
+      onCheckpoints(req, res, parsedBody, pathArray);
       return;
     }
 
@@ -97,7 +99,7 @@ function tokenIsValid(req) {
 
 // Asumimos que los datos de logeo vienen el el body de la solicitud
 // Igualmente esto no es correcto, deberia venir en el header.
-function onLogin(req, res, body) {
+function onLogin(req, res, body, pathArray) {
   const base64Credentials = req.headers.authorization.split(" ")[1] || "";
   const credentials = Buffer.from(base64Credentials, "base64")
     .toString("ascii")
@@ -105,6 +107,12 @@ function onLogin(req, res, body) {
 
   const username = credentials[0];
   const password = credentials[1];
+
+  // verificar que login no venga con id 
+  if (pathArray[1] === 'id'){
+    res.writeHead(404, "Método invalido");
+    return res.end();
+  }
 
   if (!username || !password) {
     res.writeHead(400, "Credenciales de usuario invalidas");
@@ -150,7 +158,7 @@ function onLogin(req, res, body) {
 }
 
 function accessToken(username) {
-  return tokenGenerator(username, 60);
+  return tokenGenerator(username, 3600);
 }
 
 function refreshToken(username) {
@@ -166,8 +174,14 @@ function tokenGenerator(username, seconds) {
   return jwt.sign(data, secret);
 }
 
-function onRefresh(req, res, body) {
+function onRefresh(req, res, body, pathArray) {
   const refreshToken = req.headers["authorization"]?.split(" ")[1];
+
+  // verificar que refresh no venga con id 
+  if (pathArray[1] === 'id'){
+    res.writeHead(404, "Método invalido");
+    return res.end();    
+  }
 
   if (!refreshToken) {
     res.writeHead(400, "Token invalid");
@@ -191,12 +205,84 @@ function onRefresh(req, res, body) {
   }
 }
 
-function onAnimals(req, res, body) {
-  if (req.method === "GET") {
-    const animals = getAllAnimals(req, res);
-    res.writeHead(200);
-    return res.end(JSON.stringify(animals));
+function onAnimals(req, res, body, pathArray) {
+  // Solo delete, patch y get vienen con id 
+  if (pathArray[1] === 'id'){
+
+    if (req.method === "DELETE") {
+      const name = body?.name;
+      if (!name) {
+        res.writeHead(400, "Credenciales del animal invalidas");
+        return res.end();
+      }
+  
+      try {
+        removeAnimal(name);
+        res.writeHead(200, "Se eliminó el animal con éxito");
+        return res.end();
+      } catch (e) {
+        res.writeHead(400, e.message);
+        return res.end();
+      }
+    }
+
+    if (req.method === "PATCH") {
+      const name = body?.name;
+      const description = body?.description;
+  
+      if (!name || !description) {
+        res.writeHead(400, "Credenciales del animal invalidas");
+        return res.end();
+      }
+  
+      try {
+        modAnimal(name, description);
+        res.writeHead(200, "El animal se modificó correctamente");
+        return res.end();
+      } catch (e) {
+        res.writeHead(400, e.message);
+        return res.end();
+      }
+
+    }
+
+    // si get viene con un id muestro solo la posicion de un animal
+    if (req.method === "GET") {
+      const name = body?.name;
+  
+      if (!name) {
+        res.writeHead(400, "Nombre del animal invalido");
+        return res.end();
+      }
+
+      const animal = getAnimal(name);
+      if (!animal) {
+        res.writeHead(400, "Nombre del animal invalido");
+        return res.end();
+      }
+      res.writeHead(200);
+      return res.end(JSON.stringify(animal));
+    }
+
+    // POST no tiene que venir con id
+    res.writeHead(404, "Metodo invalido");
+    return res.end();
+
   }
+
+  if (pathArray[1] === 'position'){
+
+    if (req.method === "GET") {
+      const animals = getAllAnimals(req, res);
+      res.writeHead(200);
+      return res.end(JSON.stringify(animals));
+    }
+    else { //solo get viene con /position, los demas son metodos invalidos
+      res.writeHead(404, "Metodo invalido");
+      return res.end();
+    }
+  }
+
 
   if (req.method === "POST") {
     const name = body?.name;
@@ -217,41 +303,6 @@ function onAnimals(req, res, body) {
     }
   }
 
-  if (req.method === "PUT") {
-    const name = body?.name;
-    const description = body?.description;
-
-    if (!name || !description) {
-      res.writeHead(400, "Credenciales del animal invalidas");
-      return res.end();
-    }
-
-    try {
-      modAnimal(name, description);
-      res.writeHead(200, "El animal se modificó correctamente");
-      return res.end();
-    } catch (e) {
-      res.writeHead(400, e.message);
-      return res.end();
-    }
-  }
-
-  if (req.method === "DELETE") {
-    const name = body?.name;
-    if (!name) {
-      res.writeHead(400, "Credenciales del animal invalidas");
-      return res.end();
-    }
-
-    try {
-      removeAnimal(name);
-      res.writeHead(200, "Se eliminó el animal con éxito");
-      return res.end();
-    } catch (e) {
-      res.writeHead(400, e.message);
-      return res.end();
-    }
-  }
 
   res.writeHead(404, "Metodo invalido");
   return res.end();
