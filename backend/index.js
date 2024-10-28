@@ -9,6 +9,7 @@ import {
 import {
   addCheckpoint,
   getAllCheckpoints,
+  getCheckpoint,
   removeCheckpoint,
   modCheckpoint,
 } from "./controllers/checkpoints.controller.js";
@@ -257,7 +258,7 @@ function onAnimals(req, res, body, pathArray) {
 
       const animal = getAnimal(name);
       if (!animal) {
-        res.writeHead(400, "Nombre del animal invalido");
+        res.writeHead(400, "Animal inexistente");
         return res.end();
       }
       res.writeHead(200);
@@ -283,8 +284,8 @@ function onAnimals(req, res, body, pathArray) {
     }
   }
 
-
-  if (req.method === "POST") {
+  // POST nunca viene con id
+  if (req.method === "POST" && !pathArray[1]) {
     const name = body?.name;
     const description = body?.description;
 
@@ -308,14 +309,75 @@ function onAnimals(req, res, body, pathArray) {
   return res.end();
 }
 
-function onCheckpoints(req, res, body) {
+function onCheckpoints(req, res, body, pathArray) {
+
+  if (pathArray[1] === 'id'){
+    
+    // PATCH/DELETE DEBEN venir con id - GET puede venir con id (muestro solo 1)
+    if (req.method === "PATCH") {
+      const name = body?.name;
+      const description = body?.description;
+    
+      if (!name || !description) {
+        res.writeHead(400, "Credenciales de checkpoint inválidas");
+        return res.end();
+      }
+    
+      try {
+        modCheckpoint(name, description);
+        res.writeHead(200, "Se modificó el checkpoint correctamente");
+        return res.end();
+      } catch (e) {
+        res.writeHead(400, e.message);
+        return res.end();
+      }
+    }
+  
+    if (req.method === "DELETE") {
+      const name = body?.name;
+    
+      if (!name) {
+        res.writeHead(400, "credenciales de checkpoint invalida/s");
+        return res.end();
+      }
+    
+      try {
+        removeCheckpoint(name);
+        res.writeHead(200, "checkpoint eliminado");
+        return res.end();
+      } catch (e) {
+        res.writeHead(400, e.message);
+        return res.end();
+      }
+    }
+    
+    if (req.method === "GET") {
+      const name = body?.name;
+
+      if (!name) {
+        res.writeHead(400, "Nombre del checkpoint invalido");
+        return res.end();
+      }
+
+      const checkpoint = getCheckpoint(name);
+
+      if (!checkpoint) {
+        res.writeHead(400, "Checkpoint inexistente");
+        return res.end();
+      }
+
+      res.writeHead(200);
+      return res.end(JSON.stringify(checkpoint));
+    }
+  }
+
   if (req.method === "GET") {
     const checkpoints = getAllCheckpoints(req, res);
     res.writeHead(200);
     return res.end(JSON.stringify(checkpoints));
   }
 
-  if (req.method === "POST") {
+  if (req.method === "POST" && !pathArray[1]) {
     const name = body?.name;
     const description = body?.description;
 
@@ -334,46 +396,10 @@ function onCheckpoints(req, res, body) {
     }
   }
 
-  if (req.method === "PUT") {
-    const name = body?.name;
-    const description = body?.description;
-
-    if (!name || !description) {
-      res.writeHead(400, "Credenciales de checkpoint inválidas");
-      return res.end();
-    }
-
-    try {
-      modCheckpoint(name, description);
-      res.writeHead(200, "Se modificó el checkpoint correctamente");
-      return res.end();
-    } catch (e) {
-      res.writeHead(400, e.message);
-      return res.end();
-    }
-  }
-
-  if (req.method === "DELETE") {
-    const name = body?.name;
-
-    if (!name) {
-      res.writeHead(400, "credenciales de checkpoint invalida/s");
-      return res.end();
-    }
-
-    try {
-      removeCheckpoint(name);
-      res.writeHead(200, "checkpoint eliminado");
-      return res.end();
-    } catch (e) {
-      res.writeHead(400, e.message);
-      return res.end();
-    }
-  }
-
   res.writeHead(404, "Metodo invalido");
   return res.end();
 }
+
 
 // Levantamos el server
 server.listen(HTTP_PORT, () => {

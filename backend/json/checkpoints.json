@@ -5,13 +5,23 @@
     "description": "Checkpoint 1"
   },
   {
-    "uid": "1d188667-5eaa-4053-a4cd-31109733b32c",
+    "uuid": "a4c1f0bd-8c34-418f-813f-70483c2671f1",
+    "name": "Checkpoint 3",
+    "description": "Checkpoint 3 modificado"
+  },
+  {
+    "uuid": "ddb6536e-82ed-4798-a182-87d2ef6c9a27",
+    "name": "Checkpoint 33",
+    "description": "Checkpoint 33 quise agregar pero ya existe - debo verlo modif"
+  },
+  {
+    "uuid": "5e8eaa1b-da42-4348-bfb8-d25e87977ab3",
     "name": "Checkpoint 2",
     "description": "Checkpoint 2"
   },
   {
-    "uuid": "a4c1f0bd-8c34-418f-813f-70483c2671f1",
-    "name": "Checkpoint 3",
-    "description": "Checkpoint 3"
+    "uuid": "ebb3d7b6-1bfa-4174-a188-92b112df0cca",
+    "name": "Checkpoint 20",
+    "description": "Checkpoint 20"
   }
 ]

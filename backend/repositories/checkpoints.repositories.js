@@ -14,6 +14,14 @@ export const getCheckpoints = () => {
   }
 };
 
+
+export const getOneCheckpoint = (name)  => {
+  const checkpoints = getCheckpoints();
+  const checkpoint = checkpoints.find((a) => a.name === name);
+  return checkpoint || null; 
+};
+
+
 export const writeCheckpoints = (checkpoint) => {
   const checkpoints = getCheckpoints();
   checkpoints.push(checkpoint);
