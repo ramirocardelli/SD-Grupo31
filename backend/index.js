@@ -159,7 +159,7 @@ function onLogin(req, res, body, pathArray) {
 }
 
 function accessToken(username) {
-  return tokenGenerator(username, 3600);
+  return tokenGenerator(username, 60);
 }
 
 function refreshToken(username) {
