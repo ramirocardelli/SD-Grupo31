@@ -1,0 +1,6 @@
+Para poder correr el broker, se requiere tener instalado docker en la pc y tenerlo abierto
+luego, para cargar usuarios se debe agregar uno por linea en el archivo "usuarios" de la forma
+[usuario]:[contrasena].
+Los pasos de ejecucion (de 0) son:
+1. Crear la imagen (solo la primera vez)
+2. crear y ejecutar el broker
