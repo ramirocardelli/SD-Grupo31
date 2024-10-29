@@ -26,14 +26,9 @@ export const writeAnimals = (animal) => {
   writeFileSync(FILE_PATH, JSON.stringify(resultado, null, 2));
 };
 
-export const deleteAnimal = (name) => {
+export const deleteAnimal = (id) => {
   const resultado = getAnimals();
-  const vec = [];
-  for (let i = 0; i < resultado.length; i++) {
-    if (resultado[i].name != name) {
-      vec.push(resultado[i]);
-    }
-  }
+  const vec = resultado.filter((a) => a.id !== id);
   writeFileSync(FILE_PATH, JSON.stringify(vec, null, 2));
 };
 

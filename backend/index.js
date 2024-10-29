@@ -218,14 +218,20 @@ function onAnimals(req, res, body, pathArray) {
     }
   } else {
     if (req.method === "DELETE") {
-      const name = body?.name;
-      if (!name) {
-        res.writeHead(400, "Credenciales del animal invalidas");
+      const match = req.url.match(/^\/animals\/([a-z0-9\-]+)$/);
+      if (!match) {
+        res.writeHead(400, "Id del animal invalido");
+        return res.end();
+      }
+
+      const id = match[1];
+      if (!id) {
+        res.writeHead(400, "Id del animal que se quiere eliminar invalido");
         return res.end();
       }
 
       try {
-        removeAnimal(name);
+        removeAnimal(id);
         res.writeHead(200, "Se eliminó el animal con éxito");
         return res.end();
       } catch (e) {
