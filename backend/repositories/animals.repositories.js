@@ -38,12 +38,11 @@ export const deleteAnimal = (name) => {
 };
 
 export const modifyAnimal = (animal) => {
-  const resultado = getAnimals();
-  for (let i = 0; i < resultado.length; i++) {
-    if (resultado[i].name == animal.name) {
-      resultado[i].description = animal.description;
-      break;
-    }
+  const animals = getAnimals();
+  const index = animals.findIndex((a) => a.id === animal.id);
+  if (index === -1) {
+    throw new Error("No existe el animal a modificar");
   }
-  writeFileSync(FILE_PATH, JSON.stringify(resultado, null, 2));
+  animals[index] = animal;
+  writeFileSync(FILE_PATH, JSON.stringify(animals, null, 2));
 };

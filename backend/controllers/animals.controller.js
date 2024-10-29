@@ -33,9 +33,9 @@ export const addAnimal = (id, name, description) => {
   }
 };
 
-export const modAnimal = (name, description) => {
+export const modAnimal = (id, name, description) => {
   const animal = {
-    id: uuidv4(),
+    id: id,
     name: name,
     description: description,
   };

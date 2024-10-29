@@ -235,16 +235,25 @@ function onAnimals(req, res, body, pathArray) {
     }
 
     if (req.method === "PATCH") {
-      const name = body?.name;
-      const description = body?.description;
+      const match = req.url.match(/^\/animals\/([a-z0-9\-]+)$/);
 
-      if (!name || !description) {
-        res.writeHead(400, "Credenciales del animal invalidas");
+      if (!match) {
+        res.writeHead(400, "Id del animal invalido");
+        return res.end();
+      }
+
+      const id = match[1];
+      const animal = getAnimal(id);
+      const name = body?.name || animal?.name;
+      const description = body?.description || animal?.description;
+
+      if (!id || !name || !description) {
+        res.writeHead(404, "Animal not found");
         return res.end();
       }
 
       try {
-        modAnimal(name, description);
+        modAnimal(id, name, description);
         res.writeHead(200, "El animal se modificó correctamente");
         return res.end();
       } catch (e) {
@@ -255,8 +264,7 @@ function onAnimals(req, res, body, pathArray) {
 
     // si get viene con un id muestro solo la posicion de un animal
     if (req.method === "GET") {
-      console.log(req.url);
-      const match = req.url.match(/^\/animals\/([a-f0-9\-]+)$/);
+      const match = req.url.match(/^\/animals\/([a-z0-9\-]+)$/);
 
       if (!match) {
         res.writeHead(400, "Id del animal invalido");
@@ -264,7 +272,6 @@ function onAnimals(req, res, body, pathArray) {
       }
 
       const id = match[1];
-      console.log(id);
 
       const animal = getAnimal(id);
 
