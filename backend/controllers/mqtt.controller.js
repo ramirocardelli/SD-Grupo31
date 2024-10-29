@@ -1,11 +1,13 @@
 import mqtt from "mqtt";
 import { getAllCheckpoints } from "./checkpoints.controller.js";
+import { getAllAnimals } from "./animals.controller.js";
 const options = {
   username: "admin",
   password: "admin",
-  clientID: "prueba",
+  clientID: "adminID",
 };
 const client = mqtt.connect("mqtt://localhost:1883", options);
+const umbral = -50;
 //mapa = {checkpoint.id,[vector de animales]}
 const posiciones = new Map();
 
@@ -40,7 +42,7 @@ export function getPosiciones() {
 client.on("message", (topic, message) => {
   // message is Buffer
   if (topic === "checkpoint") {
-    console.log(message.toString());
+    //console.log(message.toString());
     actualizarPosicion(message.toString());
     //console.log(posiciones);
     //client.end();
@@ -51,9 +53,19 @@ client.on("message", (topic, message) => {
 function actualizarPosicion(mensaje) {
   try {
     mensaje = JSON.parse(mensaje);
+    const animalesRecibidos = mensaje?.animals;
+    const animales = getAllAnimals().map((obj) => obj.id);
+    const vec = [];
+    for (let i = 0; animalesRecibidos.length; i++) {
+      if (
+        animales.includes(animalesRecibidos[i].id) &&
+        animalesRecibidos[i].rssi >= umbral
+      )
+        vec.push(animalesRecibidos[i]);
+    }
     if (mensaje?.checkpointID) {
       if (posiciones.has(mensaje.checkpointID)) {
-        posiciones.get(mensaje.checkpointID).animals = mensaje.animals;
+        posiciones.get(mensaje.checkpointID).animals = vec;
       }
     }
   } catch (e) {}
