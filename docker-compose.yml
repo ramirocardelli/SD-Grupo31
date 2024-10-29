@@ -1,14 +1,18 @@
 services:
   mosquitto:
-    build: ./mosquitto
-	ports:
-		- "1883":"1883"
+   build: ./mosquitto 
+   ports:
+       - "1883:1883"
+   container_name: 
+    mosquitto-broker
 
-backend:
+  backend:
    build: ./backend
    ports:
      - "3000:3000"
    depends_on:
-    	mosquitto
+     - mosquitto
+   container_name: 
+    tp-distribuidos
    volumes:
      - ./backend:/usr/src/app
