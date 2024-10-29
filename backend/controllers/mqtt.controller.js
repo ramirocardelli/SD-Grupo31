@@ -1,6 +1,6 @@
 import mqtt from "mqtt";
 import { getAllCheckpoints } from "./checkpoints.controller.js";
-import { getAllAnimals } from "./animals.controller.js";
+import { getAllAnimals, animalExists } from "./animals.controller.js";
 const options = {
   username: "admin",
   password: "admin",
@@ -54,15 +54,10 @@ function actualizarPosicion(mensaje) {
   try {
     mensaje = JSON.parse(mensaje);
     const animalesRecibidos = mensaje?.animals;
-    const animales = getAllAnimals().map((obj) => obj.id);
-    const vec = [];
-    for (let i = 0; animalesRecibidos.length; i++) {
-      if (
-        animales.includes(animalesRecibidos[i].id) &&
-        animalesRecibidos[i].rssi >= umbral
-      )
-        vec.push(animalesRecibidos[i]);
-    }
+    const vec = animalesRecibidos.filter(
+      (animal) => animalExists(animal.id) && animal.rssi >= umbral
+    );
+
     if (mensaje?.checkpointID) {
       if (posiciones.has(mensaje.checkpointID)) {
         posiciones.get(mensaje.checkpointID).animals = vec;

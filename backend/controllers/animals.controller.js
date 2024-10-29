@@ -52,7 +52,7 @@ export const removeAnimal = (id) => {
   } else throw new Error("No existe el animal a eliminar");
 };
 
-function animalExists(id) {
+export function animalExists(id) {
   const animals = getAllAnimals();
   return animals.some((animal) => animal.id === id);
 }
