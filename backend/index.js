@@ -242,13 +242,7 @@ function onAnimals(req, res, body, pathArray) {
 
   // Si el delete viene con el id, eliminamos el animal
   if (req.method === "DELETE") {
-    const match = req.url.match(/^\/animals\/([a-z0-9\-]+)$/);
-    if (!match) {
-      res.writeHead(400, "Id del animal invalido");
-      return res.end();
-    }
-
-    const id = match[1];
+    const id = pathArray[1];
     if (!id) {
       res.writeHead(400, "Id del animal que se quiere eliminar invalido");
       return res.end();
@@ -266,14 +260,7 @@ function onAnimals(req, res, body, pathArray) {
 
   // Si el patch viene con el id, modificamos el animal
   if (req.method === "PATCH") {
-    const match = req.url.match(/^\/animals\/([a-z0-9\-]+)$/);
-
-    if (!match) {
-      res.writeHead(400, "Id del animal invalido");
-      return res.end();
-    }
-
-    const id = match[1];
+    const id = pathArray[1];
     const animal = getAnimal(id);
     const name = body?.name || animal?.name;
     const description = body?.description || animal?.description;
