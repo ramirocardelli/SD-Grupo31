@@ -28,5 +28,11 @@
     "lat": -34.6036844,
     "long": -58.3815591,
     "description": "Checkpoint 20"
+  },
+  {
+    "id": "WTF",
+    "lat": 12.3,
+    "long": -89.9,
+    "description": "asd"
   }
 ]

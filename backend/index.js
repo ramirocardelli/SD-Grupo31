@@ -312,83 +312,86 @@ function onAnimals(req, res, body, pathArray) {
 }
 
 function onCheckpoints(req, res, body, pathArray) {
-  if (pathArray[1] === "id") {
-    // PATCH/DELETE DEBEN venir con id - GET puede venir con id (muestro solo 1)
-    if (req.method === "PATCH") {
-      const name = body?.name;
-      const description = body?.description;
+  // Solo delete, patch y get vienen con id
 
-      if (!name || !description) {
-        res.writeHead(400, "Credenciales de checkpoint inválidas");
-        return res.end();
-      }
-
-      try {
-        modCheckpoint(name, description);
-        res.writeHead(200, "Se modificó el checkpoint correctamente");
-        return res.end();
-      } catch (e) {
-        res.writeHead(400, e.message);
-        return res.end();
-      }
-    }
-
-    if (req.method === "DELETE") {
-      const name = body?.name;
-
-      if (!name) {
-        res.writeHead(400, "credenciales de checkpoint invalida/s");
-        return res.end();
-      }
-
-      try {
-        removeCheckpoint(name);
-        res.writeHead(200, "checkpoint eliminado");
-        return res.end();
-      } catch (e) {
-        res.writeHead(400, e.message);
-        return res.end();
-      }
-    }
-
+  // Si el get viene sin id, devolvemos todos los checkpoints
+  if (!pathArray[1]) {
     if (req.method === "GET") {
-      const name = body?.name;
-
-      if (!name) {
-        res.writeHead(400, "Nombre del checkpoint invalido");
-        return res.end();
-      }
-
-      const checkpoint = getCheckpoint(name);
-
-      if (!checkpoint) {
-        res.writeHead(400, "Checkpoint inexistente");
-        return res.end();
-      }
-
+      const checkpoints = getAllCheckpoints(req, res);
       res.writeHead(200);
-      return res.end(JSON.stringify(checkpoint));
+      return res.end(JSON.stringify(checkpoints));
     }
   }
 
   if (req.method === "GET") {
-    const checkpoints = getAllCheckpoints(req, res);
+    const id = pathArray[1];
+
+    const checkpoint = getCheckpoint(id);
+
+    if (!checkpoint) {
+      res.writeHead(400, "Checkpoint inexistente");
+      return res.end();
+    }
+
     res.writeHead(200);
-    return res.end(JSON.stringify(checkpoints));
+    return res.end(JSON.stringify(checkpoint));
   }
 
-  if (req.method === "POST" && !pathArray[1]) {
-    const name = body?.name;
-    const description = body?.description;
-
-    if (!name || !description) {
-      res.writeHead(400, "Credenciales de checkpoint inválidas");
+  // Si el delete viene con el id, eliminamos el checkpoint
+  if (req.method === "DELETE") {
+    const id = pathArray[1];
+    if (!id) {
+      res.writeHead(400, "Id del checkpoint que se quiere eliminar invalido");
       return res.end();
     }
 
     try {
-      addCheckpoint(name, description);
-      res.writeHead(200, "se creo el checkpoint");
+      removeCheckpoint(id);
+      res.writeHead(200, "Se eliminó el checkpoint con éxito");
+      return res.end();
+    } catch (e) {
+      res.writeHead(400, e.message);
+      return res.end();
+    }
+  }
+
+  // Si el patch viene con el id, modificamos el checkpoint
+  if (req.method === "PATCH") {
+    const id = pathArray[1];
+    const checkpoint = getCheckpoint(id);
+    const lat = body?.lat || checkpoint?.lat;
+    const long = body?.long || checkpoint?.long;
+    const description = body?.description || checkpoint?.description;
+
+    if (!id || !lat || !long || !description) {
+      res.writeHead(404, "Checkpoint not found");
+      return res.end();
+    }
+
+    try {
+      modCheckpoint(id, lat, long, description);
+      res.writeHead(200, "El checkpoint se modificó correctamente");
+      return res.end();
+    } catch (e) {
+      res.writeHead(400, e.message);
+      return res.end();
+    }
+  }
+
+  if (req.method === "POST" && !pathArray[1]) {
+    const id = body?.id;
+    const lat = body?.lat;
+    const long = body?.long;
+    const description = body?.description || "Checkpoint sin descripción";
+
+    if (!id || !description || !lat || !long) {
+      res.writeHead(400, "Credenciales del checkpoint insuficientes");
+      return res.end();
+    }
+
+    try {
+      addCheckpoint(id, lat, long, description);
+      res.writeHead(200, "Checkpoint añadido con éxito");
       return res.end();
     } catch (e) {
       res.writeHead(400, e.message);

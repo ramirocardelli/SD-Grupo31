@@ -12,49 +12,50 @@ export const getAllCheckpoints = () => {
   return result;
 };
 
-export const getCheckpoint = (name) => {
-  const result = getOneCheckpoint(name);
+export const getCheckpoint = (id) => {
+  const result = getOneCheckpoint(id);
   return result;
 };
 
 //se intenta agregar un checkpoint, preguntando antes si existe, si existiera
 //se MODIFICA el checkpoint, si no se continua con el flujo y se
 //agrega el checkpoint
-export const addCheckpoint = (name, description) => {
+export const addCheckpoint = (id, lat, long, description) => {
   const checkpoint = {
-    id: uuidv4(),
-    name: name,
+    id: id,
+    lat: lat,
+    long: long,
     description: description,
   };
-  if (!checkpointExists(checkpoint.name)) {
+  if (!checkpointExists(id)) {
     writeCheckpoints(checkpoint);
   } else {
-    // si ya existe se modifica
-    modifyCheckpoint(checkpoint);
+    throw Error("El checkpoint que se quiere agregar ya existe");
   }
 };
 
-export const modCheckpoint = (name, description) => {
+export const modCheckpoint = (id, lat, long, description) => {
   const checkpoint = {
-    id: uuidv4(),
-    name: name,
+    id: id,
+    lat: lat,
+    long: long,
     description: description,
   };
-  if (checkpointExists(checkpoint.name)) {
+  if (checkpointExists(id)) {
     modifyCheckpoint(checkpoint);
   } else {
-    throw Error("checkpoint inexistente");
+    throw Error("No existe el punto de control a modificar");
   }
 };
 
-export const removeCheckpoint = (name) => {
-  if (checkpointExists(name)) {
-    deleteCheckpoint(name);
-  } else throw new Error("no existe checkpoint con ese nombre");
+export const removeCheckpoint = (id) => {
+  if (checkpointExists(id)) {
+    deleteCheckpoint(id);
+  } else throw new Error("No existe el punto de control a eliminar");
 };
 
 //funcion que verifica si el checkpoint existe
-function checkpointExists(name) {
+function checkpointExists(id) {
   const checkpoints = getAllCheckpoints();
-  return checkpoints.some((checkpoint) => checkpoint.name === name);
+  return checkpoints.some((checkpoint) => checkpoint.id === id);
 }
