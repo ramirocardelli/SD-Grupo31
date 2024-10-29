@@ -40,7 +40,7 @@ export function getPosiciones() {
 client.on("message", (topic, message) => {
   // message is Buffer
   if (topic === "checkpoint") {
-    //console.log(message.toString());
+    console.log(message.toString());
     actualizarPosicion(message.toString());
     //console.log(posiciones);
     //client.end();
@@ -49,10 +49,14 @@ client.on("message", (topic, message) => {
 
 //si llega un mensaje con un checkpoint y los animales que pertencen a el, se actualiza en el mapa
 function actualizarPosicion(mensaje) {
-  mensaje = JSON.parse(mensaje);
-  if (posiciones.has(mensaje.checkpointID)) {
-    posiciones.get(mensaje.checkpointID).animals = mensaje.animals;
-  }
+  try {
+    mensaje = JSON.parse(mensaje);
+    if (mensaje?.checkpointID) {
+      if (posiciones.has(mensaje.checkpointID)) {
+        posiciones.get(mensaje.checkpointID).animals = mensaje.animals;
+      }
+    }
+  } catch (e) {}
 }
 
 client.on("error", (err) => {
