@@ -16,7 +16,10 @@ import {
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 import { login } from "./controllers/user.controller.js";
-import { connectToBroker } from "./controllers/mqtt.controller.js";
+import {
+  connectToBroker,
+  getPosiciones,
+} from "./controllers/mqtt.controller.js";
 import express from "express";
 import cors from "cors";
 import path from "path";
@@ -223,10 +226,8 @@ function onAnimals(req, res, body, pathArray) {
   // Para obtener la posición de todos los animales
   if (pathArray[1] === "position") {
     if (req.method === "GET") {
-      // TODO: Hacer que se devuelva la posición de todos los animales desde el controller
-      const animals = getAllAnimals(req, res);
       res.writeHead(200);
-      return res.end(JSON.stringify(animals));
+      return res.end(JSON.stringify(getPosiciones()));
     }
     // Solo get viene con /position, los demas son metodos invalidos
     res.writeHead(404, "Metodo invalido");
