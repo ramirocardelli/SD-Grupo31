@@ -1,17 +1,17 @@
 [
   {
     "id": "b161a0cc-68cb-4fb4-9193-a29fcae50146",
-    "name": "admin",
+    "username": "admin",
     "password": "admin"
   },
   {
     "id": "2cb958d2-0c05-4c0e-ac01-79b9b33594b5",
-    "name": "admin2",
+    "username": "admin2",
     "password": "admin2"
   },
   {
     "id": "6fe5ab46-7bd0-4182-8046-e5c134c6337e",
-    "name": "test",
+    "username": "test",
     "password": "test"
   }
 ]

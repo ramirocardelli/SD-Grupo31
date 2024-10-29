@@ -14,13 +14,11 @@ export const getCheckpoints = () => {
   }
 };
 
-
-export const getOneCheckpoint = (name)  => {
+export const getOneCheckpoint = (id) => {
   const checkpoints = getCheckpoints();
-  const checkpoint = checkpoints.find((a) => a.name === name);
-  return checkpoint || null; 
+  const checkpoint = checkpoints.find((a) => a.id === id);
+  return checkpoint;
 };
-
 
 export const writeCheckpoints = (checkpoint) => {
   const checkpoints = getCheckpoints();
@@ -28,24 +26,15 @@ export const writeCheckpoints = (checkpoint) => {
   writeFileSync(FILE_PATH, JSON.stringify(checkpoints, null, 2));
 };
 
-export const deleteCheckpoint = (name) => {
+export const deleteCheckpoint = (id) => {
   const resultado = getCheckpoints();
-  const vec = [];
-  for (let i = 0; i < resultado.length; i++) {
-    if (resultado[i].name != name) {
-      vec.push(resultado[i]);
-    }
-  }
+  const vec = resultado.filter((a) => a.id !== id);
   writeFileSync(FILE_PATH, JSON.stringify(vec, null, 2));
 };
 
 export const modifyCheckpoint = (checkpoint) => {
   const resultado = getCheckpoints();
-  for (let i = 0; i < resultado.length; i++) {
-    if (resultado[i].name == checkpoint.name) {
-      resultado[i].description = checkpoint.description;
-      break;
-    }
-  }
+  const index = resultado.findIndex((a) => a.id === checkpoint.id);
+  resultado[index] = checkpoint;
   writeFileSync(FILE_PATH, JSON.stringify(resultado, null, 2));
 };
