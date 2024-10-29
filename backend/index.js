@@ -209,112 +209,109 @@ function onRefresh(req, res, body, pathArray) {
 function onAnimals(req, res, body, pathArray) {
   // Solo delete, patch y get vienen con id
 
-  // GET puede no venir con id, para obtener todos los animales
+  // Si el get viene sin id, devolvemos todos los animales
   if (!pathArray[1]) {
     if (req.method === "GET") {
       const animals = getAllAnimals(req, res);
       res.writeHead(200);
       return res.end(JSON.stringify(animals));
     }
-  } else {
-    if (req.method === "DELETE") {
-      const match = req.url.match(/^\/animals\/([a-z0-9\-]+)$/);
-      if (!match) {
-        res.writeHead(400, "Id del animal invalido");
-        return res.end();
-      }
-
-      const id = match[1];
-      if (!id) {
-        res.writeHead(400, "Id del animal que se quiere eliminar invalido");
-        return res.end();
-      }
-
-      try {
-        removeAnimal(id);
-        res.writeHead(200, "Se eliminó el animal con éxito");
-        return res.end();
-      } catch (e) {
-        res.writeHead(400, e.message);
-        return res.end();
-      }
-    }
-
-    if (req.method === "PATCH") {
-      const match = req.url.match(/^\/animals\/([a-z0-9\-]+)$/);
-
-      if (!match) {
-        res.writeHead(400, "Id del animal invalido");
-        return res.end();
-      }
-
-      const id = match[1];
-      const animal = getAnimal(id);
-      const name = body?.name || animal?.name;
-      const description = body?.description || animal?.description;
-
-      if (!id || !name || !description) {
-        res.writeHead(404, "Animal not found");
-        return res.end();
-      }
-
-      try {
-        modAnimal(id, name, description);
-        res.writeHead(200, "El animal se modificó correctamente");
-        return res.end();
-      } catch (e) {
-        res.writeHead(400, e.message);
-        return res.end();
-      }
-    }
-
-    // si get viene con un id muestro solo la posicion de un animal
-    if (req.method === "GET") {
-      const match = req.url.match(/^\/animals\/([a-z0-9\-]+)$/);
-
-      if (!match) {
-        res.writeHead(400, "Id del animal invalido");
-        return res.end();
-      }
-
-      const id = match[1];
-
-      const animal = getAnimal(id);
-
-      if (!animal) {
-        res.writeHead(400, "Animal inexistente");
-        return res.end();
-      }
-
-      res.writeHead(200);
-      return res.end(JSON.stringify(animal));
-    }
-
-    // POST no tiene que venir con id
-    res.writeHead(404, "Metodo invalido");
-    return res.end();
   }
 
+  // Si el get viene con el id, devolvemos solo ese animal
+  if (req.method === "GET") {
+    const match = req.url.match(/^\/animals\/([a-z0-9\-]+)$/);
+
+    if (!match) {
+      res.writeHead(400, "Id del animal invalido");
+      return res.end();
+    }
+
+    const id = match[1];
+
+    const animal = getAnimal(id);
+
+    if (!animal) {
+      res.writeHead(400, "Animal inexistente");
+      return res.end();
+    }
+
+    res.writeHead(200);
+    return res.end(JSON.stringify(animal));
+  }
+
+  // Si el delete viene con el id, eliminamos el animal
+  if (req.method === "DELETE") {
+    const match = req.url.match(/^\/animals\/([a-z0-9\-]+)$/);
+    if (!match) {
+      res.writeHead(400, "Id del animal invalido");
+      return res.end();
+    }
+
+    const id = match[1];
+    if (!id) {
+      res.writeHead(400, "Id del animal que se quiere eliminar invalido");
+      return res.end();
+    }
+
+    try {
+      removeAnimal(id);
+      res.writeHead(200, "Se eliminó el animal con éxito");
+      return res.end();
+    } catch (e) {
+      res.writeHead(400, e.message);
+      return res.end();
+    }
+  }
+
+  // Si el patch viene con el id, modificamos el animal
+  if (req.method === "PATCH") {
+    const match = req.url.match(/^\/animals\/([a-z0-9\-]+)$/);
+
+    if (!match) {
+      res.writeHead(400, "Id del animal invalido");
+      return res.end();
+    }
+
+    const id = match[1];
+    const animal = getAnimal(id);
+    const name = body?.name || animal?.name;
+    const description = body?.description || animal?.description;
+
+    if (!id || !name || !description) {
+      res.writeHead(404, "Animal not found");
+      return res.end();
+    }
+
+    try {
+      modAnimal(id, name, description);
+      res.writeHead(200, "El animal se modificó correctamente");
+      return res.end();
+    } catch (e) {
+      res.writeHead(400, e.message);
+      return res.end();
+    }
+  }
+
+  // Para obtener la posición de todos los animales
   if (pathArray[1] === "position") {
     if (req.method === "GET") {
       const animals = getAllAnimals(req, res);
       res.writeHead(200);
       return res.end(JSON.stringify(animals));
-    } else {
-      //solo get viene con /position, los demas son metodos invalidos
-      res.writeHead(404, "Metodo invalido");
-      return res.end();
     }
+    // Solo get viene con /position, los demas son metodos invalidos
+    res.writeHead(404, "Metodo invalido");
+    return res.end();
   }
 
-  // POST nunca viene con id
   if (req.method === "POST" && !pathArray[1]) {
     const id = body?.id;
-    const name = body?.name;
-    const description = body?.description;
+    const name = body?.name || "Animal sin nombre";
+    const description = body?.description || "Animal sin descripción";
 
-    if (!id || !name || !description) {
-      res.writeHead(400, "Credenciales del animal invalidas");
+    if (!id) {
+      res.writeHead(400, "Credenciales del animal insuficientes");
       return res.end();
     }
 
