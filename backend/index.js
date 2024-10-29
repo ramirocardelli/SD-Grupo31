@@ -219,6 +219,20 @@ function onAnimals(req, res, body, pathArray) {
   }
 
   // Si el get viene con el id, devolvemos solo ese animal
+
+  // Para obtener la posición de todos los animales
+  if (pathArray[1] === "position") {
+    if (req.method === "GET") {
+      // TODO: Hacer que se devuelva la posición de todos los animales desde el controller
+      const animals = getAllAnimals(req, res);
+      res.writeHead(200);
+      return res.end(JSON.stringify(animals));
+    }
+    // Solo get viene con /position, los demas son metodos invalidos
+    res.writeHead(404, "Metodo invalido");
+    return res.end();
+  }
+
   if (req.method === "GET") {
     const id = pathArray[1];
 
@@ -271,18 +285,6 @@ function onAnimals(req, res, body, pathArray) {
       res.writeHead(400, e.message);
       return res.end();
     }
-  }
-
-  // Para obtener la posición de todos los animales
-  if (pathArray[1] === "position") {
-    if (req.method === "GET") {
-      const animals = getAllAnimals(req, res);
-      res.writeHead(200);
-      return res.end(JSON.stringify(animals));
-    }
-    // Solo get viene con /position, los demas son metodos invalidos
-    res.writeHead(404, "Metodo invalido");
-    return res.end();
   }
 
   if (req.method === "POST" && !pathArray[1]) {
