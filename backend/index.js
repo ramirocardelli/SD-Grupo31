@@ -296,16 +296,17 @@ function onAnimals(req, res, body, pathArray) {
 
   // POST nunca viene con id
   if (req.method === "POST" && !pathArray[1]) {
+    const id = body?.id;
     const name = body?.name;
     const description = body?.description;
 
-    if (!name || !description) {
+    if (!id || !name || !description) {
       res.writeHead(400, "Credenciales del animal invalidas");
       return res.end();
     }
 
     try {
-      addAnimal(name, description);
+      addAnimal(id, name, description);
       res.writeHead(200, "Animal añadido con éxito");
       return res.end();
     } catch (e) {
