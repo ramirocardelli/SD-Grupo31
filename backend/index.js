@@ -37,7 +37,7 @@ const server = http.createServer((req, res) => {
   let body = "";
 
   // Separamos el path para poder obtener la direccion principal y el recurso
-  const pathArray=req.url.split("/");
+  const pathArray = req.url.split("/");
   pathArray.shift();
 
   req.on("data", (chunk) => {
@@ -109,8 +109,8 @@ function onLogin(req, res, body, pathArray) {
   const username = credentials[0];
   const password = credentials[1];
 
-  // verificar que login no venga con id 
-  if (pathArray[1] === 'id'){
+  // verificar que login no venga con id
+  if (pathArray[1] === "id") {
     res.writeHead(404, "Método invalido");
     return res.end();
   }
@@ -178,10 +178,10 @@ function tokenGenerator(username, seconds) {
 function onRefresh(req, res, body, pathArray) {
   const refreshToken = req.headers["authorization"]?.split(" ")[1];
 
-  // verificar que refresh no venga con id 
-  if (pathArray[1] === 'id'){
+  // verificar que refresh no venga con id
+  if (pathArray[1] === "id") {
     res.writeHead(404, "Método invalido");
-    return res.end();    
+    return res.end();
   }
 
   if (!refreshToken) {
@@ -207,16 +207,15 @@ function onRefresh(req, res, body, pathArray) {
 }
 
 function onAnimals(req, res, body, pathArray) {
-  // Solo delete, patch y get vienen con id 
-  if (pathArray[1] === 'id'){
-
+  // Solo delete, patch y get vienen con id
+  if (pathArray[1] === "id") {
     if (req.method === "DELETE") {
       const name = body?.name;
       if (!name) {
         res.writeHead(400, "Credenciales del animal invalidas");
         return res.end();
       }
-  
+
       try {
         removeAnimal(name);
         res.writeHead(200, "Se eliminó el animal con éxito");
@@ -230,12 +229,12 @@ function onAnimals(req, res, body, pathArray) {
     if (req.method === "PATCH") {
       const name = body?.name;
       const description = body?.description;
-  
+
       if (!name || !description) {
         res.writeHead(400, "Credenciales del animal invalidas");
         return res.end();
       }
-  
+
       try {
         modAnimal(name, description);
         res.writeHead(200, "El animal se modificó correctamente");
@@ -244,13 +243,12 @@ function onAnimals(req, res, body, pathArray) {
         res.writeHead(400, e.message);
         return res.end();
       }
-
     }
 
     // si get viene con un id muestro solo la posicion de un animal
     if (req.method === "GET") {
       const name = body?.name;
-  
+
       if (!name) {
         res.writeHead(400, "Nombre del animal invalido");
         return res.end();
@@ -268,17 +266,15 @@ function onAnimals(req, res, body, pathArray) {
     // POST no tiene que venir con id
     res.writeHead(404, "Metodo invalido");
     return res.end();
-
   }
 
-  if (pathArray[1] === 'position'){
-
+  if (pathArray[1] === "position") {
     if (req.method === "GET") {
       const animals = getAllAnimals(req, res);
       res.writeHead(200);
       return res.end(JSON.stringify(animals));
-    }
-    else { //solo get viene con /position, los demas son metodos invalidos
+    } else {
+      //solo get viene con /position, los demas son metodos invalidos
       res.writeHead(404, "Metodo invalido");
       return res.end();
     }
@@ -304,25 +300,29 @@ function onAnimals(req, res, body, pathArray) {
     }
   }
 
+  // GET puede no venir con id, para obtener todos los animales
+  if (req.method === "GET") {
+    const animals = getAllAnimals(req, res);
+    res.writeHead(200);
+    return res.end(JSON.stringify(animals));
+  }
 
   res.writeHead(404, "Metodo invalido");
   return res.end();
 }
 
 function onCheckpoints(req, res, body, pathArray) {
-
-  if (pathArray[1] === 'id'){
-    
+  if (pathArray[1] === "id") {
     // PATCH/DELETE DEBEN venir con id - GET puede venir con id (muestro solo 1)
     if (req.method === "PATCH") {
       const name = body?.name;
       const description = body?.description;
-    
+
       if (!name || !description) {
         res.writeHead(400, "Credenciales de checkpoint inválidas");
         return res.end();
       }
-    
+
       try {
         modCheckpoint(name, description);
         res.writeHead(200, "Se modificó el checkpoint correctamente");
@@ -332,15 +332,15 @@ function onCheckpoints(req, res, body, pathArray) {
         return res.end();
       }
     }
-  
+
     if (req.method === "DELETE") {
       const name = body?.name;
-    
+
       if (!name) {
         res.writeHead(400, "credenciales de checkpoint invalida/s");
         return res.end();
       }
-    
+
       try {
         removeCheckpoint(name);
         res.writeHead(200, "checkpoint eliminado");
@@ -350,7 +350,7 @@ function onCheckpoints(req, res, body, pathArray) {
         return res.end();
       }
     }
-    
+
     if (req.method === "GET") {
       const name = body?.name;
 
@@ -399,7 +399,6 @@ function onCheckpoints(req, res, body, pathArray) {
   res.writeHead(404, "Metodo invalido");
   return res.end();
 }
-
 
 // Levantamos el server
 server.listen(HTTP_PORT, () => {
