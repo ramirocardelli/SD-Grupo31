@@ -220,14 +220,7 @@ function onAnimals(req, res, body, pathArray) {
 
   // Si el get viene con el id, devolvemos solo ese animal
   if (req.method === "GET") {
-    const match = req.url.match(/^\/animals\/([a-z0-9\-]+)$/);
-
-    if (!match) {
-      res.writeHead(400, "Id del animal invalido");
-      return res.end();
-    }
-
-    const id = match[1];
+    const id = pathArray[1];
 
     const animal = getAnimal(id);
 
