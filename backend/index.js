@@ -215,7 +215,7 @@ function onAnimals(req, res, body, pathArray) {
   // Si el get viene sin id, devolvemos todos los animales
   if (!pathArray[1]) {
     if (req.method === "GET") {
-      const animals = getAllAnimals(req, res);
+      const animals = getAllAnimals();
       res.writeHead(200);
       return res.end(JSON.stringify(animals));
     }
@@ -318,7 +318,7 @@ function onCheckpoints(req, res, body, pathArray) {
   // Si el get viene sin id, devolvemos todos los checkpoints
   if (!pathArray[1]) {
     if (req.method === "GET") {
-      const checkpoints = getAllCheckpoints(req, res);
+      const checkpoints = getAllCheckpoints();
       res.writeHead(200);
       return res.end(JSON.stringify(checkpoints));
     }
