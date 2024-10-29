@@ -1,7 +1,9 @@
 import { getUsers } from "../repositories/users.repositories.js";
 import { v4 as uuidv4 } from "uuid";
+import { createHash } from "crypto";
 
 export const login = (username, password) => {
+  password = createHash("sha256").update(password).digest("hex");
   const usuario = {
     username: username,
     password: password,
