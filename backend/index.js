@@ -208,7 +208,15 @@ function onRefresh(req, res, body, pathArray) {
 
 function onAnimals(req, res, body, pathArray) {
   // Solo delete, patch y get vienen con id
-  if (pathArray[1] === "id") {
+
+  // GET puede no venir con id, para obtener todos los animales
+  if (!pathArray[1]) {
+    if (req.method === "GET") {
+      const animals = getAllAnimals(req, res);
+      res.writeHead(200);
+      return res.end(JSON.stringify(animals));
+    }
+  } else {
     if (req.method === "DELETE") {
       const name = body?.name;
       if (!name) {
@@ -247,18 +255,24 @@ function onAnimals(req, res, body, pathArray) {
 
     // si get viene con un id muestro solo la posicion de un animal
     if (req.method === "GET") {
-      const name = body?.name;
+      console.log(req.url);
+      const match = req.url.match(/^\/animals\/([a-f0-9\-]+)$/);
 
-      if (!name) {
-        res.writeHead(400, "Nombre del animal invalido");
+      if (!match) {
+        res.writeHead(400, "Id del animal invalido");
         return res.end();
       }
 
-      const animal = getAnimal(name);
+      const id = match[1];
+      console.log(id);
+
+      const animal = getAnimal(id);
+
       if (!animal) {
         res.writeHead(400, "Animal inexistente");
         return res.end();
       }
+
       res.writeHead(200);
       return res.end(JSON.stringify(animal));
     }
@@ -298,13 +312,6 @@ function onAnimals(req, res, body, pathArray) {
       res.writeHead(400, e.message);
       return res.end();
     }
-  }
-
-  // GET puede no venir con id, para obtener todos los animales
-  if (req.method === "GET") {
-    const animals = getAllAnimals(req, res);
-    res.writeHead(200);
-    return res.end(JSON.stringify(animals));
   }
 
   res.writeHead(404, "Metodo invalido");

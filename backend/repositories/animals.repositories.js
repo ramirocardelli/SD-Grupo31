@@ -14,12 +14,11 @@ export const getAnimals = () => {
   }
 };
 
-export const getOneAnimal = (name)  => {
+export const getOneAnimal = (id) => {
   const animals = getAnimals();
-  const animal = animals.find((a) => a.name === name);
-  return animal || null; 
+  const animal = animals.find((a) => a.id === id);
+  return animal || null;
 };
-
 
 export const writeAnimals = (animal) => {
   const resultado = getAnimals();

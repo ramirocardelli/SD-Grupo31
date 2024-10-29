@@ -12,17 +12,17 @@ export const getAllAnimals = () => {
   return result;
 };
 
-export const getAnimal = (name) => {
-  const result = getOneAnimal(name);
+export const getAnimal = (id) => {
+  const result = getOneAnimal(id);
   return result;
-}
+};
 
 //se intenta agregar un animal, preguntando antes si existe, si existiera
 //lanza error, si no se continua con el flujo y se
 //agrega el animal
 export const addAnimal = (name, description) => {
   const animal = {
-    uid: uuidv4(),
+    id: uuidv4(),
     name: name,
     description: description,
   };
@@ -35,7 +35,7 @@ export const addAnimal = (name, description) => {
 
 export const modAnimal = (name, description) => {
   const animal = {
-    uid: uuidv4(),
+    id: uuidv4(),
     name: name,
     description: description,
   };

@@ -1,31 +1,31 @@
 [
   {
-    "uid": "eaf63141-fca2-41c4-a03a-759470b39ae1",
+    "id": "eaf63141-fca2-41c4-a03a-759470b39ae1",
     "name": "Animal 1",
     "description": "Animal 1"
   },
   {
-    "uid": "f611c02c-921f-4b6a-b2ec-84b84af78961",
+    "id": "f611c02c-921f-4b6a-b2ec-84b84af78961",
     "name": "Animal 2",
     "description": "Animal 2"
   },
   {
-    "uid": "272cfd6c-34db-475e-8ef4-86f41c1d5467",
+    "id": "272cfd6c-34db-475e-8ef4-86f41c1d5467",
     "name": "Animal 3",
     "description": "Animal 3"
   },
   {
-    "uid": "a4697a4c-1e60-44e4-814f-d8d7287169c3",
+    "id": "a4697a4c-1e60-44e4-814f-d8d7287169c3",
     "name": "Animal 7",
     "description": "Animal 7 modificado"
   },
   {
-    "uid": "6d38cc21-35a7-41cf-a691-f7d6ffced652",
+    "id": "6d38cc21-35a7-41cf-a691-f7d6ffced652",
     "name": "Animal 33",
     "description": "Animal 33"
   },
   {
-    "uid": "1587a562-548a-4edc-a8ae-66b4c131d858",
+    "id": "1587a562-548a-4edc-a8ae-66b4c131d858",
     "name": "Animal 47",
     "description": "Animal 47"
   }

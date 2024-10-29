@@ -15,27 +15,28 @@ export const getAllCheckpoints = () => {
 export const getCheckpoint = (name) => {
   const result = getOneCheckpoint(name);
   return result;
-}
+};
 
 //se intenta agregar un checkpoint, preguntando antes si existe, si existiera
 //se MODIFICA el checkpoint, si no se continua con el flujo y se
 //agrega el checkpoint
 export const addCheckpoint = (name, description) => {
   const checkpoint = {
-    uuid: uuidv4(),
+    id: uuidv4(),
     name: name,
     description: description,
   };
   if (!checkpointExists(checkpoint.name)) {
     writeCheckpoints(checkpoint);
-  } else { // si ya existe se modifica
+  } else {
+    // si ya existe se modifica
     modifyCheckpoint(checkpoint);
   }
 };
 
 export const modCheckpoint = (name, description) => {
   const checkpoint = {
-    uuid: uuidv4(),
+    id: uuidv4(),
     name: name,
     description: description,
   };
@@ -51,7 +52,6 @@ export const removeCheckpoint = (name) => {
     deleteCheckpoint(name);
   } else throw new Error("no existe checkpoint con ese nombre");
 };
-
 
 //funcion que verifica si el checkpoint existe
 function checkpointExists(name) {

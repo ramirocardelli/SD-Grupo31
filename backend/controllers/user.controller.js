@@ -22,7 +22,7 @@ export const login = (user, pass) => {
 /*
 export const register = (user, pass) => {
   const usuario = {
-    uuid: uuidv4(),
+    id: uuidv4(),
     name: user,
     password: pass,
   };
