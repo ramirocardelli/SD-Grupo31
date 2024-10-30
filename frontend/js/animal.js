@@ -1,4 +1,4 @@
-import AnimalAPIHelper from '../helper/api/api/AnimalAPIHelper.js';
+import AnimalAPIHelper from '../helper/api/AnimalAPIHelper.js';
 import AuthStateHelper from '../helper/state/AuthStateHelper.js';
 
 function showPanel(panelId) {

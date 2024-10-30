@@ -54,16 +54,19 @@ const handleLocation = async () => {
 
   if (path === "/checkpoints") {
     const script = document.createElement("script");
+    script.type = 'module';
     script.src = "../js/checkpoints.js"; 
     document.body.appendChild(script);
   }
   if (path === "/animal") {
     const script = document.createElement("script");
+    script.type = 'module';
     script.src = "../js/animal.js"; 
     document.body.appendChild(script);
   }
   if (path === "/login") {
     const script = document.createElement("script");
+    script.type = 'module';
     script.src = "../js/login.js"; 
     document.body.appendChild(script);
   }

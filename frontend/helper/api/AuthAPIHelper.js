@@ -1,8 +1,9 @@
 import axios from 'axios';
 
 export default class AuthAPIHelper {
-    static async login({ id, password }) {
-        const response = await axios.post('API/login', { id, password });
+    static async login({ username, password }) {
+
+        const response = await axios.post('/API/login', {}, { username, password }); // username y password en header
         return response.data;
     }
 }
