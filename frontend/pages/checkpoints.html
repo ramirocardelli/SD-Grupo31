@@ -30,8 +30,8 @@
                 <h2>Agregar punto de control</h2>
                 <form class="login-form-check">
 
-                    <label for="identificador">Número de punto de control:</label>
-                    <input type="text" id="identificador" name="identificador" required>
+                    <label for="identificador">Id de punto de control (UUID):</label>
+                    <input type="text" id="id" name="id" required>
 
                     <label for="latitud">Coordenadas latitud:</label> <!-- pasar como texto y dps transformar? chequear dps-->
                     <input type="text" id="latitud" name="latitud" required>
@@ -39,7 +39,10 @@
                     <label for="altitud">Coordenadas altitud:</label> <!-- pasar como texto y dps transformar? chequear dps-->
                     <input type="text" id="altitud" name="altitud" required>
 
-                    <div class="button-container check">
+                    <label for="desc">Descripcion:</label> <!-- pasar como texto y dps transformar? chequear dps-->
+                    <input type="text" id="description" name="description" required>
+
+                    <div class="button-container-check">
                         <button type="submit">Agregar</button>
                     </div>  
 
@@ -51,8 +54,8 @@
                 <form class="login-form-check">
                     <h2>Eliminar punto de control</h2>
 
-                    <label for="baja-identificador">Número de punto de control:</label>
-                    <input type="text" id="baja-identificador" name="baja-identificador" required>
+                    <label for="baja-id">Id de punto de control (UUID):</label>
+                    <input type="text" id="baja-id" name="baja-id" required>
 
                     <div class="button-container-check">
                         <button type="submit">Eliminar</button>
@@ -66,11 +69,17 @@
                 <form class="login-form-check">
                     <h2>Modificar punto de control</h2>
 
-                    <label for="modificar-identificador">Número de punto de control:</label>
+                    <label for="modificar-id">Id de punto de control (UUID):</label>
                     <input type="text" id="modificar-id" name="modificar-id" required>
 
-                    <label for="nuevo-nombre">Nuevo nombre:</label> <!-- o coordenadas? chequear tmb-->
-                    <input type="text" id="nuevo-nombre" name="nuevo-nombre" required>
+                    <label for="nueva-lat">Nueva latitud:</label> <!-- texto ver pasar a coordenadas?-->
+                    <input type="text" id="nueva-lat" name="nueva-lat" required>
+
+                    <label for="nueva-alt">Nueva altitud:</label> <!-- texto ver pasar a coordenadas?-->
+                    <input type="text" id="nueva-alt" name="nueva-alt" required>
+
+                    <label for="nueva-desc">Nueva descripcion:</label> <!-- texto ver pasar a coordenadas?-->
+                    <input type="text" id="nueva-desc" name="nueva-desc" required>
                     
                     <div class="button-container-check">
                         <button type="submit">Modificar</button>
