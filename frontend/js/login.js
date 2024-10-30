@@ -9,7 +9,11 @@ async function handleLogin(event) {
         const username = event.target.elements.username.value.trim();
         const password = event.target.elements.password.value.trim();
 
-        const userData = await AuthAPIHelper.login({ username, password }); //enviar solicitud a la API - retorna tokens
+        const headers = {
+            'Authorization': `Basic ${btoa(username + ':' + password)}`
+        };
+
+        const userData = await AuthAPIHelper.login({ username, password }, headers); //enviar solicitud a la API - retorna tokens
             const { accessToken, refreshToken, ...rest } = userData;
             UserStateHelper.setUser(rest);
             AuthStateHelper.setAuth({ accessToken, refreshToken }) //almacenar access token
