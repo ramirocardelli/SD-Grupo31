@@ -48,7 +48,7 @@ const server = http.createServer((req, res) => {
   });
 
   req.on("end", () => {
-    console.log("[DEBUG]: "+JSON.stringify({path:req.path,url:req.url,metodo:req.method,body:body}))
+    console.log("[DEBUG]: " + JSON.stringify({ path: req.path, url: req.url, metodo: req.method, body: body }))
     const parsedBody = body != "" ? JSON.parse(body) : null;
 
     // Rutas públicas
@@ -105,7 +105,14 @@ function tokenIsValid(req) {
 // Asumimos que los datos de logeo vienen el el body de la solicitud
 // Igualmente esto no es correcto, deberia venir en el header.
 function onLogin(req, res, body, pathArray) {
-  const base64Credentials = req.headers.authorization.split(" ")[1] || "";
+
+  const authHeader = req.headers['authorization'];
+
+  if (!authHeader) {
+    return res.status(401).json({ message: 'No se proporcionó encabezado de autorización' });
+  }
+
+  const base64Credentials = authHeader.split(' ')[1];
   const credentials = Buffer.from(base64Credentials, "base64")
     .toString("ascii")
     .split(":");
