@@ -14,27 +14,6 @@ async function handleLogin(event) {
             UserStateHelper.setUser(rest);
             AuthStateHelper.setAuth({ accessToken, refreshToken }) //almacenar access token
             window.location.href = '../pages/index.html'
-
-        /*
-            const response = await axios.post('http://localhost:3000/login', { // Enviar solicitud API 
-            username,
-            password
-        }, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        const { accessToken, refreshToken } = response.data; // extrae tokens de respuesta
-
-        // Almacenar los tokens en el almacenamiento local 
-        localStorage.setItem('accessToken', accessToken);
-        localStorage.setItem('refreshToken', refreshToken);
-
-        alert("Inicio de sesión exitoso");
-        window.location.href = '/';  
-        */
-
     } catch (error) {
         alert("Usuario o contraseña incorrectos");
     }
