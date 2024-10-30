@@ -12,11 +12,11 @@ async function handleLogin(event) {
         const userData = await AuthAPIHelper.login({ username, password }); //enviar solicitud a la API - retorna tokens
             const { accessToken, refreshToken, ...rest } = userData;
             UserStateHelper.setUser(rest);
-            AuthStateHelper.setAuth({ accessToken, refreshToken })
+            AuthStateHelper.setAuth({ accessToken, refreshToken }) //almacenar access token
             window.location.href = '../pages/index.html'
 
         /*
-            const response = await axios.post('http://localhost:3000/login', { // Enviar solicitud API usando axios
+            const response = await axios.post('http://localhost:3000/login', { // Enviar solicitud API 
             username,
             password
         }, {
@@ -32,7 +32,7 @@ async function handleLogin(event) {
         localStorage.setItem('refreshToken', refreshToken);
 
         alert("Inicio de sesión exitoso");
-        window.location.href = '/'; // Redirige al home o cualquier otra ruta 
+        window.location.href = '/';  
         */
 
     } catch (error) {
