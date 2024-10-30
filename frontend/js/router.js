@@ -23,6 +23,12 @@ const cssRoutes = {
   "/checkpoints": "../css/checkpoints_style.css",
 };
 
+const jsRoutes = {
+  "/login": "../css/login.js",
+  "/animal": "../css/animal.js",
+  "/checkpoints": "../css/checkpoints.js",
+};
+
 const handleLocation = async () => {
   const path = window.location.pathname;
   const route = routes[path] || routes[404]; // Usar 404 si no se encuentra la ruta
@@ -39,24 +45,28 @@ const handleLocation = async () => {
     mainCss.href = "../css/styles.css";
     document.head.appendChild(mainCss)
 
-  // Append a CSS file to the head
+  // Agrega el css especifico de cada pagina
   const cssRoute = cssRoutes[path] || cssRoutes[404];
   const css = document.createElement("link");
   css.rel = "stylesheet";
   css.href = cssRoute;
   document.head.appendChild(css);
 
-    // Agregar el script dinámicamente si se carga checkpoints.html
-    if (path === "/checkpoints") {
-      const script = document.createElement("script");
-      script.src = "../js/checkpoints.js"; 
-      document.body.appendChild(script);
-    }
-    if (path === "/animal") {
-      const script = document.createElement("script");
-      script.src = "../js/animal.js"; 
-      document.body.appendChild(script);
-    }
+  if (path === "/checkpoints") {
+    const script = document.createElement("script");
+    script.src = "../js/checkpoints.js"; 
+    document.body.appendChild(script);
+  }
+  if (path === "/animal") {
+    const script = document.createElement("script");
+    script.src = "../js/animal.js"; 
+    document.body.appendChild(script);
+  }
+  if (path === "/login") {
+    const script = document.createElement("script");
+    script.src = "../js/login.js"; 
+    document.body.appendChild(script);
+  }
     
 };
 
