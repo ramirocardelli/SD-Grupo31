@@ -41,6 +41,7 @@ export function getPosiciones() {
 //El mensaje esperado es un checkpoint ID y un vector de animales que pertenecen a el
 client.on("message", (topic, message) => {
   // message is Buffer
+  console.log("[DEBUG]: "+JSON.stringify({mensaje:message,topico:topic}))
   if (topic === "checkpoint") {
     //console.log(message.toString());
     actualizarPosicion(message.toString());

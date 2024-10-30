@@ -48,6 +48,7 @@ const server = http.createServer((req, res) => {
   });
 
   req.on("end", () => {
+    console.log("[DEBUG]: "+JSON.stringify({path:req.path,url:req.url,metodo:req.method,body:body}))
     const parsedBody = body != "" ? JSON.parse(body) : null;
 
     // Rutas públicas
