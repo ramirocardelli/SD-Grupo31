@@ -8,15 +8,7 @@ export const login = (username, password) => {
     username: username,
     password: password,
   };
-  // pongo esto para probar la interaccion de la ui con el back 
-  if (username === 'admin' && password === 'admin') {
-    return res.status(200).json({ message: 'Inicio de sesión exitoso' });
-} else {
-    return res.status(401).json({ message: 'Usuario o contraseña incorrectos' });
-}
-
   // TODO: Esto está mal. "registrado" es un boolean, no tiene atributo password.
-  /*
   const registrado = getUser(usuario);
   if (registrado) {
     if (registrado.password != password)
@@ -24,7 +16,6 @@ export const login = (username, password) => {
   } else {
     throw new Error("usuario inexistente");
   }
-    */
 };
 
 // No tenemos que registrar usuarios
