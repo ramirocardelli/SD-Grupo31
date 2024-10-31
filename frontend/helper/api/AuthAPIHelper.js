@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 export default class AuthAPIHelper {
     static async login({ username, password }) {
 

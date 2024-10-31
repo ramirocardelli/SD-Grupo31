@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 export default class AnimalAPIHelper {
     static async requestAnimal(action, animalData, accessToken) {
         try {
