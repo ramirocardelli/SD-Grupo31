@@ -102,8 +102,7 @@ function tokenIsValid(req) {
   return;
 }
 
-// Asumimos que los datos de logeo vienen el el body de la solicitud
-// Igualmente esto no es correcto, deberia venir en el header.
+// Credenciales vienen en el header en formato 64.
 function onLogin(req, res, body, pathArray) {
 
   const authHeader = req.headers['authorization'];

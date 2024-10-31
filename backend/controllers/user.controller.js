@@ -8,7 +8,7 @@ export const login = (username, password) => {
     username: username,
     password: password,
   };
-  // TODO: Esto está mal. "registrado" es un boolean, no tiene atributo password.
+
   const registrado = getUser(usuario);
   if (registrado) {
     if (registrado.password != password)
@@ -37,7 +37,6 @@ export const register = (username, pass) => {
 };
 */
 
-// TODO, las contraseñas deberían estar hasheadas
 function getUser(user) {
   const users = getUsers();
 
