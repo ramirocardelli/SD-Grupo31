@@ -111,6 +111,10 @@ function onLogin(req, res, body, pathArray) {
     return res.status(401).json({ message: 'No se proporcionó encabezado de autorización' });
   }
 
+  if (pathArray.length>1){
+    return res.status(401).json({ message: 'Path equivocado' });
+  }
+
   const base64Credentials = authHeader.split(' ')[1];
   const credentials = Buffer.from(base64Credentials, "base64")
     .toString("ascii")
