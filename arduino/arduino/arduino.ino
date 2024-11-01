@@ -6,9 +6,9 @@
 #include <BLEAdvertisedDevice.h>
 
 // Constants
-const char* ssid = "Asustado potter??";
-const char* password = "niunpoco!";
-const char* mqtt_server = "192.168.153.90";
+const char* ssid = "Fibertel WiFi704 2.4GHz";
+const char* password = "00437550930";
+const char* mqtt_server = "192.168.0.247";
 const int mqtt_port = 1883;
 const char* mqtt_user = "admin";    // Usuario para MQTT
 const char* mqtt_password = "admin"; // Contraseña para MQTT
@@ -60,40 +60,47 @@ void loop() {
   // Scan for Bluetooth devices
   Serial.println("Scanning for BLE devices...");
   BLEScanResults *foundDevices = pBLEScan->start(scanTime, false);
+  int totalDevices = foundDevices->getCount();
+  int batchSize = 10;
 
-  // Prepare the message
-  String message = "{\n  checkpointID: \"" + macAddress + "\",\n  animals: [\n";
+  for (int batchStart = 0; batchStart < totalDevices; batchStart += batchSize) {
+    // Preparar el mensaje para la tanda actual
+    String message = "{\n  checkpointID: \"" + macAddress + "\",\n  animals: [\n";
 
-  // Loop through found devices
-  for (int i = 0; i < foundDevices->getCount(); i++) {
-    BLEAdvertisedDevice device = foundDevices->getDevice(i);
-    String deviceAddress = device.getAddress().toString().c_str();
-    int rssi = device.getRSSI(); // Get the RSSI value
+    // Agregar dispositivos en la tanda actual
+    for (int i = batchStart; i < min(batchStart + batchSize, totalDevices); i++) {
+      BLEAdvertisedDevice device = foundDevices->getDevice(i);
+      String deviceAddress = device.getAddress().toString().c_str();
+      int rssi = device.getRSSI(); // Obtener el valor de RSSI
 
-    // Add device info to the message
-    message += "    { id: '" + deviceAddress + "', rssi: " + String(rssi) + " }";
-    
-    if (i < foundDevices->getCount() - 1) {
-      message += ",\n"; // New line for the next device
+      // Añadir información del dispositivo al mensaje
+      message += "    { id: '" + deviceAddress + "', rssi: " + String(rssi) + " }";
+      
+      // Agregar coma y nueva línea para cada dispositivo excepto el último
+      if (i < min(batchStart + batchSize, totalDevices) - 1) {
+        message += ",\n";
+      }
     }
+
+    message += "\n  ]\n}";
+
+    // Publicar el mensaje en el tema MQTT si está conectado
+    if (client.connected()) {
+      client.publish("checkpoint", message.c_str());
+      Serial.println("Published to MQTT:");
+      Serial.println(message);
+    } else {
+      Serial.println("MQTT connection lost. Attempting to reconnect...");
+      if (client.connect("ESP32Client")) {
+        Serial.println("Reconnected to MQTT");
+      }
+    }
+
+    // Esperar un segundo entre tandas para evitar sobrecargar el cliente MQTT
+    delay(1000);
   }
 
-  message += "\n  ]\n}";
-
-  pBLEScan->clearResults(); // Clear scan results
-
-  // Publish the list of devices to the MQTT topic
-  if (client.connected()) {
-    client.publish("checkpoint", message.c_str()); // Publicar en el tema 'devices'
-    Serial.println("Published to MQTT:");
-    Serial.println(message);
-  } else {
-    Serial.println("MQTT connection lost. Attempting to reconnect...");
-    if (client.connect("ESP32Client")) {
-      Serial.println("Reconnected to MQTT");
-    }
-  }
-
-  // Wait 10 seconds before next scan
+  // Limpiar los resultados del escaneo y esperar 10 segundos antes del siguiente escaneo
+  pBLEScan->clearResults();
   delay(10000);
 }

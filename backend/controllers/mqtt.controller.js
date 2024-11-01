@@ -6,7 +6,7 @@ const options = {
   password: "xd",
   clientID: "adminID",
 };
-const client = mqtt.connect("mqtt://192.168.153.90:1883", options);
+const client = mqtt.connect("mqtt://192.168.0.247:1883", options);
 const umbral = -50;
 //mapa = {checkpoint.id,[vector de animales]}
 const posiciones = new Map();
@@ -42,8 +42,9 @@ export function getPosiciones() {
 //El mensaje esperado es un checkpoint ID y un vector de animales que pertenecen a el
 client.on("message", (topic, message) => {
   // message is Buffer
+  const messageString = message.toString(); // para que salgan los caracteres como ascii
   console.log(
-    "[DEBUG]: " + JSON.stringify({ mensaje: message, topico: topic })
+    "[DEBUG]: " + JSON.stringify({ mensaje: messageString, topico: topic })
   );
   if (topic === "checkpoint") {
     //console.log(message.toString());
