@@ -45,7 +45,7 @@ export default class LoginPage {
       const { accessToken, refreshToken, ...rest } = userData;
       UserStateHelper.setUser(rest);
       AuthStateHelper.setAuth({ accessToken, refreshToken }); //almacenar access token
-      window.location.href = "../pages/index.html";
+      window.location.href = "../";
     } catch (error) {
       console.log(error);
       // alert("Usuario o contraseña incorrectos");
