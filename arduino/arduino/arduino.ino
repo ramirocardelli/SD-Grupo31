@@ -20,6 +20,8 @@ const int scanTime = 10; // In seconds
 void setup() {
   Serial.begin(115200);
 
+   macAddress = WiFi.macAddress();
+
   // Connect to Wi-Fi
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
@@ -51,8 +53,10 @@ void loop() {
   Serial.println("Scanning for BLE devices...");
   BLEScanResults *foundDevices = pBLEScan->start(scanTime, false);
   
+
+
   // Prepare the message
-  String message = "{\n  checkpointID: \"" + checkpointID + "\",\n  animals: [\n";
+  String message = "{\n  checkpointID: \"" + macAddress + "\",\n  animals: [\n";
 
   // Loop through found devices
   for (int i = 0; i < foundDevices->getCount(); i++) {
