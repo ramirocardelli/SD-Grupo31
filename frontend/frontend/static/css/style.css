@@ -1,3 +1,9 @@
+@import url("animal_style.css");
+@import url("404_style.css");
+@import url("checkpoints_style.css");
+@import url("home_style.css");
+@import url("login_style.css");
+
 html,
 body {
     font-family: sans-serif;
@@ -23,11 +29,11 @@ body {
 }
 
 #main-page {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* sidebar principal */
@@ -62,3 +68,4 @@ body {
     margin: 0.5rem;
     display: inline-block;
 }
+
