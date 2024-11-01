@@ -49,16 +49,27 @@ void setup() {
 void loop() {
   // Scan for Bluetooth devices
   Serial.println("Scanning for BLE devices...");
-  BLEScanResults * foundDevices = pBLEScan->start(scanTime, false);
-  String devices = "";
+  BLEScanResults *foundDevices = pBLEScan->start(scanTime, false);
+  
+  // Prepare the message
+  String message = "{\n  checkpointID: \"" + checkpointID + "\",\n  animals: [\n";
 
   // Loop through found devices
-for (int i = 0; i < foundDevices->getCount(); i++) {
+  for (int i = 0; i < foundDevices->getCount(); i++) {
     BLEAdvertisedDevice device = foundDevices->getDevice(i);
-    devices += "Device " + String(i + 1) + ": " + device.getName().c_str();
-    devices += " (" + String(device.getAddress().toString().c_str()) + ")\n";
+    String deviceName = device.getName().c_str();
+    String deviceAddress = device.getAddress().toString().c_str();
+    int rssi = device.getRSSI(); // Get the RSSI value
+
+    // Add device info to the message
+    message += "    { id: '" + deviceAddress + "', rssi: " + String(rssi) + " }";
+    
+    if (i < foundDevices->getCount() - 1) {
+      message += ",\n"; // New line for the next device
+    }
   }
-  
+
+  message += "\n  ]\n}";
   pBLEScan->clearResults(); // Clear scan results
 
   // Publish the list of devices to the MQTT topic
