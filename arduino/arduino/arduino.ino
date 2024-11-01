@@ -1,60 +1,78 @@
-#include <BluetoothSerial.h>
 #include <WiFi.h>
 #include <PubSubClient.h>
+#include <BLEDevice.h>
+#include <BLEUtils.h>
+#include <BLEScan.h>
+#include <BLEAdvertisedDevice.h>
 
-BluetoothSerial SerialBT;
+// Constants
+const char* ssid = "XXXXXXX";
+const char* password = "XXXXXXXX";
+const char* mqtt_server = "192.168.0.142";
+const int mqtt_port = 1883;
+
 WiFiClient espClient;
 PubSubClient client(espClient);
 
-// Configuración WiFi y MQTT
-const char* ssid = "TuSSID";
-const char* password = "TuPassword";
-const char* mqtt_server = "IP_Raspberry_Pi";
+BLEScan* pBLEScan;
+const int scanTime = 10; // In seconds
 
 void setup() {
   Serial.begin(115200);
-  
-  // Configuración Bluetooth
-  SerialBT.begin("ArduinoBT"); // Nombre del dispositivo Bluetooth
-  Serial.println("Bluetooth iniciado. Esperando conexión...");
-  
-  // Configuración WiFi
+
+  // Connect to Wi-Fi
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
-    Serial.print(".");
+    Serial.println("Connecting to WiFi...");
   }
-  Serial.println("Conectado a WiFi");
+  Serial.println("Connected to WiFi");
 
-  // Configuración MQTT
-  client.setServer(mqtt_server, 1883);
-  reconnectMQTT();
-}
-
-void reconnectMQTT() {
+  // Connect to MQTT broker
+  client.setServer(mqtt_server, mqtt_port);
   while (!client.connected()) {
-    if (client.connect("ArduinoClient")) {
-      Serial.println("Conectado al servidor MQTT");
+    Serial.println("Connecting to MQTT...");
+    if (client.connect("ESP32Client")) {
+      Serial.println("Connected to MQTT");
     } else {
-      delay(5000);
+      Serial.print("Failed with state ");
+      Serial.print(client.state());
+      delay(2000);
     }
   }
+
+  // Initialize BLE
+  BLEDevice::init("");
+  pBLEScan = BLEDevice::getScan(); // Create BLE scan object
 }
 
 void loop() {
-  if (!client.connected()) {
-    reconnectMQTT();
+  // Scan for Bluetooth devices
+  Serial.println("Scanning for BLE devices...");
+  BLEScanResults * foundDevices = pBLEScan->start(scanTime, false);
+  String devices = "";
+
+  // Loop through found devices
+for (int i = 0; i < foundDevices->getCount(); i++) {
+    BLEAdvertisedDevice device = foundDevices->getDevice(i);
+    devices += "Device " + String(i + 1) + ": " + device.getName().c_str();
+    devices += " (" + String(device.getAddress().toString().c_str()) + ")\n";
   }
-  client.loop();
+  
+  pBLEScan->clearResults(); // Clear scan results
 
-  // Enviar datos desde el Bluetooth
-  if (SerialBT.available()) {
-    String data = SerialBT.readString();
-    Serial.println("Datos recibidos por Bluetooth: " + data);
-
-    // Envía datos a la Raspberry Pi
-    if (client.publish("sensor/datos", data.c_str())) {
-      Serial.println("Datos enviados a Raspberry Pi");
+  // Publish the list of devices to the MQTT topic
+  if (client.connected()) {
+    client.publish("devices", devices.c_str());
+    Serial.println("Published to MQTT:");
+    Serial.println(devices);
+  } else {
+    Serial.println("MQTT connection lost. Attempting to reconnect...");
+    if (client.connect("ESP32Client")) {
+      Serial.println("Reconnected to MQTT");
     }
   }
+
+  // Wait 10 seconds before next scan
+  delay(10000);
 }
