@@ -34,8 +34,21 @@ connectToBroker();
 const app = express();
 app.use(cors());
 
+const setCorsHeaders = (res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PATCH, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+};
+
 // Raíz de la API
 const server = http.createServer((req, res) => {
+  
+  if (req.method === "OPTIONS") {
+    setCorsHeaders(res);
+    res.writeHead(204); // No Content
+    return res.end();
+  }
+  
   // Sea el tipo de solicitud que sea, siempre se intentara primero, reeconstruir el cuerpo de la solicitud
   let body = "";
 
@@ -48,19 +61,13 @@ const server = http.createServer((req, res) => {
   });
 
   req.on("end", () => {
+    setCorsHeaders(res); // Configura los encabezados CORS para todas las respuestas
+    res.setHeader("Content-Type", "application/json");
     console.log("[DEBUG]: " + JSON.stringify({ path: req.path, url: req.url, metodo: req.method, body: body }))
     const parsedBody = body != "" ? JSON.parse(body) : null;
 
     // Rutas públicas
     if (pathArray[0] === "login") {
-      if (req.method === "OPTIONS") {
-        res.writeHead(200, {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "GET,POST,DELETE,PATCH,OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type, Authorization",
-        });
-        return res.end();
-      }
       onLogin(req, res, parsedBody, pathArray);
       return;
     }
@@ -79,17 +86,11 @@ const server = http.createServer((req, res) => {
     }
 
     // Rutas privadas
+    pathArray.shift(); //asi saco /API
 
     // El sistema deberá permitir a los Administradores dar de alta, baja, modificar y mostrar Animales.
     if (pathArray[0] === "animals") {
-      if (req.method === "OPTIONS") {
-        res.writeHead(200, {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "GET,POST,DELETE,PATCH,OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type, Authorization",
-        });
-        return res.end();
-      }
+      console.log("entre al path array animals");
       onAnimals(req, res, parsedBody, pathArray);
       return;
     }
@@ -162,12 +163,7 @@ function onLogin(req, res, body, pathArray) {
         refreshToken: refreshToken(username),
       };
 
-      res.writeHead(200, {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET,POST,DELETE,PATCH,OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
-      });
-
+      res.writeHead(200);
       return res.end(JSON.stringify(tokens));
     } catch (e) {
       res.writeHead(401, e.message);
@@ -242,8 +238,8 @@ function onRefresh(req, res, body, pathArray) {
 }
 
 function onAnimals(req, res, body, pathArray) {
-  // Solo delete, patch y get vienen con id
 
+  // Solo delete, patch y get vienen con id
   // Si el get viene sin id, devolvemos todos los animales
   if (!pathArray[1]) {
     if (req.method === "GET") {
@@ -254,7 +250,6 @@ function onAnimals(req, res, body, pathArray) {
   }
 
   // Si el get viene con el id, devolvemos solo ese animal
-
   // Para obtener la posición de todos los animales
   if (pathArray[1] === "position") {
     if (req.method === "GET") {
@@ -331,6 +326,7 @@ function onAnimals(req, res, body, pathArray) {
     }
 
     try {
+      console.log("entre antes de addAnimal");
       addAnimal(id, name, description);
       res.writeHead(200, "Animal añadido con éxito");
       return res.end();

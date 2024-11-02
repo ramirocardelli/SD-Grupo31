@@ -1,7 +1,9 @@
 import { readFileSync, writeFileSync, existsSync } from "fs";
 import "dotenv/config";
+import path from 'path';
 
-const FILE_PATH = process.env.ANIMREP;
+const FILE_PATH = path.resolve(process.env.ANIMREP);
+console.log(FILE_PATH);
 
 export const getAnimals = () => {
   const fileExist = existsSync(FILE_PATH);
@@ -23,7 +25,11 @@ export const getOneAnimal = (id) => {
 export const writeAnimals = (animal) => {
   const resultado = getAnimals();
   resultado.push(animal);
-  writeFileSync(FILE_PATH, JSON.stringify(resultado, null, 2));
+  try {
+    writeFileSync(FILE_PATH, JSON.stringify(resultado, null, 2));
+  } catch (error) {
+    console.error("Error al escribir el archivo:", error);
+  }
 };
 
 export const deleteAnimal = (id) => {
