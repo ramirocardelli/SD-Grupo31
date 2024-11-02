@@ -48,11 +48,19 @@ const server = http.createServer((req, res) => {
   });
 
   req.on("end", () => {
-    console.log("[DEBUG]: "+JSON.stringify({path:req.path,url:req.url,metodo:req.method,body:body}))
+    console.log("[DEBUG]: " + JSON.stringify({ path: req.path, url: req.url, metodo: req.method, body: body }))
     const parsedBody = body != "" ? JSON.parse(body) : null;
 
     // Rutas públicas
     if (pathArray[0] === "login") {
+      if (req.method === "OPTIONS") {
+        res.writeHead(200, {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET,POST,DELETE,PATCH,OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        });
+        return res.end();
+      }
       onLogin(req, res, parsedBody, pathArray);
       return;
     }
@@ -111,7 +119,7 @@ function onLogin(req, res, body, pathArray) {
     return res.status(401).json({ message: 'No se proporcionó encabezado de autorización' });
   }
 
-  if (pathArray.length>1){
+  if (pathArray.length > 1) {
     return res.status(401).json({ message: 'Path equivocado' });
   }
 
@@ -146,7 +154,12 @@ function onLogin(req, res, body, pathArray) {
         refreshToken: refreshToken(username),
       };
 
-      res.writeHead(200);
+      res.writeHead(200, {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET,POST,DELETE,PATCH,OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      });
+
       return res.end(JSON.stringify(tokens));
     } catch (e) {
       res.writeHead(401, e.message);
