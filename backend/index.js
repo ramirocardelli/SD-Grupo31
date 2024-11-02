@@ -32,13 +32,12 @@ connectToBroker();
 
 // usamos express y cors para poder comunicar back/front
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
-const setCorsHeaders = (res) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PATCH, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-};
 
 // Raíz de la API
 const server = http.createServer((req, res) => {
@@ -125,11 +124,11 @@ function onLogin(req, res, body, pathArray) {
   const authHeader = req.headers['authorization'];
 
   if (!authHeader) {
-    return res.status(401).json({ message: 'No se proporcionó encabezado de autorización' });
+    return res.writeHead(401,'No se proporcionó encabezado de autorización');
   }
 
   if (pathArray.length > 1) {
-    return res.status(401).json({ message: 'Path equivocado' });
+    return res.writeHead(401,'Path equivocado');
   }
 
   const base64Credentials = authHeader.split(' ')[1];
