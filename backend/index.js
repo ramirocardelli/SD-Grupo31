@@ -82,6 +82,14 @@ const server = http.createServer((req, res) => {
 
     // El sistema deberá permitir a los Administradores dar de alta, baja, modificar y mostrar Animales.
     if (pathArray[0] === "animals") {
+      if (req.method === "OPTIONS") {
+        res.writeHead(200, {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET,POST,DELETE,PATCH,OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        });
+        return res.end();
+      }
       onAnimals(req, res, parsedBody, pathArray);
       return;
     }
