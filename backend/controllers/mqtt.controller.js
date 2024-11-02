@@ -62,6 +62,7 @@ function actualizarPosicion(mensaje) {
     const vec = []
     animalesRecibidos.forEach((animal) => {
       if (animalExists(animal.id) && animal.rssi >= umbral) {
+        deleteAnimalInstanceFromCheckpoints(animal)
         vec.push(animal);
       } else {
         if (!animalExists(animal.id) && !avilableDevices.includes(animal.id)){
@@ -79,6 +80,9 @@ function actualizarPosicion(mensaje) {
   } catch (e) {}
 }
 
+function deleteAnimalInstanceFromCheckpoints(animal){
+//TODO antes de aniadir el animal chequear que no este en otro checkpoint, y si estuviera eliminarlo
+}
 export function getAvilableAnimals(){
   return avilableDevices
 }

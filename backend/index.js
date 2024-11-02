@@ -22,7 +22,6 @@ import {
 } from "./controllers/mqtt.controller.js";
 import express from "express";
 import cors from "cors";
-import path from "path";
 
 const HTTP_PORT = process.env.PORT;
 const secret = process.env.SECRET;
@@ -125,11 +124,11 @@ function onLogin(req, res, body, pathArray) {
   const authHeader = req.headers['authorization'];
 
   if (!authHeader) {
-    return res.status(401).json({ message: 'No se proporcionó encabezado de autorización' });
+    return res.status(401, 'No se proporcionó encabezado de autorización' );
   }
 
   if (pathArray.length > 1) {
-    return res.status(401).json({ message: 'Path equivocado' });
+    return res.status(401,'Path equivocado');
   }
 
   const base64Credentials = authHeader.split(' ')[1];
