@@ -6,9 +6,9 @@
 #include <BLEAdvertisedDevice.h>
 
 // Constants
-const char* ssid = "Fibertel WiFi704 2.4GHz";
-const char* password = "00437550930";
-const char* mqtt_server = "192.168.0.247";
+const char* ssid = "Personal-C0C";
+const char* password = "3FB3C12C0C";
+const char* mqtt_server = "192.168.0.110";
 const int mqtt_port = 1883;
 const char* mqtt_user = "admin";    // Usuario para MQTT
 const char* mqtt_password = "admin"; // Contraseña para MQTT
@@ -65,7 +65,7 @@ void loop() {
 
   for (int batchStart = 0; batchStart < totalDevices; batchStart += batchSize) {
     // Preparar el mensaje para la tanda actual
-    String message = "{\n  checkpointID: \"" + macAddress + "\",\n  animals: [\n";
+    String message = "{\n  'checkpointID': '" + macAddress + "',\n  'animals': [\n";
 
     // Agregar dispositivos en la tanda actual
     for (int i = batchStart; i < min(batchStart + batchSize, totalDevices); i++) {
@@ -74,7 +74,7 @@ void loop() {
       int rssi = device.getRSSI(); // Obtener el valor de RSSI
 
       // Añadir información del dispositivo al mensaje
-      message += "    { id: '" + deviceAddress + "', rssi: " + String(rssi) + " }";
+      message += "    { 'id': '" + deviceAddress + "', 'rssi': " + String(rssi) + " }";
       
       // Agregar coma y nueva línea para cada dispositivo excepto el último
       if (i < min(batchStart + batchSize, totalDevices) - 1) {

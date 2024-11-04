@@ -36,10 +36,7 @@ export function connectToBroker() {
 }
 
 client.on("message", (topic, message) => {
-  const messageString = message.toString(); // para que salgan los caracteres como ascii
-  console.log(
-    "[DEBUG]: " + JSON.stringify(messageString)
-  );
+  const messageString = message.toString().replaceAll("'",'"'); // para que salgan los caracteres como ascii
   if (topic === "checkpoint") {
     actualizarPosicion(messageString);
   }
@@ -53,6 +50,7 @@ client.on("error", (err) => {
 function actualizarPosicion(mensaje) {
   try {
     mensaje = JSON.parse(mensaje);
+    console.log("[DEBUG]: " + mensaje);
     const animalesRecibidos = mensaje?.animals;
     const vec = []
 
