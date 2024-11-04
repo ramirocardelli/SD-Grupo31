@@ -89,5 +89,8 @@ export function getPosiciones() {
 }
 //funcion para obtener los animales registrables
 export function getAvilableAnimals(){
-  return avilableDevices
+  const obj={
+    devices:avilableDevices
+  }
+  return obj
 }
