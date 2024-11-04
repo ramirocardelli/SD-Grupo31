@@ -19,6 +19,7 @@ import { login } from "./controllers/user.controller.js";
 import {
   connectToBroker,
   getPosiciones,
+  getAvilableAnimals
 } from "./controllers/mqtt.controller.js";
 import express from "express";
 import cors from "cors";
@@ -54,6 +55,7 @@ const server = http.createServer((req, res) => {
   // Separamos el path para poder obtener la direccion principal y el recurso
   const pathArray = req.url.split("/");
   pathArray.shift();
+  pathArray.shift(); //asi saco /API
 
   req.on("data", (chunk) => {
     body = body + chunk;
@@ -85,7 +87,11 @@ const server = http.createServer((req, res) => {
     }
 
     // Rutas privadas
-    pathArray.shift(); //asi saco /API
+
+    if (pathArray[0]=== "availableDevices"){
+      onAvilableDevices(req,res,pathArray)
+      return;
+    }
 
     // El sistema deberá permitir a los Administradores dar de alta, baja, modificar y mostrar Animales.
     if (pathArray[0] === "animals") {
@@ -140,8 +146,8 @@ function onLogin(req, res, body, pathArray) {
   const password = credentials[1];
 
   // verificar que login no venga con id
-  if (pathArray[1] === "id") {
-    res.writeHead(404, "Método invalido");
+  if (pathArray.length > 1 ) {
+    res.writeHead(404, "Path invalido");
     return res.end();
   }
 
@@ -170,20 +176,6 @@ function onLogin(req, res, body, pathArray) {
     }
   }
 
-  // No hay registro, lo comento por si llegamos a agregarlo
-  /*
-  if (req.method === "POST") {
-    try {
-      register(username, password);
-      res.writeHead(200);
-      return res.end();
-    } catch (e) {
-      res.writeHead(401, e.message);
-      return res.end();
-    }
-  }
-  */
-
   res.writeHead(404, "Método invalido");
   return res.end();
 }
@@ -209,8 +201,8 @@ function onRefresh(req, res, body, pathArray) {
   const refreshToken = req.headers["authorization"]?.split(" ")[1];
 
   // verificar que refresh no venga con id
-  if (pathArray[1] === "id") {
-    res.writeHead(404, "Método invalido");
+  if (pathArray.length > 1) {
+    res.writeHead(404, "Path invalido");
     return res.end();
   }
 
@@ -234,6 +226,21 @@ function onRefresh(req, res, body, pathArray) {
     res.writeHead(401, e.message);
     return res.end();
   }
+}
+
+function onAvilableDevices(req,res,pathArray){
+  if (pathArray.length > 1) {
+    res.writeHead(404, "Path invalido");
+    return res.end();
+  }
+  try{
+    res.writeHead(200)
+    res.end(JSON.stringify(getAvilableAnimals()));
+  }catch(e){
+    res.writeHead(401, e.message);
+    return res.end();
+  }
+
 }
 
 function onAnimals(req, res, body, pathArray) {
