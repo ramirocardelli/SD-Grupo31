@@ -37,10 +37,23 @@ export default class AnimalAPIHelper {
                 default:
                     throw new Error('Acción no válida');
             }
-            return response.data; // Devolver la respuesta de la API
+
+            console.log('Successful API response:', response);
+
+            return {
+                status: response.status,
+                statusText: response.statusText,
+                data: response.data,
+                ok: true // Indica que la solicitud fue exitosa
+            };
         } catch (error) {
             console.error('Error en la solicitud de animales:', error);
-            throw error;
+            return {
+                status: error.response?.status || 500,
+                statusText: error.response?.statusText || 'Error en la solicitud',
+                data: error.response?.data,
+                ok: false // Indica que hubo un error
+            };
         }
     }
 }

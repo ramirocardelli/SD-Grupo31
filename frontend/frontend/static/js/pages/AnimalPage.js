@@ -33,9 +33,9 @@ export default class AnimalPage {
             //Manda POST a la API
             const response = await AnimalAPIHelper.handleAnimal('post', animalData, accessToken);
 
-            if (response.status === 200) { //codigo de exito
+            if (response.ok) { //codigo de exito
                 alert("Animal registrado exitosamente.");
-                event.target.form.reset(); // Limpiar el formulario
+                event.target.reset(); // Limpiar el formulario
             } else {
                 alert("Error al registrar el animal: " + response.statusText);
             }
@@ -59,10 +59,11 @@ export default class AnimalPage {
 
             //Manda DELETE a la API
             const response = await AnimalAPIHelper.handleAnimal('delete', animalData, accessToken);
+            console.log('Response from API:', response);
 
-            if (response.status === 200) { //codigo de exito
+            if (response.ok) { //codigo de exito
                 alert("Animal eliminado exitosamente.");
-                event.target.form.reset();
+                event.target.reset();
             } else {
                 alert("Error al eliminar el animal: " + response.statusText);
             }
@@ -91,14 +92,13 @@ export default class AnimalPage {
             //Manda PATCH a la API
             const response = await AnimalAPIHelper.handleAnimal('patch', animalData, accessToken);
 
-            if (response.status === 200) { //codigo de exito
+            if (response.ok) { //codigo de exito
                 alert("Animal modificado exitosamente.");
-                event.target.form.reset(); // Limpiar el formulario
+                event.target.reset(); // Limpiar el formulario
             } else {
                 alert("Error al modificar el animal: " + response.statusText);
             }
         } catch (error) {
-            console.error('Error al modificar el animal:', error);
             alert("Ocurrió un error al modificar el animal.");
         }
     }
