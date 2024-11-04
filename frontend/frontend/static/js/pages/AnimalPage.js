@@ -28,10 +28,10 @@ export default class AnimalPage {
             };
 
             //debug
-            console.log("Data del animal a mandar: "+ animalData.id + animalData.name + animalData.description);
+            console.log("Data del animal a mandar: " + animalData.id + animalData.name + animalData.description);
 
             //Manda POST a la API
-            const response = await AnimalAPIHelper.createAnimal('post', animalData, accessToken);
+            const response = await AnimalAPIHelper.handleAnimal('post', animalData, accessToken);
 
             if (response.status === 200) { //codigo de exito
                 alert("Animal registrado exitosamente.");
@@ -45,8 +45,71 @@ export default class AnimalPage {
         }
     }
 
+    //SEND BAJA a la API (DELETE)
+    async bajaAnimal(event) {
+        try {
+            event.preventDefault();
+
+            const animalId = event.target.elements.animalIdBaja.value.trim();
+            const accessToken = AuthStateHelper.getAccessToken();
+
+            const animalData = {
+                id: animalId,
+            };
+
+            //Manda DELETE a la API
+            const response = await AnimalAPIHelper.handleAnimal('delete', animalData, accessToken);
+
+            if (response.status === 200) { //codigo de exito
+                alert("Animal eliminado exitosamente.");
+                event.target.form.reset();
+            } else {
+                alert("Error al eliminar el animal: " + response.statusText);
+            }
+        } catch (error) {
+            console.error('Error al eliminar el animal:', error);
+            alert("Ocurrió un error al eliminar el animal.");
+        }
+    }
+
+    //SEND MODIFY A LA API (PATCH)
+    async modifAnimal(event) {
+        try {
+            event.preventDefault();
+
+            const animalId = event.target.elements.animalIdModif.value.trim();
+            const animalName = event.target.elements.animalNameModif.value.trim();
+            const animalDesc = event.target.elements.animalDescriptionModif.value.trim();
+            const accessToken = AuthStateHelper.getAccessToken();
+
+            const animalData = {
+                id: animalId,
+                name: animalName,
+                description: animalDesc,
+            };
+
+            //Manda PATCH a la API
+            const response = await AnimalAPIHelper.handleAnimal('patch', animalData, accessToken);
+
+            if (response.status === 200) { //codigo de exito
+                alert("Animal modificado exitosamente.");
+                event.target.form.reset(); // Limpiar el formulario
+            } else {
+                alert("Error al modificar el animal: " + response.statusText);
+            }
+        } catch (error) {
+            console.error('Error al modificar el animal:', error);
+            alert("Ocurrió un error al modificar el animal.");
+        }
+    }
+
+    //TODO
+    async mostrarAnimals(event){
+
+    }
+
     //Manejo de las acciones
-    handleSubmit = async (event) =>{
+    handleSubmit = async (event) => {
         console.log("Entre al handler del submit");
         event.preventDefault();
         const action = event.submitter.id;

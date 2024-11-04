@@ -1,5 +1,5 @@
 export default class AnimalAPIHelper {
-    static async createAnimal(action, animalData, accessToken) {
+    static async handleAnimal(action, animalData, accessToken) {
         try {
             //Configuracion header
             const headers = {
