@@ -17,7 +17,6 @@ const posiciones = new Map();
 const checkpoints = getAllCheckpoints();
 checkpoints.forEach((checkpoint) => {
   const datos = {
-    id: checkpoint.id,
     lat: checkpoint.lat,
     long: checkpoint.long,
     description: checkpoint.description,
@@ -25,8 +24,7 @@ checkpoints.forEach((checkpoint) => {
   };
   posiciones.set(checkpoint.id, datos);
 });
-//esta funcion se ejecuta en el index, lo que hace es quedarse escuchando el topico y
-//se conecta al broker
+
 export function connectToBroker() {
   client.on("connect", () => {
     client.subscribe("checkpoint", (err) => {
@@ -37,21 +35,18 @@ export function connectToBroker() {
   });
 }
 
-//funcion para obtener el mapa con posiciones
-export function getPosiciones() {
-  return posiciones;
-}
-//El mensaje esperado es un checkpoint ID y un vector de animales que pertenecen a el
 client.on("message", (topic, message) => {
-  // message is Buffer
   const messageString = message.toString(); // para que salgan los caracteres como ascii
   console.log(
     "[DEBUG]: " + JSON.stringify({ mensaje: messageString, topico: topic })
   );
   if (topic === "checkpoint") {
     actualizarPosicion(messageString);
-    //client.end();
   }
+});
+
+client.on("error", (err) => {
+  //TODO que pasa si hay un error entre las raspberry y el broker
 });
 
 //si llega un mensaje con un checkpoint y los animales que pertencen a el, se actualiza en el mapa
@@ -60,34 +55,39 @@ function actualizarPosicion(mensaje) {
     mensaje = JSON.parse(mensaje);
     const animalesRecibidos = mensaje?.animals;
     const vec = []
+
     animalesRecibidos.forEach((animal) => {
       if (animalExists(animal.id) && animal.rssi >= umbral) {
-        deleteAnimalInstanceFromCheckpoints(animal)
+        deleteAnimalInstanceFromCheckpoints(animal.id,mensaje.checkpointID)
         vec.push(animal);
       } else {
         if (!animalExists(animal.id) && !avilableDevices.includes(animal.id)){
-          // creen comveniente ponerle un timestamp?
-          avilableDevices.push(animal.id)
+          avilableDevices.push(animal.id,mensaje.checkpointID)
         }
       }
     });
 
     if (mensaje?.checkpointID) {
       if (posiciones.has(mensaje.checkpointID)) {
-        posiciones.get(mensaje.checkpointID).animals = vec;
+        posiciones.set(mensaje.checkpointID).animals = vec;
       }
     }
   } catch (e) {}
 }
 
-function deleteAnimalInstanceFromCheckpoints(animal){
-//TODO antes de aniadir el animal chequear que no este en otro checkpoint, y si estuviera eliminarlo
+function deleteAnimalInstanceFromCheckpoints(animalID,checkpointID){
+posiciones.forEach((value,key)=>{
+  if (key!=checkpointID){
+    value.animals=value.animals.filter(item => item.id != animalID);
+  }
+});
 }
+
+//funcion para obtener el mapa con posiciones
+export function getPosiciones() {
+  return posiciones;
+}
+//funcion para obtener los animales registrables
 export function getAvilableAnimals(){
   return avilableDevices
 }
-
-client.on("error", (err) => {
-  //TODO que pasa si hay un error entre las raspberry y el broker
-});
-
