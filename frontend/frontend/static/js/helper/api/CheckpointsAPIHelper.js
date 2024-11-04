@@ -8,7 +8,7 @@ export default class CheckpointsAPIHelper {
             };
 
             //Configuracion url - se modifica segun lo establecido con la catedra
-            const url = 'http://localhost:3000/API/animals';
+            const url = 'http://localhost:3000/API/checkpoints';
 
             let response;
             switch (action) {
@@ -17,20 +17,20 @@ export default class CheckpointsAPIHelper {
                     break;
                 }
                 case 'delete': {
-                    response = await axios.delete(`${url}/${checkpointData.id}`, { headers });
+                    response = await axios.delete(`${url}/${checkpointData.uuid}`, { headers });
                     break;
                 }
                 case 'patch': {
-                    response = await axios.patch(`${url}/${checkpointData.id}`, checkpointData, { headers }); //se esta mandando el id en el body, chequear si causa problemas
+                    response = await axios.patch(`${url}/${checkpointData.uuid}`, checkpointData, { headers }); //se esta mandando el id en el body, chequear si causa problemas
                     break;
                 }
-                case 'getAnimals': {
-                    response = await axios.get(`${url}/position`, checkpointData, { headers });
+                case 'get': {
+                    response = await axios.get(`${url}`, checkpointData, { headers });
                     break;
                 }
                 /*
-                case 'getOneAnimal': {
-                    response = await axios.get(`${url}/${animalData.id}`, animalData, { headers });
+                case 'getOne': {
+                    response = await axios.get(`${url}/${checkpointData.uuid}`, animalData, { headers });
                     return response.data;
                 }
                 */

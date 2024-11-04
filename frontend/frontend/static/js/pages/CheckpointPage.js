@@ -49,11 +49,11 @@ export default class CheckpointPage {
         try {
             event.preventDefault();
 
-            const checkpointId = event.target.elements.checkpointIdBaja.value.trim();
+            const checkpointUUID = event.target.elements.checkpointIdAlta.value.trim();
             const accessToken = AuthStateHelper.getAccessToken();
 
             const checkpointData = {
-                id: checkpointId,
+                UUID: checkpointUUID,
             };
 
             //Manda DELETE a la API
@@ -77,17 +77,18 @@ export default class CheckpointPage {
         try {
             event.preventDefault();
 
-            const checkpointId = event.target.elements.checkpointIdModif.value.trim();
-            const checkpointName = event.target.elements.checkpointNameModif.value.trim();
-            const checkpointDesc = event.target.elements.checkpointDescriptionModif.value.trim();
+            const checkpointUUID = event.target.elements.checkpointIdAlta.value.trim();
+            const checkpointLatitud = event.target.elements.latitud.value.trim();
+            const checkpointAltitud = event.target.elements.altitud.value.trim();
+            const checkpointDesc = event.target.elements.checkpointDescAlta.value.trim();
             const accessToken = AuthStateHelper.getAccessToken();
 
             const checkpointData = {
-                id: checkpointId,
-                name: checkpointName,
-                description: checkpointDesc,
+                uuid: checkpointUUID,
+                latitud: checkpointLatitud,
+                altitud: checkpointAltitud,
+                desc: checkpointDesc
             };
-
             //Manda PATCH a la API
             const response = await checkpointAPIHelper.handleCheckpoint('patch', checkpointData, accessToken);
 
