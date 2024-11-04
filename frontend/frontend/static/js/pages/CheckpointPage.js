@@ -1,15 +1,139 @@
 export default class CheckpointPage {
-  constructor(selector) {
-    this.container = document.getElementById(selector);
-    this.loadCheckpoint();
-  }
+    constructor(selector) {
+        this.container = document.getElementById(selector);
+        this.loadCheckpoint();
+    }
 
-  async loadCheckpoint() {
-    this.render();
-  }
+    async loadCheckpoint() {
+        this.render();
+        this.addListener();
+    }
 
-  render() {
-    const formHtml = `        <div class="sidebar-secundaria">
+    async altacheckpoint(event) {
+        try {
+            event.preventDefault();
+
+            const checkpointUUID = event.target.elements.checkpointIdAlta.value.trim();
+            const checkpointLatitud = event.target.elements.latitud.value.trim();
+            const checkpointAltitud = event.target.elements.altitud.value.trim();
+            const checkpointDesc = event.target.elements.checkpointDescAlta.value.trim();
+            const accessToken = AuthStateHelper.getAccessToken();
+
+            const checkpointData = {
+                uuid: checkpointUUID,
+                latitud: checkpointLatitud,
+                altitud: checkpointAltitud,
+                desc: checkpointDesc
+            };
+
+            //debug
+            console.log("Data del checkpoint a mandar: " + checkpointData.uuid + checkpointData.latitud + checkpointData.altitud + checkpointDesc);
+
+            //Manda POST a la API
+            const response = await checkpointAPIHelper.handlecheckpoint('post', checkpointData, accessToken);
+
+            if (response.ok) { //codigo de exito
+                alert("checkpoint registrado exitosamente.");
+                event.target.reset(); // Limpiar el formulario
+            } else {
+                alert("Error al registrar el checkpoint: " + response.statusText);
+            }
+        } catch (error) {
+            console.error('Error al dar de alta el checkpoint:', error);
+            alert("Ocurrió un error al registrar el checkpoint.");
+        }
+    }
+
+    //SEND BAJA a la API (DELETE)
+    async bajacheckpoint(event) {
+        try {
+            event.preventDefault();
+
+            const checkpointId = event.target.elements.checkpointIdBaja.value.trim();
+            const accessToken = AuthStateHelper.getAccessToken();
+
+            const checkpointData = {
+                id: checkpointId,
+            };
+
+            //Manda DELETE a la API
+            const response = await checkpointAPIHelper.handlecheckpoint('delete', checkpointData, accessToken);
+            console.log('Response from API:', response);
+
+            if (response.ok) { //codigo de exito
+                alert("checkpoint eliminado exitosamente.");
+                event.target.reset();
+            } else {
+                alert("Error al eliminar el checkpoint: " + response.statusText);
+            }
+        } catch (error) {
+            console.error('Error al eliminar el checkpoint:', error);
+            alert("Ocurrió un error al eliminar el checkpoint.");
+        }
+    }
+
+    //SEND MODIFY A LA API (PATCH)
+    async modifcheckpoint(event) {
+        try {
+            event.preventDefault();
+
+            const checkpointId = event.target.elements.checkpointIdModif.value.trim();
+            const checkpointName = event.target.elements.checkpointNameModif.value.trim();
+            const checkpointDesc = event.target.elements.checkpointDescriptionModif.value.trim();
+            const accessToken = AuthStateHelper.getAccessToken();
+
+            const checkpointData = {
+                id: checkpointId,
+                name: checkpointName,
+                description: checkpointDesc,
+            };
+
+            //Manda PATCH a la API
+            const response = await checkpointAPIHelper.handleCheckpoint('patch', checkpointData, accessToken);
+
+            if (response.ok) { //codigo de exito
+                alert("checkpoint modificado exitosamente.");
+                event.target.reset(); // Limpiar el formulario
+            } else {
+                alert("Error al modificar el checkpoint: " + response.statusText);
+            }
+        } catch (error) {
+            alert("Ocurrió un error al modificar el checkpoint.");
+        }
+    }
+
+    //TODO
+    async mostrarcheckpoints(event) {
+
+    }
+
+    //Manejo de las acciones
+    handleSubmit = async (event) => {
+        console.log("Entre al handler del submit");
+        event.preventDefault();
+        const action = event.submitter.id;
+
+        switch (action) {
+            case "alta":
+                this.altacheckpoint(event);
+                break;
+            case "baja":
+                this.bajacheckpoint(event);
+                break;
+            case "modif":
+                this.modifcheckpoint(event);
+                break;
+            case "mostrar":
+                this.mostrarcheckpoints(event);
+                break;
+            default:
+                console.error("Acción desconocida");
+        }
+
+    }
+
+    render() {
+        const formHtml = `        <div class="sidebar-secundaria">
             <button data-panel="alta" onclick="showPanelCheckpoint('alta')">Agregar punto de control</button>
             <button data-panel="baja" onclick="showPanelCheckpoint('baja')">Eliminar punto de control</button>
             <button data-panel="modificacion" onclick="showPanelCheckpoint('modificacion')">Modificar punto de control</button>
@@ -23,7 +147,7 @@ export default class CheckpointPage {
                 <form class="login-form-check">
 
                     <label for="identificador">Id de punto de control (UUID):</label>
-                    <input type="text" id="id" name="id" required>
+                    <input type="text" id="checkpointIdAlta" name="checkpointIdAlta" required>
 
                     <label for="latitud">Coordenadas latitud:</label> <!-- pasar como texto y dps transformar? chequear dps-->
                     <input type="text" id="latitud" name="latitud" required>
@@ -32,7 +156,7 @@ export default class CheckpointPage {
                     <input type="text" id="altitud" name="altitud" required>
 
                     <label for="desc">Descripcion:</label> <!-- pasar como texto y dps transformar? chequear dps-->
-                    <input type="text" id="description" name="description" required>
+                    <input type="text" id="checkpointDescAlta" name="checkpointDescAlta" required>
 
                     <div class="button-container-check">
                         <button type="submit">Agregar</button>
@@ -81,7 +205,7 @@ export default class CheckpointPage {
 
             
             <!-- Mostrar checkpoints TODO MAPA -->
-             <!-- en realidad se muestra en mostrar animales los checkpoints y la ubicacion de cada animal - discutir dps-->
+             <!-- en realidad se muestra en mostrar checkpointes los checkpoints y la ubicacion de cada checkpoint - discutir dps-->
             <div id="mostrar" class="form-panel-check map-panel-checkpoints" style="display: none;">
                 <h2>Mostrar puntos de control en el Mapa</h2>
                 <div class="button-container">
@@ -92,6 +216,10 @@ export default class CheckpointPage {
         </div>
     </div>
         `;
-    this.container.innerHTML = formHtml;
-  }
+        this.container.innerHTML = formHtml;
+    }
+
+    addListener() {
+        window.addEventListener("submit", this.handleSubmit);
+    }
 }
