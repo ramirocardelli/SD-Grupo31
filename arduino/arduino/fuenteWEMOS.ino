@@ -74,7 +74,7 @@ void loop() {
       int rssi = device.getRSSI(); // Obtener el valor de RSSI
 
       // Añadir información del dispositivo al mensaje
-      if (rssi<=-20){
+      if (rssi>=-80){
         message += "{ \"id\": \"" + deviceAddress + "\", \"rssi\": " + String(rssi) + " }";
       }
       
