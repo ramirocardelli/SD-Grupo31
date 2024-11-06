@@ -74,7 +74,9 @@ void loop() {
       int rssi = device.getRSSI(); // Obtener el valor de RSSI
 
       // Añadir información del dispositivo al mensaje
-      message += "{ \"id\": \"" + deviceAddress + "\", \"rssi\": " + String(rssi) + " }";
+      if (rssi<=-20){
+        message += "{ \"id\": \"" + deviceAddress + "\", \"rssi\": " + String(rssi) + " }";
+      }
       
       // Agregar coma y nueva línea para cada dispositivo excepto el último
       if (i < min(batchStart + batchSize, totalDevices) - 1) {

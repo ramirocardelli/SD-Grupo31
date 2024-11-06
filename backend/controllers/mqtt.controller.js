@@ -7,9 +7,9 @@ const options = {
   password: "admin",
   clientID: "adminID",
 };
-const mqttUrl = "mqtt://192.168.56.1:1883"
+const mqttUrl = "mqtt://localhost"
 const client = mqtt.connect(mqttUrl, options);
-const umbral = -50;
+const umbral = -60;
 //mapa = {checkpoint.id,[vector de animales]}
 const posiciones = new Map();
 
@@ -36,7 +36,7 @@ export function connectToBroker() {
 }
 
 client.on("message", (topic, message) => {
-  const messageString = message.toString().replaceAll("'",'"'); // para que salgan los caracteres como ascii
+  const messageString = message.toString();
   if (topic === "checkpoint") {
     actualizarPosicion(messageString);
   }

@@ -55,7 +55,13 @@ const server = http.createServer((req, res) => {
   // Separamos el path para poder obtener la direccion principal y el recurso
   const pathArray = req.url.split("/");
   pathArray.shift();
-  pathArray.shift(); //asi saco /API
+  if (pathArray[0]=="API"){
+    pathArray.shift(); //asi saco /API
+  }else{
+    res.writeHead(400,"Path incorrecto");
+    return;
+  }
+  
 
   req.on("data", (chunk) => {
     body = body + chunk;
@@ -180,12 +186,14 @@ function onLogin(req, res, body, pathArray) {
   return res.end();
 }
 
+//un hora dura el acces token
 function accessToken(username) {
-  return tokenGenerator(username, 60);
+  return tokenGenerator(username, 3600);
 }
 
+//un dia dura el refresh token
 function refreshToken(username) {
-  return tokenGenerator(username, 3600);
+  return tokenGenerator(username, 86400);
 }
 
 function tokenGenerator(username, seconds) {
