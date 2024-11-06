@@ -9,7 +9,7 @@ const options = {
 };
 const mqttUrl = "mqtt://localhost"
 const client = mqtt.connect(mqttUrl, options);
-const umbral = -60;
+const umbral = -40;
 //mapa = {checkpoint.id,[vector de animales]}
 const posiciones = new Map();
 
