@@ -9,7 +9,7 @@ const options = {
 };
 const mqttUrl = "mqtt://localhost"
 const client = mqtt.connect(mqttUrl, options);
-const umbral = -40;
+const umbral = -60;
 //mapa = {checkpoint.id,[vector de animales]}
 const posiciones = new Map();
 
@@ -55,7 +55,7 @@ function actualizarPosicion(mensaje) {
     const vec = []
 
     animalesRecibidos.forEach((animal) => {
-      if (animalExists(animal.id) && animal.rssi >= umbral) {
+      if (animalExists(animal.id) && animal.rssi <= umbral) {
         deleteAnimalInstanceFromCheckpoints(animal.id,mensaje.checkpointID)
         vec.push(animal);
       } else {
