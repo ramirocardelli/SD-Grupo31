@@ -182,7 +182,7 @@ export default class CheckpointPage {
 
         <div class="page-container-check">
             <!-- alta -->
-            <div id="alta" class="form-panel-check" style="display: none;">
+            <div id="alta" class="alta form-panel-check" style="display: none;">
                 <h2>Agregar punto de control</h2>
                 <form class="login-form-check">
 
@@ -206,7 +206,7 @@ export default class CheckpointPage {
             </div>
 
             <!-- baja -->
-            <div id="baja" class="form-panel-check" style="display: none;">
+            <div id="baja" class="baja form-panel-check" style="display: none;">
                 <form class="login-form-check">
                     <h2>Eliminar punto de control</h2>
 
@@ -214,7 +214,7 @@ export default class CheckpointPage {
                     <input type="text" id="baja-id" name="baja-id" required>
 
                     <div class="button-container-check">
-                        <button type="submit">Eliminar</button>
+                        <button type="submit" class="baja">Eliminar</button>
                     </div>
 
                 </form>
@@ -250,7 +250,7 @@ export default class CheckpointPage {
                 <h2>Mostrar puntos de control en el Mapa</h2>
                 <div class="button-container">
                     <form>
-                        <button id="mostrar" type="submit">Cargar mapa</button>
+                        <button id="mostrar" type="submit" class="mostrar">Cargar mapa</button>
                     </form>
                 </div>
                 <div id="map" style="height: 400px;"></div>

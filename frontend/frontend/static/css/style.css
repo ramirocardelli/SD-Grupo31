@@ -10,13 +10,21 @@ body {
     height: 100%;
     margin: 0;
     display: flex;
-    flex-direction: column; 
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 #root {
     display: flex;
     flex-direction: column; 
     height: 100%;
+}
+
+.layout-content {
+    display: flex; 
+    flex-direction: column;
+    height: 100%; 
 }
 
 .page-container {

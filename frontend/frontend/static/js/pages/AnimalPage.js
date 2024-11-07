@@ -46,7 +46,7 @@ export default class AnimalPage {
       if (response.ok) {
         //codigo de exito
         alert("Animal registrado exitosamente.");
-        event.target.reset(); // Limpiar el formulario
+        window.location.reload();
       } else {
         alert("Error al registrar el animal: " + response.statusText);
       }
@@ -57,11 +57,8 @@ export default class AnimalPage {
   }
 
   //SEND BAJA a la API (DELETE)
-  async bajaAnimal(event) {
+  async bajaAnimal(animalId) {
     try {
-      event.preventDefault();
-
-      const animalId = event.target.elements.animalIdBaja.value.trim();
       const accessToken = AuthStateHelper.getAccessToken();
 
       const animalData = {
@@ -79,7 +76,7 @@ export default class AnimalPage {
       if (response.ok) {
         //codigo de exito
         alert("Animal eliminado exitosamente.");
-        event.target.reset();
+        window.location.reload();
       } else {
         alert("Error al eliminar el animal: " + response.statusText);
       }
@@ -116,7 +113,7 @@ export default class AnimalPage {
       if (response.ok) {
         //codigo de exito
         alert("Animal modificado exitosamente.");
-        event.target.reset(); // Limpiar el formulario
+        window.location.reload();
       } else {
         alert("Error al modificar el animal: " + response.statusText);
       }
@@ -144,7 +141,7 @@ export default class AnimalPage {
       .openPopup();
   }
 
-  async listarAnimals(){
+  async listarAnimals() {
     const accessToken = AuthStateHelper.getAccessToken();
 
     const response = await AnimalAPIHelper.handleAnimal(
@@ -152,40 +149,78 @@ export default class AnimalPage {
       accessToken
     );
 
-    const listado=document.getElementById("listado");
-    listado.querySelectorAll('li').forEach((li)=>{
-      li.remove()
-    })
-    response.data.forEach(element => {
-        const li = document.createElement('li');
-        const li_id = document.createElement('div');
-        li_id.textContent=element.id
-        const li_name = document.createElement('div');
-        li_name.textContent=element.name
-        const li_desc = document.createElement('div');
-        li_desc.textContent=element.description
-        li.appendChild(li_id)
-        li.appendChild(li_name)
-        li.appendChild(li_desc)
-        listado.appendChild(li);
+    const listado = document.getElementById("listado");
+    listado.querySelectorAll("tr").forEach((tr) => {
+      tr.remove();
     });
 
+    const tr = document.createElement("tr");
+    const tr_name = document.createElement("th");
+    tr_name.textContent = "Nombre";
+    const tr_desc = document.createElement("th");
+    tr_desc.textContent = "Descripción";
+    const tr_eliminar = document.createElement("th");
+    const tr_modificar = document.createElement("th");
+    tr.appendChild(tr_name);
+    tr.appendChild(tr_desc);
+    tr.appendChild(tr_eliminar);
+    tr.appendChild(tr_modificar);
+    listado.appendChild(tr);
 
+    response.data.forEach((element) => {
+      const tr = document.createElement("tr");
+      // Nombre
+      const tr_name = document.createElement("th");
+      tr_name.id = `name-${element.id}`;
+      tr_name.textContent = element.name;
+      // Descripción
+      const tr_desc = document.createElement("th");
+      tr_desc.id = `description-${element.id}`;
+      tr_desc.textContent = element.description;
+
+      // Botón eliminar
+      const tr_eliminar_rh = document.createElement("th");
+      const tr_form_eliminar = document.createElement("form");
+      const tr_eliminar = document.createElement("button");
+      tr_eliminar.type = "submit";
+      tr_eliminar.textContent = "Eliminar";
+      tr_eliminar.className = "eliminar";
+      tr_eliminar.id = element.id;
+      tr_form_eliminar.appendChild(tr_eliminar);
+      tr_eliminar_rh.appendChild(tr_form_eliminar);
+
+      // Botón modificar
+      const tr_modificar_rh = document.createElement("th");
+      const tr_form_modificar = document.createElement("form");
+      const tr_modificar = document.createElement("button");
+      tr_modificar.type = "submit";
+      tr_modificar.textContent = "Modificar";
+      tr_modificar.className = "modificar";
+      tr_modificar.id = element.id;
+      tr_form_modificar.appendChild(tr_modificar);
+      tr_modificar_rh.appendChild(tr_form_modificar);
+
+      tr.appendChild(tr_name);
+      tr.appendChild(tr_desc);
+      tr.appendChild(tr_eliminar_rh);
+      tr.appendChild(tr_modificar_rh);
+      listado.appendChild(tr);
+    });
   }
-
 
   //Manejo de las acciones
   handleSubmit = async (event) => {
     console.log("Entre al handler del submit");
     event.preventDefault();
-    const action = event.submitter.id;
+    const action = event.submitter.className;
 
     switch (action) {
       case "alta":
         this.altaAnimal(event);
         break;
       case "baja":
-        this.bajaAnimal(event);
+        const animalId = event.target.elements.animalIdBaja.value.trim();
+        this.bajaAnimal(animalId);
         break;
       case "modif":
         this.modifAnimal(event);
@@ -196,10 +231,27 @@ export default class AnimalPage {
       case "listar":
         this.listarAnimals();
         break;
-      default:
-        console.error("Acción desconocida");
+      case "eliminar":
+        this.bajaAnimal(event.target[0].id);
+        break;
+      case "modificar":
+        this.modificarAnimalId(event.target[0].id);
     }
   };
+
+  modificarAnimalId(id) {
+    const animalName = document.getElementById(`name-${id}`).textContent;
+    const animalDescription = document.getElementById(
+      `description-${id}`
+    ).textContent;
+    showPanelAnimals("modificacion");
+    const inputId = document.getElementById("animalIdModif");
+    inputId.value = id;
+    const inputName = document.getElementById("animalNameModif");
+    inputName.value = animalName;
+    const inputDesc = document.getElementById("animalDescriptionModif");
+    inputDesc.value = animalDescription;
+  }
 
   render() {
     let homeHtml = `
@@ -215,7 +267,7 @@ export default class AnimalPage {
                 </div>
 
             <!-- alta -->
-            <div id="alta" class="form-panel-animal" style="display: none;">
+            <div id="alta" class="alta form-panel-animal" style="display: none;">
                 <h2>Registrar animal</h2>
                 <form class="login-form-animal">
 
@@ -229,14 +281,14 @@ export default class AnimalPage {
                     <input type="text" id="animalDescriptionAlta" name="animalDescriptionAlta" required>
 
                     <div class="button-container-animal">
-                        <button type="submit" id="alta">Registrar</button>
+                        <button type="submit" id="alta" class="alta">Registrar</button>
                     </div>
 
                 </form>
             </div>
 
             <!-- baja -->
-            <div id="baja" class="form-panel-animal" style="display: none;">
+            <div id="baja" class="baja form-panel-animal" style="display: none;">
                 <form class="login-form-animal">
                     <h2>Eliminar animal</h2>
 
@@ -244,19 +296,19 @@ export default class AnimalPage {
                     <input type="text" id="animalIdBaja" name="animalIdBaja" required>
 
                     <div class="button-container-animal">
-                        <button type="submit" id="baja">Eliminar</button>
+                        <button type="submit" id="baja" class="baja">Eliminar</button>
                     </div>
 
                 </form>
             </div>
 
             <!-- listar -->
-            <div id="Listar" class="form-panel-animal" style="display: none;">
+            <div id="Listar" class="listar form-panel-animal" style="display: none;">
+              <table id="listado" class="listado">
+              </table>
             <form class="login-form-animal">  
-              <ul id="listado" class="listado">
-              </ul>
               <div class="button-container-animal">
-                <button type="submit" id="listar">Listar</button>
+                <button type="submit" class="listar" id="listar">Listar</button>
               </div>
             </form>   
             </div>
@@ -276,7 +328,7 @@ export default class AnimalPage {
                     <input type="text" id="animalDescriptionModif" name="animalDescriptionModif" required>
 
                     <div class="button-container-animal">
-                    <button type="submit" id="modif">Modificar</button>
+                    <button type="submit" id="modif" class="modif">Modificar</button>
                     </div>
                 </form>
             </div>
@@ -286,7 +338,7 @@ export default class AnimalPage {
                 <h2>Mostrar animales en el Mapa</h2>
                     <div class="button-container">
                         <form>
-                        <button type="submit" id="mostrar">Cargar mapa</button>
+                        <button type="submit" id="mostrar" class="mostrar">Cargar mapa</button>
                         </form>
                     </div>
 
