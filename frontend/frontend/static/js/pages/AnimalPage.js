@@ -144,6 +144,42 @@ export default class AnimalPage {
       .openPopup();
   }
 
+  async listarAnimals(){
+    const accessToken = AuthStateHelper.getAccessToken();
+
+    const response = await AnimalAPIHelper.handleAnimal(
+      "getAnimals",
+      accessToken
+    );
+
+    const listado=document.getElementById("listado");
+    const idActuales=[]
+    const ListadoLi=listado.querySelectorAll('li')
+      ListadoLi?.forEach((li)=>{
+        const div = li.querySelector('div');
+        if (div)
+          idActuales.push(div.textContent)
+      });
+    response.data.forEach(element => {
+      if (!idActuales.includes(element.id)){
+        const li = document.createElement('li');
+        const li_id = document.createElement('div');
+        li_id.textContent=element.id
+        const li_name = document.createElement('div');
+        li_name.textContent=element.name
+        const li_desc = document.createElement('div');
+        li_desc.textContent=element.description
+        li.appendChild(li_id)
+        li.appendChild(li_name)
+        li.appendChild(li_desc)
+        listado.appendChild(li);
+      }
+    });
+
+
+  }
+
+
   //Manejo de las acciones
   handleSubmit = async (event) => {
     console.log("Entre al handler del submit");
@@ -163,6 +199,9 @@ export default class AnimalPage {
       case "mostrar":
         this.mostrarAnimals(event);
         break;
+      case "listar":
+        this.listarAnimals();
+        break;
       default:
         console.error("Acción desconocida");
     }
@@ -176,6 +215,7 @@ export default class AnimalPage {
                     <button data-panel="baja" onclick="showPanelAnimals('baja')">Eliminar animal</button>
                     <button data-panel="modificacion" onclick="showPanelAnimals('modificacion')">Modificar animal</button>
                     <button data-panel="mostrar" onclick="showPanelAnimals('mostrar')">Mostrar animales</button>
+                    <button data-panel="Listar" onclick="showPanelAnimals('Listar')">Listar animales</button>
                 </div>
                 <div class="page-container-animal">
                 </div>
@@ -216,6 +256,17 @@ export default class AnimalPage {
                 </form>
             </div>
 
+            <!-- listar -->
+            <div id="Listar" class="form-panel-animal" style="display: none;">
+            <form class="login-form-animal">  
+              <ul id="listado" class="listado">
+              </ul>
+              <div class="button-container-animal">
+                <button type="submit" id="listar">Listar</button>
+              </div>
+            </form>   
+            </div>
+
             <!-- modificacion -->
             <div id="modificacion" class="form-panel-animal" style="display: none;">
                 <form class="login-form-animal">
@@ -249,7 +300,6 @@ export default class AnimalPage {
 
                     </div>
                 </div>
-            </div>
         `;
     this.container.innerHTML = homeHtml;
   }

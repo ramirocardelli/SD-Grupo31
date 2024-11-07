@@ -114,6 +114,30 @@ body {
     background-color: #e6cb76; 
 }
 
+.listado {
+    list-style-type: none; /* Elimina los puntos de la lista */
+    padding: 0;
+    margin: 0;
+  }
+  
+  .listado li {
+    display: inline-flex;
+    gap: 10px; /* Espacio entre cada parte */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    margin-bottom: 10px;
+  }
+
+  .listado li div {
+    display: inline-block;
+    padding: 5px 8px;
+    font-weight: bold;
+    flex-shrink: 0; /* Evita que las partes se reduzcan */
+    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+  }
+
 /* Mapa */
 #map {
     width: 100%;

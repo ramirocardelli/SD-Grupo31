@@ -25,7 +25,7 @@ export default class AnimalAPIHelper {
                     break;
                 }
                 case 'getAnimals': {
-                    response = await axios.get(`${url}/position`, animalData, { headers });
+                    response = await axios.get(`${url}`, animalData, { headers });
                     break;
                 }
                 /*
