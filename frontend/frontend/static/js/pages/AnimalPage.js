@@ -153,15 +153,10 @@ export default class AnimalPage {
     );
 
     const listado=document.getElementById("listado");
-    const idActuales=[]
-    const ListadoLi=listado.querySelectorAll('li')
-      ListadoLi?.forEach((li)=>{
-        const div = li.querySelector('div');
-        if (div)
-          idActuales.push(div.textContent)
-      });
+    listado.querySelectorAll('li').forEach((li)=>{
+      li.remove()
+    })
     response.data.forEach(element => {
-      if (!idActuales.includes(element.id)){
         const li = document.createElement('li');
         const li_id = document.createElement('div');
         li_id.textContent=element.id
@@ -173,7 +168,6 @@ export default class AnimalPage {
         li.appendChild(li_name)
         li.appendChild(li_desc)
         listado.appendChild(li);
-      }
     });
 
 

@@ -129,6 +129,11 @@ body {
     background-color: #f9f9f9;
     margin-bottom: 10px;
   }
+  .listado li:hover {
+    background-color: rgb(198, 225, 234); /* Resalta el <li> cuando el mouse pasa sobre él */
+    color: #fff; /* Cambia el color del texto */
+    border-color: #84b9f2; /* Cambia el color del borde */
+  }
 
   .listado li div {
     display: inline-block;
