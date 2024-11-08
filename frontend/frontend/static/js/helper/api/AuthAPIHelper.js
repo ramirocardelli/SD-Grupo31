@@ -4,7 +4,7 @@ export default class AuthAPIHelper {
       Authorization: `Basic ${btoa(username + ":" + password)}`,
     };
 
-    const response = await axios.post("http://localhost:3000/login", "", {
+    const response = await axios.post("http://localhost:3000/API/login", "", {
       headers,
     }); // username y password en header en formato 64
     console.log("Response: " + response);

@@ -1,9 +1,3 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-}
-
 /* Sidebar secundaria */
 .sidebar-secundaria {
     position:fixed;
@@ -37,28 +31,31 @@ body {
     color: white;
 }
 
-.page-container-check {
+.page-container-check, .page-container-animal {
     margin-top: 70px; 
     padding: 15px;
-    display: flex; 
-    justify-content: center; 
+    display: flex;
+    justify-content: center;
 }
 
 /* Ocultar todos los paneles al inicio */
-.form-panel-check {
+
+.form-panel-check, .form-panel-animal {
     display: none;
     background-color: #c4bd97;
     height: auto; 
-    width: 400px; 
+    width: 100%;
+    margin: auto;
     display:flex;
     flex-direction: column;
     padding: 2em; 
     border-radius: 1em;
+    top: 5em;
     margin-top: 100px;
 }
 
 /* Mostrar el panel activo */
-.form-panel-check.active {
+.form-panel-check.active, .form-panel-animal.active {
    display:flex; 
 }
 
@@ -69,7 +66,7 @@ body {
 }
 
  /* campos entrada */
-.form-panel-check input {
+.form-panel-check input, .form-panel-animal input {
     border-radius: 0.3em;
     border: 0;
     width: 95%;
@@ -79,26 +76,26 @@ body {
 }
 
 /* labels */
-.form-panel-check label {
+.form-panel-check label, .form-panel-animal-label {
     margin: 1em 0 0.5em; 
     font-size: 1.2em;
     width: 100%;
     text-align: left;
 }
 
-.form-panel-check > input:focus {
+.form-panel-check > input:focus, .form-panel-animal > input:focus {
     outline: none;
     font-size: 1.5;
     margin-bottom: 1.3em;
 }
 
 /* boton */
-.button-container-check {
+.button-container-check, .button-container-animal{
     margin-top: auto; 
     width: 100%; 
 }
 
-.button-container-check > button {
+.button-container-check > button, .button-container-animal > button {
     margin-top: 1em; 
     height: 4em;
     border: 0;
@@ -108,8 +105,46 @@ body {
     width: 100%; 
 }
 
-.button-container-check > button:hover {
+.button-container-check > button:hover, .button-container-animal > button:hover {
     background-color: #e6cb76; 
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.listado {
+  list-style-type: none;
+  padding: 1em;
+  margin: 0;
+  background-color: white;
+  min-width: 400px;
+  width: 100%;
+  border: 1px solid black;
+}
+
+.eliminar-animal, .eliminar-checkpoint{
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.modificar-animal, .modificar-checkpoint{
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 14px;
 }
 
 /* Mapa */
@@ -119,7 +154,20 @@ body {
     background-color: #eee; /* Temporal para visualizar el área del mapa */
 }
 
-
 .map-panel {
     width: 600px; 
+}
+
+.listar-checkpoint, .listar-animals {
+    border-radius: 0.3em;
+    border: 0;
+    width: 100%;
+    font-size: 0.95em;
+    padding: 0.5em;
+    margin-bottom: 1.3em; 
+}
+
+.login-form-animal, .login-form-check{
+    display: flex;
+    flex-direction: column;
 }

@@ -21,6 +21,7 @@ export default class AnimalPage {
       const animalDesc =
         event.target.elements.animalDescriptionAlta.value.trim();
       const accessToken = AuthStateHelper.getAccessToken();
+      const refreshToken = AuthStateHelper.getRefreshToken();
 
       const animalData = {
         id: animalId,
@@ -28,25 +29,18 @@ export default class AnimalPage {
         description: animalDesc,
       };
 
-      //debug
-      console.log(
-        "Data del animal a mandar: " +
-          animalData.id +
-          animalData.name +
-          animalData.description
-      );
-
       //Manda POST a la API
       const response = await AnimalAPIHelper.handleAnimal(
         "post",
         animalData,
-        accessToken
+        accessToken,
+        refreshToken
       );
 
       if (response.ok) {
         //codigo de exito
         alert("Animal registrado exitosamente.");
-        event.target.reset(); // Limpiar el formulario
+        window.location.reload();
       } else {
         alert("Error al registrar el animal: " + response.statusText);
       }
@@ -57,12 +51,10 @@ export default class AnimalPage {
   }
 
   //SEND BAJA a la API (DELETE)
-  async bajaAnimal(event) {
+  async bajaAnimal(animalId) {
     try {
-      event.preventDefault();
-
-      const animalId = event.target.elements.animalIdBaja.value.trim();
       const accessToken = AuthStateHelper.getAccessToken();
+      const refreshToken = AuthStateHelper.getRefreshToken();
 
       const animalData = {
         id: animalId,
@@ -72,14 +64,14 @@ export default class AnimalPage {
       const response = await AnimalAPIHelper.handleAnimal(
         "delete",
         animalData,
-        accessToken
+        accessToken,
+        refreshToken
       );
-      console.log("Response from API:", response);
 
       if (response.ok) {
         //codigo de exito
         alert("Animal eliminado exitosamente.");
-        event.target.reset();
+        window.location.reload();
       } else {
         alert("Error al eliminar el animal: " + response.statusText);
       }
@@ -99,6 +91,7 @@ export default class AnimalPage {
       const animalDesc =
         event.target.elements.animalDescriptionModif.value.trim();
       const accessToken = AuthStateHelper.getAccessToken();
+      const refreshToken = AuthStateHelper.getRefreshToken();
 
       const animalData = {
         id: animalId,
@@ -110,13 +103,14 @@ export default class AnimalPage {
       const response = await AnimalAPIHelper.handleAnimal(
         "patch",
         animalData,
-        accessToken
+        accessToken,
+        refreshToken
       );
 
       if (response.ok) {
         //codigo de exito
         alert("Animal modificado exitosamente.");
-        event.target.reset(); // Limpiar el formulario
+        window.location.reload();
       } else {
         alert("Error al modificar el animal: " + response.statusText);
       }
@@ -144,44 +138,138 @@ export default class AnimalPage {
       .openPopup();
   }
 
+  async listarAnimals() {
+    const accessToken = AuthStateHelper.getAccessToken();
+    const refreshToken = AuthStateHelper.getRefreshToken();
+
+    console.log(accessToken, refreshToken);
+    console.log(accessToken === refreshToken);
+    const response = await AnimalAPIHelper.handleAnimal(
+      "get",
+      undefined,
+      accessToken,
+      refreshToken
+    );
+
+    const listado = document.getElementById("listado");
+    listado.querySelectorAll("tr").forEach((tr) => {
+      tr.remove();
+    });
+
+    const tr = document.createElement("tr");
+    const tr_name = document.createElement("th");
+    tr_name.textContent = "Nombre";
+    const tr_desc = document.createElement("th");
+    tr_desc.textContent = "Descripción";
+    const tr_eliminar = document.createElement("th");
+    const tr_modificar = document.createElement("th");
+    tr.appendChild(tr_name);
+    tr.appendChild(tr_desc);
+    tr.appendChild(tr_eliminar);
+    tr.appendChild(tr_modificar);
+    listado.appendChild(tr);
+
+    response.data.forEach((element) => {
+      const tr = document.createElement("tr");
+      // Nombre
+      const tr_name = document.createElement("th");
+      tr_name.id = `name-${element.id}`;
+      tr_name.textContent = element.name;
+      // Descripción
+      const tr_desc = document.createElement("th");
+      tr_desc.id = `description-${element.id}`;
+      tr_desc.textContent = element.description;
+
+      // Botón eliminar
+      const tr_eliminar_rh = document.createElement("th");
+      const tr_form_eliminar = document.createElement("form");
+      const tr_eliminar = document.createElement("button");
+      tr_eliminar.type = "submit";
+      tr_eliminar.textContent = "Eliminar";
+      tr_eliminar.className = "eliminar-animal";
+      tr_eliminar.id = element.id;
+      tr_form_eliminar.appendChild(tr_eliminar);
+      tr_eliminar_rh.appendChild(tr_form_eliminar);
+
+      // Botón modificar
+      const tr_modificar_rh = document.createElement("th");
+      const tr_form_modificar = document.createElement("form");
+      const tr_modificar = document.createElement("button");
+      tr_modificar.type = "submit";
+      tr_modificar.textContent = "Modificar";
+      tr_modificar.className = "modificar-animal";
+      tr_modificar.id = element.id;
+      tr_form_modificar.appendChild(tr_modificar);
+      tr_modificar_rh.appendChild(tr_form_modificar);
+
+      tr.appendChild(tr_name);
+      tr.appendChild(tr_desc);
+      tr.appendChild(tr_eliminar_rh);
+      tr.appendChild(tr_modificar_rh);
+      listado.appendChild(tr);
+    });
+  }
+
   //Manejo de las acciones
   handleSubmit = async (event) => {
-    console.log("Entre al handler del submit");
     event.preventDefault();
-    const action = event.submitter.id;
+    const action = event.submitter.className;
 
     switch (action) {
-      case "alta":
+      case "alta-animal":
         this.altaAnimal(event);
         break;
-      case "baja":
-        this.bajaAnimal(event);
+      case "baja-animal":
+        const animalId = event.target.elements.animalIdBaja.value.trim();
+        this.bajaAnimal(animalId);
         break;
-      case "modif":
+      case "modif-animal":
         this.modifAnimal(event);
         break;
-      case "mostrar":
+      case "mostrar-animal":
         this.mostrarAnimals(event);
         break;
-      default:
-        console.error("Acción desconocida");
+      case "listar-animal":
+        this.listarAnimals();
+        break;
+      case "eliminar-animal":
+        this.bajaAnimal(event.target[0].id);
+        break;
+      case "modificar-animal":
+        this.modificarAnimalId(event.target[0].id);
+        break;
     }
   };
+
+  modificarAnimalId(id) {
+    const animalName = document.getElementById(`name-${id}`).textContent;
+    const animalDescription = document.getElementById(
+      `description-${id}`
+    ).textContent;
+    showPanelAnimals("modificacion");
+    const inputId = document.getElementById("animalIdModif");
+    inputId.value = id;
+    const inputName = document.getElementById("animalNameModif");
+    inputName.value = animalName;
+    const inputDesc = document.getElementById("animalDescriptionModif");
+    inputDesc.value = animalDescription;
+  }
 
   render() {
     let homeHtml = `
     
-               <div class="sidebar-secundaria-animal">
+               <div class="sidebar-secundaria">
                     <button data-panel="alta" onclick="showPanelAnimals('alta')">Registrar animal</button>
                     <button data-panel="baja" onclick="showPanelAnimals('baja')">Eliminar animal</button>
                     <button data-panel="modificacion" onclick="showPanelAnimals('modificacion')">Modificar animal</button>
                     <button data-panel="mostrar" onclick="showPanelAnimals('mostrar')">Mostrar animales</button>
+                    <button data-panel="listar" onclick="showPanelAnimals('listar')">Listar animales</button>
                 </div>
                 <div class="page-container-animal">
                 </div>
 
             <!-- alta -->
-            <div id="alta" class="form-panel-animal" style="display: none;">
+            <div id="alta" class="alta-animal form-panel-animal" style="display: none;">
                 <h2>Registrar animal</h2>
                 <form class="login-form-animal">
 
@@ -195,14 +283,14 @@ export default class AnimalPage {
                     <input type="text" id="animalDescriptionAlta" name="animalDescriptionAlta" required>
 
                     <div class="button-container-animal">
-                        <button type="submit" id="alta">Registrar</button>
+                        <button type="submit" id="alta" class="alta-animal">Registrar</button>
                     </div>
 
                 </form>
             </div>
 
             <!-- baja -->
-            <div id="baja" class="form-panel-animal" style="display: none;">
+            <div id="baja" class="baja-animal form-panel-animal" style="display: none;">
                 <form class="login-form-animal">
                     <h2>Eliminar animal</h2>
 
@@ -210,10 +298,21 @@ export default class AnimalPage {
                     <input type="text" id="animalIdBaja" name="animalIdBaja" required>
 
                     <div class="button-container-animal">
-                        <button type="submit" id="baja">Eliminar</button>
+                        <button type="submit" id="baja" class="baja-animal">Eliminar</button>
                     </div>
 
                 </form>
+            </div>
+
+            <!-- listar -->
+            <div id="listar" class="listar-animal form-panel-animal" style="display: none;">
+              <table id="listado" class="listado">
+              </table>
+            <form class="login-form-animal">  
+              <div class="button-container-animal">
+                <button type="submit" class="listar-animal" id="listar">Listar</button>
+              </div>
+            </form>   
             </div>
 
             <!-- modificacion -->
@@ -231,7 +330,7 @@ export default class AnimalPage {
                     <input type="text" id="animalDescriptionModif" name="animalDescriptionModif" required>
 
                     <div class="button-container-animal">
-                    <button type="submit" id="modif">Modificar</button>
+                    <button type="submit" id="modif" class="modif-animal">Modificar</button>
                     </div>
                 </form>
             </div>
@@ -241,7 +340,7 @@ export default class AnimalPage {
                 <h2>Mostrar animales en el Mapa</h2>
                     <div class="button-container">
                         <form>
-                        <button type="submit" id="mostrar">Cargar mapa</button>
+                        <button type="submit" id="mostrar" class="mostrar-animal">Cargar mapa</button>
                         </form>
                     </div>
 
@@ -249,12 +348,11 @@ export default class AnimalPage {
 
                     </div>
                 </div>
-            </div>
         `;
     this.container.innerHTML = homeHtml;
   }
 
   addListener() {
-    window.addEventListener("submit", this.handleSubmit);
+    this.container.addEventListener("submit", this.handleSubmit);
   }
 }
