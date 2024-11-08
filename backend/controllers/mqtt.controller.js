@@ -1,13 +1,13 @@
 import mqtt from "mqtt";
 import { getAllCheckpoints } from "./checkpoints.controller.js";
 import { animalExists } from "./animals.controller.js";
-const avilableDevices = []
+const avilableDevices = [];
 const options = {
   username: "admin",
   password: "admin",
   clientID: "adminID",
 };
-const mqttUrl = "mqtt://localhost"
+const mqttUrl = "mqtt://192.168.240.1";
 const client = mqtt.connect(mqttUrl, options);
 const umbral = -40;
 //mapa = {checkpoint.id,[vector de animales]}
@@ -52,15 +52,15 @@ function actualizarPosicion(mensaje) {
     mensaje = JSON.parse(mensaje);
     console.log("[DEBUG]: " + mensaje);
     const animalesRecibidos = mensaje?.animals;
-    const vec = []
+    const vec = [];
 
     animalesRecibidos.forEach((animal) => {
       if (animalExists(animal.id) && animal.rssi >= umbral) {
-        deleteAnimalInstanceFromCheckpoints(animal.id,mensaje.checkpointID)
+        deleteAnimalInstanceFromCheckpoints(animal.id, mensaje.checkpointID);
         vec.push(animal);
       } else {
-        if (!animalExists(animal.id) && !avilableDevices.includes(animal.id)){
-          avilableDevices.push(animal.id,mensaje.checkpointID)
+        if (!animalExists(animal.id) && !avilableDevices.includes(animal.id)) {
+          avilableDevices.push(animal.id, mensaje.checkpointID);
         }
       }
     });
@@ -73,12 +73,12 @@ function actualizarPosicion(mensaje) {
   } catch (e) {}
 }
 
-function deleteAnimalInstanceFromCheckpoints(animalID,checkpointID){
-posiciones.forEach((value,key)=>{
-  if (key!=checkpointID){
-    value.animals=value.animals.filter(item => item.id != animalID);
-  }
-});
+function deleteAnimalInstanceFromCheckpoints(animalID, checkpointID) {
+  posiciones.forEach((value, key) => {
+    if (key != checkpointID) {
+      value.animals = value.animals.filter((item) => item.id != animalID);
+    }
+  });
 }
 
 //funcion para obtener el mapa con posiciones
@@ -86,9 +86,9 @@ export function getPosiciones() {
   return posiciones;
 }
 //funcion para obtener los animales registrables
-export function getAvilableAnimals(){
-  const obj={
-    devices:avilableDevices
-  }
-  return obj
+export function getAvilableAnimals() {
+  const obj = {
+    devices: avilableDevices,
+  };
+  return obj;
 }
