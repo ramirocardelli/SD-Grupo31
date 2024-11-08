@@ -79,7 +79,7 @@ void loop() {
   enviarPaquetes(client,devicesList,devicesMACList);
 
   // Wait 10 seconds before next scan
-
+  
   delay(10000);
 }
 
@@ -107,7 +107,7 @@ void enviarPaquetes(PubSubClient& client,const std::vector<String>& devicesList,
     }
     
     serializeJson(doc, jsonString);
-
+    client.loop();
     if (client.connected()) {
       client.publish("checkpoint", jsonString.c_str());
       Serial.println("Published to MQTT:");
@@ -115,8 +115,10 @@ void enviarPaquetes(PubSubClient& client,const std::vector<String>& devicesList,
         Serial.println(jsonString.c_str());
     } else {
       Serial.println("MQTT connection lost. Attempting to reconnect...");
-      if (client.connect("ESP32Client")) {
+      if (client.connect("ESP32Client", mqtt_user, mqtt_password)) {
         Serial.println("Reconnected to MQTT");
+        client.publish("checkpoint", jsonString.c_str());
+        Serial.println("Published to MQTT:");
      }
   }
 
