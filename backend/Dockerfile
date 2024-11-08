@@ -6,7 +6,7 @@ FROM node:latest
 WORKDIR /usr/src/app
 
 # Copia package.json y package-lock.json
-COPY package*.json ./
+COPY package.json ./
 
 # Instala las dependencias del proyecto
 RUN npm install
