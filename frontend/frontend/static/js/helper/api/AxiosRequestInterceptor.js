@@ -1,10 +1,11 @@
+import { CONSTANTS } from "../../constants/constants.js";
 import AuthStateHelper from "../state/AuthStateHelper.js";
 
 axios.interceptors.request.use(
   async function (config) {
     let accessToken = AuthStateHelper.getAccessToken();
     let refreshToken = AuthStateHelper.getRefreshToken();
-    const url = "http://localhost:3000/API/refresh";
+    const url = CONSTANTS.IP_REFRESH;
 
     // Si el accessToken ha expirado, intenta obtener uno nuevo usando el refreshToken
     if (config.url == url) {

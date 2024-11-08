@@ -1,3 +1,4 @@
+import { CONSTANTS } from "../../constants/constants.js";
 export default class AnimalAPIHelper {
   static async handleAnimal(action, animalData, accessToken, refreshToken) {
     try {
@@ -8,7 +9,7 @@ export default class AnimalAPIHelper {
       };
 
       //Configuracion url - se modifica segun lo establecido con la catedra
-      const url = "http://localhost:3000/API/animals";
+      const url = CONSTANTS.IP_ANIMALS;
 
       let response;
       switch (action) {

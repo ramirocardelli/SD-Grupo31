@@ -1,3 +1,5 @@
+import { CONSTANTS } from "../../constants/constants.js";
+
 export default class CheckpointsAPIHelper {
   static async handleCheckpoint(action, checkpointData, accessToken) {
     try {
@@ -8,7 +10,7 @@ export default class CheckpointsAPIHelper {
       };
 
       //Configuracion url - se modifica segun lo establecido con la catedra
-      const url = "http://localhost:3000/API/checkpoints";
+      const url = CONSTANTS.IP_CHECKPOINT;
 
       let response;
       switch (action) {
