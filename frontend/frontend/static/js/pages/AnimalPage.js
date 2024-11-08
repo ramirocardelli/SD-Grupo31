@@ -28,14 +28,6 @@ export default class AnimalPage {
         description: animalDesc,
       };
 
-      //debug
-      console.log(
-        "Data del animal a mandar: " +
-          animalData.id +
-          animalData.name +
-          animalData.description
-      );
-
       //Manda POST a la API
       const response = await AnimalAPIHelper.handleAnimal(
         "post",
@@ -71,7 +63,6 @@ export default class AnimalPage {
         animalData,
         accessToken
       );
-      console.log("Response from API:", response);
 
       if (response.ok) {
         //codigo de exito
@@ -144,10 +135,7 @@ export default class AnimalPage {
   async listarAnimals() {
     const accessToken = AuthStateHelper.getAccessToken();
 
-    const response = await AnimalAPIHelper.handleAnimal(
-      "getAnimals",
-      accessToken
-    );
+    const response = await AnimalAPIHelper.handleAnimal("get", accessToken);
 
     const listado = document.getElementById("listado");
     listado.querySelectorAll("tr").forEach((tr) => {
@@ -184,7 +172,7 @@ export default class AnimalPage {
       const tr_eliminar = document.createElement("button");
       tr_eliminar.type = "submit";
       tr_eliminar.textContent = "Eliminar";
-      tr_eliminar.className = "eliminar";
+      tr_eliminar.className = "eliminar-animal";
       tr_eliminar.id = element.id;
       tr_form_eliminar.appendChild(tr_eliminar);
       tr_eliminar_rh.appendChild(tr_form_eliminar);
@@ -195,7 +183,7 @@ export default class AnimalPage {
       const tr_modificar = document.createElement("button");
       tr_modificar.type = "submit";
       tr_modificar.textContent = "Modificar";
-      tr_modificar.className = "modificar";
+      tr_modificar.className = "modificar-animal";
       tr_modificar.id = element.id;
       tr_form_modificar.appendChild(tr_modificar);
       tr_modificar_rh.appendChild(tr_form_modificar);
@@ -210,32 +198,32 @@ export default class AnimalPage {
 
   //Manejo de las acciones
   handleSubmit = async (event) => {
-    console.log("Entre al handler del submit");
     event.preventDefault();
     const action = event.submitter.className;
 
     switch (action) {
-      case "alta":
+      case "alta-animal":
         this.altaAnimal(event);
         break;
-      case "baja":
+      case "baja-animal":
         const animalId = event.target.elements.animalIdBaja.value.trim();
         this.bajaAnimal(animalId);
         break;
-      case "modif":
+      case "modif-animal":
         this.modifAnimal(event);
         break;
-      case "mostrar":
+      case "mostrar-animal":
         this.mostrarAnimals(event);
         break;
-      case "listar":
+      case "listar-animal":
         this.listarAnimals();
         break;
-      case "eliminar":
+      case "eliminar-animal":
         this.bajaAnimal(event.target[0].id);
         break;
-      case "modificar":
+      case "modificar-animal":
         this.modificarAnimalId(event.target[0].id);
+        break;
     }
   };
 
@@ -256,18 +244,18 @@ export default class AnimalPage {
   render() {
     let homeHtml = `
     
-               <div class="sidebar-secundaria-animal">
+               <div class="sidebar-secundaria">
                     <button data-panel="alta" onclick="showPanelAnimals('alta')">Registrar animal</button>
                     <button data-panel="baja" onclick="showPanelAnimals('baja')">Eliminar animal</button>
                     <button data-panel="modificacion" onclick="showPanelAnimals('modificacion')">Modificar animal</button>
                     <button data-panel="mostrar" onclick="showPanelAnimals('mostrar')">Mostrar animales</button>
-                    <button data-panel="Listar" onclick="showPanelAnimals('Listar')">Listar animales</button>
+                    <button data-panel="listar" onclick="showPanelAnimals('listar')">Listar animales</button>
                 </div>
                 <div class="page-container-animal">
                 </div>
 
             <!-- alta -->
-            <div id="alta" class="alta form-panel-animal" style="display: none;">
+            <div id="alta" class="alta-animal form-panel-animal" style="display: none;">
                 <h2>Registrar animal</h2>
                 <form class="login-form-animal">
 
@@ -281,14 +269,14 @@ export default class AnimalPage {
                     <input type="text" id="animalDescriptionAlta" name="animalDescriptionAlta" required>
 
                     <div class="button-container-animal">
-                        <button type="submit" id="alta" class="alta">Registrar</button>
+                        <button type="submit" id="alta" class="alta-animal">Registrar</button>
                     </div>
 
                 </form>
             </div>
 
             <!-- baja -->
-            <div id="baja" class="baja form-panel-animal" style="display: none;">
+            <div id="baja" class="baja-animal form-panel-animal" style="display: none;">
                 <form class="login-form-animal">
                     <h2>Eliminar animal</h2>
 
@@ -296,19 +284,19 @@ export default class AnimalPage {
                     <input type="text" id="animalIdBaja" name="animalIdBaja" required>
 
                     <div class="button-container-animal">
-                        <button type="submit" id="baja" class="baja">Eliminar</button>
+                        <button type="submit" id="baja" class="baja-animal">Eliminar</button>
                     </div>
 
                 </form>
             </div>
 
             <!-- listar -->
-            <div id="Listar" class="listar form-panel-animal" style="display: none;">
+            <div id="listar" class="listar-animal form-panel-animal" style="display: none;">
               <table id="listado" class="listado">
               </table>
             <form class="login-form-animal">  
               <div class="button-container-animal">
-                <button type="submit" class="listar" id="listar">Listar</button>
+                <button type="submit" class="listar-animal" id="listar">Listar</button>
               </div>
             </form>   
             </div>
@@ -328,7 +316,7 @@ export default class AnimalPage {
                     <input type="text" id="animalDescriptionModif" name="animalDescriptionModif" required>
 
                     <div class="button-container-animal">
-                    <button type="submit" id="modif" class="modif">Modificar</button>
+                    <button type="submit" id="modif" class="modif-animal">Modificar</button>
                     </div>
                 </form>
             </div>
@@ -338,7 +326,7 @@ export default class AnimalPage {
                 <h2>Mostrar animales en el Mapa</h2>
                     <div class="button-container">
                         <form>
-                        <button type="submit" id="mostrar" class="mostrar">Cargar mapa</button>
+                        <button type="submit" id="mostrar" class="mostrar-animal">Cargar mapa</button>
                         </form>
                     </div>
 
@@ -351,6 +339,6 @@ export default class AnimalPage {
   }
 
   addListener() {
-    window.addEventListener("submit", this.handleSubmit);
+    this.container.addEventListener("submit", this.handleSubmit);
   }
 }

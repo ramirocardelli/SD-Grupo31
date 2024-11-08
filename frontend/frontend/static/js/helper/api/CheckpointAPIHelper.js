@@ -1,5 +1,5 @@
-export default class AnimalAPIHelper {
-  static async handleAnimal(action, animalData, accessToken) {
+export default class CheckpointsAPIHelper {
+  static async handleCheckpoint(action, checkpointData, accessToken) {
     try {
       //Configuracion header
       const headers = {
@@ -8,31 +8,35 @@ export default class AnimalAPIHelper {
       };
 
       //Configuracion url - se modifica segun lo establecido con la catedra
-      const url = "http://localhost:3000/API/animals";
+      const url = "http://localhost:3000/API/checkpoints";
 
       let response;
       switch (action) {
         case "post": {
-          response = await axios.post(url, animalData, { headers });
+          response = await axios.post(url, checkpointData, { headers });
           break;
         }
         case "delete": {
-          response = await axios.delete(`${url}/${animalData.id}`, { headers });
+          response = await axios.delete(`${url}/${checkpointData.id}`, {
+            headers,
+          });
           break;
         }
         case "patch": {
-          response = await axios.patch(`${url}/${animalData.id}`, animalData, {
-            headers,
-          }); //se esta mandando el id en el body, chequear si causa problemas
+          response = await axios.patch(
+            `${url}/${checkpointData.id}`,
+            checkpointData,
+            { headers }
+          ); //se esta mandando el id en el body, chequear si causa problemas
           break;
         }
         case "get": {
-          response = await axios.get(`${url}`, animalData, { headers });
+          response = await axios.get(`${url}`, checkpointData, { headers });
           break;
         }
         /*
-                case 'getOneAnimal': {
-                    response = await axios.get(`${url}/${animalData.id}`, animalData, { headers });
+                case 'getOne': {
+                    response = await axios.get(`${url}/${checkpointData.uuid}`, animalData, { headers });
                     return response.data;
                 }
                 */
