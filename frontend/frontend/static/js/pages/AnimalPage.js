@@ -142,11 +142,9 @@ export default class AnimalPage {
     const accessToken = AuthStateHelper.getAccessToken();
     const refreshToken = AuthStateHelper.getRefreshToken();
 
-    console.log(accessToken, refreshToken);
-    console.log(accessToken === refreshToken);
     const response = await AnimalAPIHelper.handleAnimal(
       "get",
-      undefined,
+      "",
       accessToken,
       refreshToken
     );
@@ -169,7 +167,7 @@ export default class AnimalPage {
     tr.appendChild(tr_modificar);
     listado.appendChild(tr);
 
-    response.data.forEach((element) => {
+    response.data?.forEach((element) => {
       const tr = document.createElement("tr");
       // Nombre
       const tr_name = document.createElement("th");

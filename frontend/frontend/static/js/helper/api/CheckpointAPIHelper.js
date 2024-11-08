@@ -31,7 +31,7 @@ export default class CheckpointsAPIHelper {
           break;
         }
         case "get": {
-          response = await axios.get(`${url}`, checkpointData, { headers });
+          response = await axios.get(url, { headers });
           break;
         }
         /*

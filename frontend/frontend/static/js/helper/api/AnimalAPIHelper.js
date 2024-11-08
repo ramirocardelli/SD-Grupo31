@@ -1,8 +1,5 @@
 export default class AnimalAPIHelper {
   static async handleAnimal(action, animalData, accessToken, refreshToken) {
-    console.log("ACCESS");
-    console.log(accessToken);
-    console.log(refreshToken);
     try {
       //Configuracion header
       const headers = {
@@ -30,7 +27,7 @@ export default class AnimalAPIHelper {
           break;
         }
         case "get": {
-          response = await axios.get(`${url}`, animalData, { headers });
+          response = await axios.get(url, { headers });
           break;
         }
         /*
@@ -50,37 +47,6 @@ export default class AnimalAPIHelper {
         ok: true, // Indica que la solicitud fue exitosa
       };
     } catch (error) {
-      if (error.response.status === 401) {
-        // if jwt expired, refresh it
-        console.log("Token expirado, refrescando token...");
-        console.log(accessToken);
-        console.log(refreshToken);
-
-        const headers = {
-          Authorization: `Bearer ${refreshToken}`,
-          "Content-Type": "application/json",
-        };
-
-        console.log(headers);
-
-        const refreshResponse = await axios.post(
-          "http://localhost:3000/API/refresh",
-          {},
-          { headers }
-        );
-
-        console.log("Refresh response:", refreshResponse);
-        if (refreshResponse.status === 200) {
-          localStorage.setItem("accessToken", refreshResponse.data.accessToken);
-          return this.handleAnimal(
-            action,
-            animalData,
-            refreshResponse.data.accessToken,
-            refreshToken
-          );
-        }
-      }
-
       console.error("Error en la solicitud de animales:", error);
       return {
         status: error.response?.status || 500,

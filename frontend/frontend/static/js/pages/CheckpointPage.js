@@ -142,6 +142,7 @@ export default class CheckpointPage {
 
     const response = await CheckpointAPIHelper.handleCheckpoint(
       "get",
+      "",
       accessToken
     );
 
@@ -166,7 +167,7 @@ export default class CheckpointPage {
     tr.appendChild(tr_modificar);
     listado.appendChild(tr);
 
-    response.data.forEach((element) => {
+    response.data?.forEach((element) => {
       const tr = document.createElement("tr");
       // Latitud
       const tr_lat = document.createElement("th");
