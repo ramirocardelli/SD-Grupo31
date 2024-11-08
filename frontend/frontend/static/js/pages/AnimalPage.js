@@ -21,6 +21,7 @@ export default class AnimalPage {
       const animalDesc =
         event.target.elements.animalDescriptionAlta.value.trim();
       const accessToken = AuthStateHelper.getAccessToken();
+      const refreshToken = AuthStateHelper.getRefreshToken();
 
       const animalData = {
         id: animalId,
@@ -32,7 +33,8 @@ export default class AnimalPage {
       const response = await AnimalAPIHelper.handleAnimal(
         "post",
         animalData,
-        accessToken
+        accessToken,
+        refreshToken
       );
 
       if (response.ok) {
@@ -52,6 +54,7 @@ export default class AnimalPage {
   async bajaAnimal(animalId) {
     try {
       const accessToken = AuthStateHelper.getAccessToken();
+      const refreshToken = AuthStateHelper.getRefreshToken();
 
       const animalData = {
         id: animalId,
@@ -61,7 +64,8 @@ export default class AnimalPage {
       const response = await AnimalAPIHelper.handleAnimal(
         "delete",
         animalData,
-        accessToken
+        accessToken,
+        refreshToken
       );
 
       if (response.ok) {
@@ -87,6 +91,7 @@ export default class AnimalPage {
       const animalDesc =
         event.target.elements.animalDescriptionModif.value.trim();
       const accessToken = AuthStateHelper.getAccessToken();
+      const refreshToken = AuthStateHelper.getRefreshToken();
 
       const animalData = {
         id: animalId,
@@ -98,7 +103,8 @@ export default class AnimalPage {
       const response = await AnimalAPIHelper.handleAnimal(
         "patch",
         animalData,
-        accessToken
+        accessToken,
+        refreshToken
       );
 
       if (response.ok) {
@@ -134,8 +140,16 @@ export default class AnimalPage {
 
   async listarAnimals() {
     const accessToken = AuthStateHelper.getAccessToken();
+    const refreshToken = AuthStateHelper.getRefreshToken();
 
-    const response = await AnimalAPIHelper.handleAnimal("get", accessToken);
+    console.log(accessToken, refreshToken);
+    console.log(accessToken === refreshToken);
+    const response = await AnimalAPIHelper.handleAnimal(
+      "get",
+      undefined,
+      accessToken,
+      refreshToken
+    );
 
     const listado = document.getElementById("listado");
     listado.querySelectorAll("tr").forEach((tr) => {
