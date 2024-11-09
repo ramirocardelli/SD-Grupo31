@@ -11,8 +11,8 @@ const char* ssid = "Fibertel WiFi704 2.4GHz";
 const char* password = "00437550930";
 const char* mqtt_server = "192.168.0.247";
 const int mqtt_port = 1883;
-const char* mqtt_user = "admin";    // Usuario para MQTT
-const char* mqtt_password = "admin"; // Contraseña para MQTT
+const char* mqtt_user = "xd";    // Usuario para MQTT
+const char* mqtt_password = "xd"; // Contraseña para MQTT
 
 String macAddress;
 

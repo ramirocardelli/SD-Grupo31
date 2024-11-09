@@ -7,7 +7,7 @@ const options = {
   password: "admin",
   clientID: "adminID",
 };
-const mqttUrl = "mqtt://192.168.240.1";
+const mqttUrl = "mqtt://192.168.0.247:1883";
 const client = mqtt.connect(mqttUrl, options);
 const umbral = -40;
 //mapa = {checkpoint.id,[vector de animales]}
@@ -50,9 +50,14 @@ client.on("error", (err) => {
 function actualizarPosicion(mensaje) {
   try {
     mensaje = JSON.parse(mensaje);
-    console.log("[DEBUG]: " + mensaje);
+    console.log("[DEBUG]: " + JSON.stringify(mensaje));
     const animalesRecibidos = mensaje?.animals;
     const vec = [];
+
+    if (mensaje?.packageNum == 1){
+      //es el primer paquete, hay que limpiar todo el checkpoint
+      clearAnimalsFromCheckpoint(mensaje?.checkpointID)
+    }
 
     animalesRecibidos.forEach((animal) => {
       if (animalExists(animal.id) && animal.rssi >= umbral) {
@@ -70,6 +75,11 @@ function actualizarPosicion(mensaje) {
         posiciones.set(mensaje.checkpointID).animals = vec;
       }
     }
+
+    if (mensaje?.packageNum == mensaje?.totalPackages){
+      //actualizar frontend
+      console.log("frontend actualizado")
+    }
   } catch (e) {}
 }
 
@@ -80,6 +90,20 @@ function deleteAnimalInstanceFromCheckpoints(animalID, checkpointID) {
     }
   });
 }
+
+function clearAnimalsFromCheckpoint(checkpointID) {
+  const checkpoint = posiciones.get(checkpointID);
+  
+  if (checkpoint) {
+    checkpoint.animals = []; // Vacia la lista de animales del checkpoint
+    console.log(`Animales eliminados del checkpoint ${checkpointID}`);
+  } else {
+    console.log(`Checkpoint con ID ${checkpointID} no encontrado`);
+  }
+}
+
+
+
 
 //funcion para obtener el mapa con posiciones
 export function getPosiciones() {
