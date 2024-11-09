@@ -270,8 +270,6 @@ export default class CheckpointPage {
   render() {
     const formHtml = `        <div class="sidebar-secundaria">
             <button data-panel="alta" onclick="showPanelCheckpoint('alta')">Agregar punto de control</button>
-            <button data-panel="baja" onclick="showPanelCheckpoint('baja')">Eliminar punto de control</button>
-            <button data-panel="modificacion" onclick="showPanelCheckpoint('modificacion')">Modificar punto de control</button>
             <button data-panel="mostrar" onclick="showPanelCheckpoint('mostrar')">Mostrar puntos de control</button>
             <button data-panel="listar" onclick="showPanelCheckpoint('listar')">Listar puntos de control</button>
         </div>

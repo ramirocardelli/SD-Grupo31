@@ -20,9 +20,9 @@ export default class LoggedInLayout {
   render() {
     const layoutHtml = `
         <nav id="main-nav" class="sidebar-principal">
-            <a href="/" onclick="route(event)">Home</a>
             <a href="/animals" onclick="route(event)">Gestion Animales</a>
             <a href="/checkpoints" onclick="route(event)">Checkpoints</a>
+            <a href="/logout" onclick="route(event)">Cerrar sesion</a>
         </nav>
         `;
     this.container.innerHTML = layoutHtml;

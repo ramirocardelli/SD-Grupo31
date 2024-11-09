@@ -41,14 +41,17 @@ function loadPage() {
     return new LoginPage("layout-content");
   }
   if (location.pathname === "/") {
-    new HomePage("layout-content");
+    new HomePage("aylout-content");
   } else if (location.pathname === "/animals") {
     new AnimalPage("layout-content");
   } else if (location.pathname === "/checkpoints") {
     new CheckpointPage("layout-content");
+  } else if (location.pathname === "/logout"){
+    localStorage.removeItem("auth")
+    window.location.reload()
   } else {
     new _404Page("layout-content");
-  }
+  } 
 }
 
 window.route = route;

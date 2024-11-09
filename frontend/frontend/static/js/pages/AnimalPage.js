@@ -21,7 +21,6 @@ export default class AnimalPage {
       const animalDesc =
         event.target.elements.animalDescriptionAlta.value.trim();
       const accessToken = AuthStateHelper.getAccessToken();
-      const refreshToken = AuthStateHelper.getRefreshToken();
 
       const animalData = {
         id: animalId,
@@ -39,7 +38,7 @@ export default class AnimalPage {
       if (response.ok) {
         //codigo de exito
         alert("Animal registrado exitosamente.");
-        window.location.reload();
+        event.target.reset()
       } else {
         alert("Error al registrar el animal: " + response.statusText);
       }
@@ -53,7 +52,6 @@ export default class AnimalPage {
   async bajaAnimal(animalId) {
     try {
       const accessToken = AuthStateHelper.getAccessToken();
-      const refreshToken = AuthStateHelper.getRefreshToken();
 
       const animalData = {
         id: animalId,
@@ -69,7 +67,7 @@ export default class AnimalPage {
       if (response.ok) {
         //codigo de exito
         alert("Animal eliminado exitosamente.");
-        window.location.reload();
+        this.listDevices();
       } else {
         alert("Error al eliminar el animal: " + response.statusText);
       }
@@ -89,7 +87,6 @@ export default class AnimalPage {
       const animalDesc =
         event.target.elements.animalDescriptionModif.value.trim();
       const accessToken = AuthStateHelper.getAccessToken();
-      const refreshToken = AuthStateHelper.getRefreshToken();
 
       const animalData = {
         id: animalId,
@@ -107,37 +104,38 @@ export default class AnimalPage {
       if (response.ok) {
         //codigo de exito
         alert("Animal modificado exitosamente.");
-        window.location.reload();
+        this.listDevices();
       } else {
         alert("Error al modificar el animal: " + response.statusText);
       }
     } catch (error) {
+      console.log(error)
       alert("Ocurrió un error al modificar el animal.");
     }
   }
 
   //TODO
-  async mostrarAnimals(event) {
-    event.target.remove();
-    const map = L.map("map").setView(
-      [-38.01200620443375, -57.581233775103186],
-      13
-    );
-
-    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    }).addTo(map);
-
-    L.marker([-38.01200620443375, -57.581233775103186])
-      .addTo(map)
-      .bindPopup("A pretty CSS popup.<br> Easily customizable.")
-      .openPopup();
+  async showAnimals() {
+    try{
+      const map = L.map("map").setView(
+        [-38.01200620443375, -57.581233775103186],
+        13
+      );
+  
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(map);
+  
+      L.marker([-38.01200620443375, -57.581233775103186])
+        .addTo(map)
+        .bindPopup("A pretty CSS popup.<br> Easily customizable.")
+        .openPopup();
+    }catch(e){}
   }
 
-  async listarAnimals() {
+  async listDevices() {
     const accessToken = AuthStateHelper.getAccessToken();
-    const refreshToken = AuthStateHelper.getRefreshToken();
 
     const response = await AnimalAPIHelper.handleAnimal("get", "", accessToken);
 
@@ -198,6 +196,7 @@ export default class AnimalPage {
       tr.appendChild(tr_modificar_rh);
       listado.appendChild(tr);
     });
+    showPanelAnimals("listar");
   }
 
   //Manejo de las acciones
@@ -215,12 +214,6 @@ export default class AnimalPage {
         break;
       case "modif-animal":
         this.modifAnimal(event);
-        break;
-      case "mostrar-animal":
-        this.mostrarAnimals(event);
-        break;
-      case "listar-animal":
-        this.listarAnimals();
         break;
       case "eliminar-animal":
         this.bajaAnimal(event.target[0].id);
@@ -249,11 +242,9 @@ export default class AnimalPage {
     let homeHtml = `
     
                <div class="sidebar-secundaria">
-                    <button data-panel="alta" id="reg-animal-button" onclick="showPanelAnimals('alta')">Registrar animal</button>
-                    <button data-panel="baja" onclick="showPanelAnimals('baja')">Eliminar animal</button>
-                    <button data-panel="modificacion" onclick="showPanelAnimals('modificacion')">Modificar animal</button>
-                    <button data-panel="mostrar" onclick="showPanelAnimals('mostrar')">Mostrar animales</button>
-                    <button data-panel="listar" onclick="showPanelAnimals('listar')">Listar animales</button>
+                    <button data-panel="alta" id="reg-animals-button" onclick="showPanelAnimals('alta')">Registrar animal</button>
+                    <button data-panel="mostrar" id="show-animals-button" onclick="showPanelAnimals('mostrar')">Mostrar animales</button>
+                    <button data-panel="listar" id="list-animals-button" >Listar animales</button>
                 </div>
                 <div class="page-container-animal">
                 </div>
@@ -305,9 +296,6 @@ export default class AnimalPage {
               <table id="listado" class="listado">
               </table>
             <form class="login-form-animal">  
-              <div class="button-container-animal">
-                <button type="submit" class="listar-animal" id="listar">Listar</button>
-              </div>
             </form>   
             </div>
 
@@ -334,12 +322,6 @@ export default class AnimalPage {
             <!-- Mostrar animales TODO MAPA -->
             <div id="mostrar" class="form-panel-animal map-panel-animals" style="display: none;">
                 <h2>Mostrar animales en el Mapa</h2>
-                    <div class="button-container">
-                        <form>
-                        <button type="submit" id="mostrar" class="mostrar-animal">Cargar mapa</button>
-                        </form>
-                    </div>
-
                      <div id="map"></div>
 
                     </div>
@@ -350,11 +332,12 @@ export default class AnimalPage {
 
   addListener() {
     this.container.addEventListener("submit", this.handleSubmit);
-
-    const accessToken = AuthStateHelper.getAccessToken();
     document
-      .getElementById("reg-animal-button")
+      .getElementById("reg-animals-button")
       .addEventListener("click", this.listAvailableDevices);
+    document.getElementById("list-animals-button").addEventListener("click", this.listDevices)
+
+    document.getElementById("show-animals-button").addEventListener("click",this.showAnimals)
   }
 
   listAvailableDevices = async () => {
@@ -364,7 +347,6 @@ export default class AnimalPage {
       "",
       accessToken
     );
-    console.log(response);
 
     const select = document.getElementById("list-mac-addr");
     if (response.ok) {
