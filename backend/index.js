@@ -18,9 +18,9 @@ import "dotenv/config";
 import { login } from "./controllers/user.controller.js";
 import {
   connectToBroker,
-  getPosiciones,
-  getAvilableAnimals,
-  deleteAvilableDevice,
+  getPositions,
+  getAvailableAnimals,
+  deleteAvailableDevice,
 } from "./controllers/mqtt.controller.js";
 import express from "express";
 import cors from "cors";
@@ -62,7 +62,7 @@ const server = http.createServer((req, res) => {
     pathArray.shift(); //asi saco /API
   } else {
     res.writeHead(400, "Path incorrecto");
-    return;
+    return res.end();
   }
 
   req.on("data", (chunk) => {
@@ -77,7 +77,7 @@ const server = http.createServer((req, res) => {
         JSON.stringify({
           path: req.path,
           url: req.url,
-          metodo: req.method,
+          method: req.method,
           body: body,
         })
     );
@@ -105,7 +105,7 @@ const server = http.createServer((req, res) => {
     // Rutas privadas
 
     if (pathArray[0] === "availableDevices") {
-      onAvilableDevices(req, res, pathArray);
+      onAvailableDevices(req, res, pathArray);
       return;
     }
 
@@ -193,9 +193,6 @@ function onLogin(req, res, body, pathArray) {
     res.writeHead(401, e.message);
     return res.end();
   }
-
-  res.writeHead(404, "Método invalido");
-  return res.end();
 }
 
 //un hora dura el acces token
@@ -210,7 +207,7 @@ function refreshToken(username) {
 
 function tokenGenerator(username, seconds) {
   const data = {
-    username: username,
+    username,
     //lo que le sumamos es la cantidad de segundos en la que es valido
     exp: Math.floor(Date.now() / 1000) + seconds,
   };
@@ -253,7 +250,7 @@ function onRefresh(req, res, body, pathArray) {
   }
 }
 
-function onAvilableDevices(req, res, pathArray) {
+function onAvailableDevices(req, res, pathArray) {
   if (req.method !== "GET") {
     res.writeHead(405, "Metodo invalido");
     return res.end();
@@ -265,7 +262,7 @@ function onAvilableDevices(req, res, pathArray) {
   }
   try {
     res.writeHead(200);
-    return res.end(JSON.stringify(getAvilableAnimals()));
+    return res.end(JSON.stringify(getAvailableAnimals()));
   } catch (e) {
     res.writeHead(401, e.message);
     return res.end();
@@ -295,7 +292,7 @@ function onAnimals(req, res, body, pathArray) {
       try {
         console.log("entre antes de addAnimal");
         addAnimal(id, name, description);
-        deleteAvilableDevice(id);
+        deleteAvailableDevice(id);
         res.writeHead(200, "Animal añadido con éxito");
         return res.end();
       } catch (e) {
@@ -313,7 +310,7 @@ function onAnimals(req, res, body, pathArray) {
   if (pathArray[1] === "position") {
     if (req.method === "GET") {
       res.writeHead(200);
-      return res.end(JSON.stringify(getPosiciones()));
+      return res.end(JSON.stringify(getPositions()));
     }
     // Solo get viene con /position, los demas son metodos invalidos
     res.writeHead(405, "Metodo invalido");

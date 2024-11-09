@@ -5,16 +5,13 @@ import {
   deleteAnimal,
   modifyAnimal,
 } from "../repositories/animals.repositories.js";
-import { v4 as uuidv4 } from "uuid";
 
 export const getAllAnimals = () => {
-  const result = getAnimals();
-  return result;
+  return getAnimals();
 };
 
 export const getAnimal = (id) => {
-  const result = getOneAnimal(id);
-  return result;
+  return getOneAnimal(id);
 };
 
 //se intenta agregar un animal, preguntando antes si existe, si existiera
@@ -22,10 +19,11 @@ export const getAnimal = (id) => {
 //agrega el animal
 export const addAnimal = (id, name, description) => {
   const animal = {
-    id: id,
-    name: name,
-    description: description,
+    id,
+    name,
+    description,
   };
+
   if (!animalExists(id)) {
     writeAnimals(animal);
   } else {
@@ -35,9 +33,9 @@ export const addAnimal = (id, name, description) => {
 
 export const modAnimal = (id, name, description) => {
   const animal = {
-    id: id,
-    name: name,
-    description: description,
+    id,
+    name,
+    description,
   };
   if (animalExists(id)) {
     modifyAnimal(animal);

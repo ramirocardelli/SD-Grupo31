@@ -15,7 +15,7 @@ export const getUsers = () => {
 };
 
 export const writeUser = (user) => {
-  let usuarios = getUsers();
-  usuarios.push(user);
-  writeFileSync(FILE_PATH, JSON.stringify(usuarios, null, 2));
+  const users = getUsers();
+  users.push(user);
+  writeFileSync(FILE_PATH, JSON.stringify(users, null, 2));
 };
