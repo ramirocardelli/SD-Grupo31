@@ -5,16 +5,13 @@ import {
   deleteCheckpoint,
   modifyCheckpoint,
 } from "../repositories/checkpoints.repositories.js";
-import { v4 as uuidv4 } from "uuid";
 
 export const getAllCheckpoints = () => {
-  const result = getCheckpoints();
-  return result;
+  return getCheckpoints();
 };
 
 export const getCheckpoint = (id) => {
-  const result = getOneCheckpoint(id);
-  return result;
+  return getOneCheckpoint(id);
 };
 
 //se intenta agregar un checkpoint, preguntando antes si existe, si existiera
@@ -22,10 +19,10 @@ export const getCheckpoint = (id) => {
 //agrega el checkpoint
 export const addCheckpoint = (id, lat, long, description) => {
   const checkpoint = {
-    id: id,
-    lat: lat,
-    long: long,
-    description: description,
+    id,
+    lat,
+    long,
+    description,
   };
   if (!checkpointExists(id)) {
     writeCheckpoints(checkpoint);
@@ -36,10 +33,10 @@ export const addCheckpoint = (id, lat, long, description) => {
 
 export const modCheckpoint = (id, lat, long, description) => {
   const checkpoint = {
-    id: id,
-    lat: lat,
-    long: long,
-    description: description,
+    id,
+    lat,
+    long,
+    description,
   };
   if (checkpointExists(id)) {
     modifyCheckpoint(checkpoint);

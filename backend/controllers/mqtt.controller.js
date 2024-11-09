@@ -1,28 +1,30 @@
 import mqtt from "mqtt";
 import { getAllCheckpoints } from "./checkpoints.controller.js";
 import { animalExists } from "./animals.controller.js";
-const avilableDevices = [];
+
+let availableDevices = [];
 const options = {
   username: "admin",
   password: "admin",
   clientID: "adminID",
 };
+
 const mqttUrl = "mqtt://192.168.0.247:1883";
 const client = mqtt.connect(mqttUrl, options);
-const umbral = -40;
+const threshold = -40;
 //mapa = {checkpoint.id,[vector de animales]}
-const posiciones = new Map();
+const positionsMap = new Map();
 
 //Creamos un mapa para cada checkpoint y el listado VACIO de los animales que pertencen a el
 const checkpoints = getAllCheckpoints();
 checkpoints.forEach((checkpoint) => {
-  const datos = {
+  const data = {
     lat: checkpoint.lat,
     long: checkpoint.long,
     description: checkpoint.description,
     animals: [],
   };
-  posiciones.set(checkpoint.id, datos);
+  positionsMap.set(checkpoint.id, data);
 });
 
 export function connectToBroker() {
@@ -38,7 +40,7 @@ export function connectToBroker() {
 client.on("message", (topic, message) => {
   const messageString = message.toString();
   if (topic === "checkpoint") {
-    actualizarPosicion(messageString);
+    updatePosition(messageString);
   }
 });
 
@@ -47,77 +49,76 @@ client.on("error", (err) => {
 });
 
 //si llega un mensaje con un checkpoint y los animales que pertencen a el, se actualiza en el mapa
-function actualizarPosicion(mensaje) {
+function updatePosition(message) {
   try {
-    mensaje = JSON.parse(mensaje);
-    console.log("[DEBUG]: " + JSON.stringify(mensaje));
-    const animalesRecibidos = mensaje?.animals;
-    const vec = [];
+    message = JSON.parse(message);
+    console.log("[DEBUG]: " + JSON.stringify(message));
+    const receivedAnimals = message?.animals;
+    const arr = [];
 
-    if (mensaje?.packageNum == 1){
+    if (message?.packageNum == 1) {
       //es el primer paquete, hay que limpiar todo el checkpoint
-      clearAnimalsFromCheckpoint(mensaje?.checkpointID)
+      clearCheckpointAnimals(message?.checkpointId);
     }
 
-    animalesRecibidos.forEach((animal) => {
-      if (animalExists(animal.id) && animal.rssi >= umbral) {
-        deleteAnimalInstanceFromCheckpoints(animal.id, mensaje.checkpointID);
-        vec.push(animal);
+    receivedAnimals.forEach((animal) => {
+      if (animalExists(animal.id) && animal.rssi >= threshold) {
+        deleteAnimalInstanceFromCheckpoints(animal.id, message.checkpointId);
+        arr.push(animal);
       } else {
-        if (!animalExists(animal.id) && !avilableDevices.includes(animal.id)) {
-          avilableDevices.push(animal.id);
+        if (!animalExists(animal.id) && !availableDevices.includes(animal.id)) {
+          availableDevices.push(animal.id);
         }
       }
     });
 
-    if (mensaje?.checkpointID) {
-      if (posiciones.has(mensaje.checkpointID)) {
-        posiciones.set(mensaje.checkpointID).animals = vec;
+    if (message?.checkpointId) {
+      if (positionsMap.has(message.checkpointId)) {
+        positionsMap.set(message.checkpointId).animals = arr;
       }
     }
 
-    if (mensaje?.packageNum == mensaje?.totalPackages){
+    if (message?.packageNum == message?.totalPackages) {
       //actualizar frontend
-      console.log("frontend actualizado")
+      console.log("frontend actualizado");
     }
   } catch (e) {}
 }
 
-function deleteAnimalInstanceFromCheckpoints(animalID, checkpointID) {
-  posiciones.forEach((value, key) => {
-    if (key != checkpointID) {
-      value.animals = value.animals.filter((item) => item.id != animalID);
+function deleteAnimalInstanceFromCheckpoints(animalId, checkpointId) {
+  positionsMap.checkpointId((value, key) => {
+    if (key != checkpointId) {
+      value.animals = value.animals.filter((item) => item.id != animalId);
     }
   });
 }
 
-function clearAnimalsFromCheckpoint(checkpointID) {
-  const checkpoint = posiciones.get(checkpointID);
-  
+function clearCheckpointAnimals(checkpointId) {
+  const checkpoint = positionsMap.get(checkpointId);
+
   if (checkpoint) {
     checkpoint.animals = []; // Vacia la lista de animales del checkpoint
-    console.log(`Animales eliminados del checkpoint ${checkpointID}`);
+    console.log(`Animales eliminados del checkpoint ${checkpointId}`);
   } else {
-    console.log(`Checkpoint con ID ${checkpointID} no encontrado`);
+    console.log(`Checkpoint con ID ${checkpointId} no encontrado`);
   }
 }
 
-
-
-
-//funcion para obtener el mapa con posiciones
-export function getPosiciones() {
-  return posiciones;
+// Funcion para obtener el mapa con posiciones
+export function getPositions() {
+  return positionsMap;
 }
-//funcion para obtener los animales registrables
-export function getAvilableAnimals() {
+
+// Funcion para obtener los animales registrables
+export function getAvailableAnimals() {
   const obj = {
-    devices: avilableDevices,
+    devices: availableDevices,
   };
   return obj;
 }
 
-export function deleteAvilableDevice(id){
-    const newArray = avilableDevices.filter(id_elemento => !(id_elemento==id));
-    avilableDevices = newArray
+export function deleteAvailableDevice(id) {
+  availableDevices = availableDevices.filter(
+    (id_elemento) => !(id_elemento == id)
+  );
 }

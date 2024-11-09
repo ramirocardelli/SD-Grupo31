@@ -1,20 +1,18 @@
 import { getUsers } from "../repositories/users.repositories.js";
-import { v4 as uuidv4 } from "uuid";
 import { createHash } from "crypto";
 
 export const login = (username, password) => {
   password = createHash("sha256").update(password).digest("hex");
-  const usuario = {
-    username: username,
-    password: password,
+  const user = {
+    username,
+    password,
   };
 
-  const registrado = getUser(usuario);
-  if (registrado) {
-    if (registrado.password != password)
-      throw new Error("contraseña incorrecta");
+  const registered = getUser(user);
+  if (registered) {
+    if (registered.password != password) throw new Error("Incorrect password");
   } else {
-    throw new Error("usuario inexistente");
+    throw new Error("User not found");
   }
 };
 
@@ -38,7 +36,5 @@ export const register = (username, pass) => {
 */
 
 function getUser(user) {
-  const users = getUsers();
-
-  return users.find((u) => u.username === user.username);
+  return getUsers().find((u) => u.username === user.username);
 }
