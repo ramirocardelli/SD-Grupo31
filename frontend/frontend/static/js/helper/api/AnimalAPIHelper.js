@@ -1,6 +1,10 @@
 import { CONSTANTS } from "../../constants/constants.js";
 export default class AnimalAPIHelper {
-  static async handleAnimal(action, animalData, accessToken, refreshToken) {
+  static async requestAvailableDevices() {
+    return await this.handleAnimal("getAvailableDevices");
+  }
+
+  static async handleAnimal(action, animalData, accessToken) {
     try {
       //Configuracion header
       const headers = {
@@ -29,6 +33,13 @@ export default class AnimalAPIHelper {
         }
         case "get": {
           response = await axios.get(url, { headers });
+          break;
+        }
+        case "getAvailableDevices": {
+          const url_api = CONSTANTS.IP;
+          response = await axios.get(`${url_api}/availableDevices`, {
+            headers,
+          });
           break;
         }
         /*

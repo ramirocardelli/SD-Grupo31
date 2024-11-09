@@ -8,9 +8,6 @@ const app = express();
 
 app.use(cors());
 
-app.post("/login", (req, res) => {
-  console.log("Hola!");
-});
 app.use(bodyParser.json());
 app.use(staticRoutes);
 

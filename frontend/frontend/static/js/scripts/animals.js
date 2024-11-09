@@ -1,6 +1,3 @@
-//import AnimalAPIHelper from '../helper/api/AnimalAPIHelper.js';
-//import AuthStateHelper from '../helper/state/AuthStateHelper.js';
-
 function showPanelAnimals(panelId) {
   // Oculta todos los paneles
   const panels = document.querySelectorAll(
@@ -28,6 +25,12 @@ function showPanelAnimals(panelId) {
       button.classList.remove("active");
     }
   });
+}
+
+function actualizarId() {
+  var select = document.getElementById("list-mac-addr");
+  var input = document.getElementById("animalIdAlta");
+  input.value = select.value; // Asigna el valor del select al input
 }
 
 //SEND ALTA a la API (POST)

@@ -33,8 +33,7 @@ export default class AnimalPage {
       const response = await AnimalAPIHelper.handleAnimal(
         "post",
         animalData,
-        accessToken,
-        refreshToken
+        accessToken
       );
 
       if (response.ok) {
@@ -64,8 +63,7 @@ export default class AnimalPage {
       const response = await AnimalAPIHelper.handleAnimal(
         "delete",
         animalData,
-        accessToken,
-        refreshToken
+        accessToken
       );
 
       if (response.ok) {
@@ -103,8 +101,7 @@ export default class AnimalPage {
       const response = await AnimalAPIHelper.handleAnimal(
         "patch",
         animalData,
-        accessToken,
-        refreshToken
+        accessToken
       );
 
       if (response.ok) {
@@ -142,12 +139,7 @@ export default class AnimalPage {
     const accessToken = AuthStateHelper.getAccessToken();
     const refreshToken = AuthStateHelper.getRefreshToken();
 
-    const response = await AnimalAPIHelper.handleAnimal(
-      "get",
-      "",
-      accessToken,
-      refreshToken
-    );
+    const response = await AnimalAPIHelper.handleAnimal("get", "", accessToken);
 
     const listado = document.getElementById("listado");
     listado.querySelectorAll("tr").forEach((tr) => {
@@ -257,7 +249,7 @@ export default class AnimalPage {
     let homeHtml = `
     
                <div class="sidebar-secundaria">
-                    <button data-panel="alta" onclick="showPanelAnimals('alta')">Registrar animal</button>
+                    <button data-panel="alta" id="reg-animal-button" onclick="showPanelAnimals('alta')">Registrar animal</button>
                     <button data-panel="baja" onclick="showPanelAnimals('baja')">Eliminar animal</button>
                     <button data-panel="modificacion" onclick="showPanelAnimals('modificacion')">Modificar animal</button>
                     <button data-panel="mostrar" onclick="showPanelAnimals('mostrar')">Mostrar animales</button>
@@ -270,6 +262,12 @@ export default class AnimalPage {
             <div id="alta" class="alta-animal form-panel-animal" style="display: none;">
                 <h2>Registrar animal</h2>
                 <form class="login-form-animal">
+
+                    <!-- Listar animales disponibles -->
+                    <label for="list-mac-addr">Animales disponibles:</label>
+                    <select id="list-mac-addr" name="list-mac-addr" onchange="actualizarId()">
+                        <option selected="true" disabled="disabled">Collares disponibles</option>
+                    </select>
 
                     <label for="identificador">Número de identificador de collar:</label>
                     <input type="text" id="animalIdAlta" name="animalIdAlta" required>
@@ -352,5 +350,34 @@ export default class AnimalPage {
 
   addListener() {
     this.container.addEventListener("submit", this.handleSubmit);
+
+    const accessToken = AuthStateHelper.getAccessToken();
+    document
+      .getElementById("reg-animal-button")
+      .addEventListener("click", this.listAvailableDevices);
   }
+
+  listAvailableDevices = async () => {
+    const accessToken = AuthStateHelper.getAccessToken();
+    const response = await AnimalAPIHelper.handleAnimal(
+      "getAvailableDevices",
+      "",
+      accessToken
+    );
+    console.log(response);
+
+    const select = document.getElementById("list-mac-addr");
+    if (response.ok) {
+      response.data?.devices?.forEach((device) => {
+        const option = document.createElement("option");
+        option.value = device;
+        option.textContent = device;
+        select.appendChild(option);
+      });
+    } else {
+      alert(
+        "Error al listar los dispositivos disponibles: " + response.statusText
+      );
+    }
+  };
 }
