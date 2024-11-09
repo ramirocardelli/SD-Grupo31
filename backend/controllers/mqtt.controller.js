@@ -65,7 +65,7 @@ function actualizarPosicion(mensaje) {
         vec.push(animal);
       } else {
         if (!animalExists(animal.id) && !avilableDevices.includes(animal.id)) {
-          avilableDevices.push(animal.id, mensaje.checkpointID);
+          avilableDevices.push(animal.id);
         }
       }
     });
