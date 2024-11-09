@@ -19,7 +19,7 @@ import { login } from "./controllers/user.controller.js";
 import {
   connectToBroker,
   getPosiciones,
-  getAvilableAnimals
+  getAvilableAnimals,
 } from "./controllers/mqtt.controller.js";
 import express from "express";
 import cors from "cors";
@@ -36,32 +36,33 @@ app.use(cors());
 
 const setCorsHeaders = (res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PATCH, OPTIONS");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, DELETE, PATCH, OPTIONS"
+  );
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 };
 
 // Raíz de la API
 const server = http.createServer((req, res) => {
-  
   if (req.method === "OPTIONS") {
     setCorsHeaders(res);
     res.writeHead(204); // No Content
     return res.end();
   }
-  
+
   // Sea el tipo de solicitud que sea, siempre se intentara primero, reeconstruir el cuerpo de la solicitud
   let body = "";
 
   // Separamos el path para poder obtener la direccion principal y el recurso
   const pathArray = req.url.split("/");
   pathArray.shift();
-  if (pathArray[0]=="API"){
+  if (pathArray[0] == "API") {
     pathArray.shift(); //asi saco /API
-  }else{
-    res.writeHead(400,"Path incorrecto");
+  } else {
+    res.writeHead(400, "Path incorrecto");
     return;
   }
-  
 
   req.on("data", (chunk) => {
     body = body + chunk;
@@ -70,7 +71,15 @@ const server = http.createServer((req, res) => {
   req.on("end", () => {
     setCorsHeaders(res); // Configura los encabezados CORS para todas las respuestas
     res.setHeader("Content-Type", "application/json");
-    console.log("[DEBUG]: " + JSON.stringify({ path: req.path, url: req.url, metodo: req.method, body: body }))
+    console.log(
+      "[DEBUG]: " +
+        JSON.stringify({
+          path: req.path,
+          url: req.url,
+          metodo: req.method,
+          body: body,
+        })
+    );
     const parsedBody = body != "" ? JSON.parse(body) : null;
 
     // Rutas públicas
@@ -94,8 +103,8 @@ const server = http.createServer((req, res) => {
 
     // Rutas privadas
 
-    if (pathArray[0]=== "availableDevices"){
-      onAvilableDevices(req,res,pathArray)
+    if (pathArray[0] === "availableDevices") {
+      onAvilableDevices(req, res, pathArray);
       return;
     }
 
@@ -132,18 +141,22 @@ function tokenIsValid(req) {
 
 // Credenciales vienen en el header en formato 64.
 function onLogin(req, res, body, pathArray) {
+  if (req.method !== "POST") {
+    res.writeHead(405, "Metodo invalido");
+    return res.end();
+  }
 
-  const authHeader = req.headers['authorization'];
+  const authHeader = req.headers["authorization"];
 
   if (!authHeader) {
-    return res.status(401, 'No se proporcionó encabezado de autorización' );
+    return res.status(401, "No se proporcionó encabezado de autorización");
   }
 
   if (pathArray.length > 1) {
-    return res.status(401,'Path equivocado');
+    return res.status(401, "Path equivocado");
   }
 
-  const base64Credentials = authHeader.split(' ')[1];
+  const base64Credentials = authHeader.split(" ")[1];
   const credentials = Buffer.from(base64Credentials, "base64")
     .toString("ascii")
     .split(":");
@@ -152,7 +165,7 @@ function onLogin(req, res, body, pathArray) {
   const password = credentials[1];
 
   // verificar que login no venga con id
-  if (pathArray.length > 1 ) {
+  if (pathArray.length > 1) {
     res.writeHead(404, "Path invalido");
     return res.end();
   }
@@ -162,24 +175,22 @@ function onLogin(req, res, body, pathArray) {
     return res.end();
   }
 
-  if (req.method === "POST") {
-    try {
-      // Si el logeo es correcto le devolvemos al usuario su token JWT
-      // De lo contrario se lanza una excepcion
-      // O por cada accion refrescar el token
-      login(username, password);
+  try {
+    // Si el logeo es correcto le devolvemos al usuario su token JWT
+    // De lo contrario se lanza una excepcion
+    // O por cada accion refrescar el token
+    login(username, password);
 
-      const tokens = {
-        accessToken: accessToken(username),
-        refreshToken: refreshToken(username),
-      };
+    const tokens = {
+      accessToken: accessToken(username),
+      refreshToken: refreshToken(username),
+    };
 
-      res.writeHead(200);
-      return res.end(JSON.stringify(tokens));
-    } catch (e) {
-      res.writeHead(401, e.message);
-      return res.end();
-    }
+    res.writeHead(200);
+    return res.end(JSON.stringify(tokens));
+  } catch (e) {
+    res.writeHead(401, e.message);
+    return res.end();
   }
 
   res.writeHead(404, "Método invalido");
@@ -206,6 +217,11 @@ function tokenGenerator(username, seconds) {
 }
 
 function onRefresh(req, res, body, pathArray) {
+  if (req.method !== "POST") {
+    res.writeHead(405, "Metodo invalido");
+    return res.end();
+  }
+
   const refreshToken = req.headers["authorization"]?.split(" ")[1];
 
   // verificar que refresh no venga con id
@@ -236,23 +252,26 @@ function onRefresh(req, res, body, pathArray) {
   }
 }
 
-function onAvilableDevices(req,res,pathArray){
+function onAvilableDevices(req, res, pathArray) {
+  if (req.method !== "GET") {
+    res.writeHead(405, "Metodo invalido");
+    return res.end();
+  }
+
   if (pathArray.length > 1) {
     res.writeHead(404, "Path invalido");
     return res.end();
   }
-  try{
-    res.writeHead(200)
+  try {
+    res.writeHead(200);
     res.end(JSON.stringify(getAvilableAnimals()));
-  }catch(e){
+  } catch (e) {
     res.writeHead(401, e.message);
     return res.end();
   }
-
 }
 
 function onAnimals(req, res, body, pathArray) {
-
   // Solo delete, patch y get vienen con id
   // Si el get viene sin id, devolvemos todos los animales
   if (!pathArray[1]) {
@@ -261,6 +280,9 @@ function onAnimals(req, res, body, pathArray) {
       res.writeHead(200);
       return res.end(JSON.stringify(animals));
     }
+
+    res.writeHead(405, "Metodo invalido");
+    return res.end();
   }
 
   // Si el get viene con el id, devolvemos solo ese animal
@@ -271,7 +293,7 @@ function onAnimals(req, res, body, pathArray) {
       return res.end(JSON.stringify(getPosiciones()));
     }
     // Solo get viene con /position, los demas son metodos invalidos
-    res.writeHead(404, "Metodo invalido");
+    res.writeHead(405, "Metodo invalido");
     return res.end();
   }
 
@@ -364,6 +386,9 @@ function onCheckpoints(req, res, body, pathArray) {
       res.writeHead(200);
       return res.end(JSON.stringify(checkpoints));
     }
+
+    res.writeHead(405, "Metodo invalido");
+    return res.end();
   }
 
   if (req.method === "GET") {
