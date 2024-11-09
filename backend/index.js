@@ -20,6 +20,7 @@ import {
   connectToBroker,
   getPosiciones,
   getAvilableAnimals,
+  deleteAvilableDevice,
 } from "./controllers/mqtt.controller.js";
 import express from "express";
 import cors from "cors";
@@ -294,6 +295,7 @@ function onAnimals(req, res, body, pathArray) {
       try {
         console.log("entre antes de addAnimal");
         addAnimal(id, name, description);
+        deleteAvilableDevice(id);
         res.writeHead(200, "Animal añadido con éxito");
         return res.end();
       } catch (e) {

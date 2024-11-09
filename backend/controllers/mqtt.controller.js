@@ -116,3 +116,8 @@ export function getAvilableAnimals() {
   };
   return obj;
 }
+
+export function deleteAvilableDevice(id){
+    const newArray = avilableDevices.filter(id_elemento => !(id_elemento==id));
+    avilableDevices = newArray
+}
