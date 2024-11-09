@@ -40,7 +40,7 @@ export default class CheckpointPage {
       if (response.ok) {
         //codigo de exito
         alert("checkpoint registrado exitosamente.");
-        window.location.reload();
+        event.target.reset()
       } else {
         alert("Error al registrar el checkpoint: " + response.statusText);
       }
@@ -69,7 +69,7 @@ export default class CheckpointPage {
       if (response.ok) {
         //codigo de exito
         alert("checkpoint eliminado exitosamente.");
-        window.location.reload();
+        listarCheckpoints()
       } else {
         alert("Error al eliminar el checkpoint: " + response.statusText);
       }
@@ -109,32 +109,13 @@ export default class CheckpointPage {
       if (response.ok) {
         //codigo de exito
         alert("checkpoint modificado exitosamente.");
-        window.location.reload();
+        listarCheckpoints()
       } else {
         alert("Error al modificar el checkpoint: " + response.statusText);
       }
     } catch (error) {
       alert("Ocurrió un error al modificar el checkpoint.");
     }
-  }
-
-  //TODO
-  async mostrarCheckpoints(event) {
-    event.target.remove();
-    const map = L.map("map").setView(
-      [-38.01200620443375, -57.581233775103186],
-      13
-    );
-
-    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    }).addTo(map);
-
-    L.marker([-38.01200620443375, -57.581233775103186])
-      .addTo(map)
-      .bindPopup("A pretty CSS popup.<br> Easily customizable.")
-      .openPopup();
   }
 
   async listarCheckpoints() {
@@ -213,6 +194,7 @@ export default class CheckpointPage {
       tr.appendChild(tr_modificar_rh);
       listado.appendChild(tr);
     });
+    showPanelAnimals("listar");
   }
 
   //Manejo de las acciones
@@ -231,12 +213,6 @@ export default class CheckpointPage {
         break;
       case "modif-checkpoint":
         this.modifCheckpoint(event);
-        break;
-      case "mostrar-checkpoint":
-        this.mostrarCheckpoints(event);
-        break;
-      case "listar-checkpoint":
-        this.listarCheckpoints();
         break;
       case "eliminar-checkpoint":
         this.bajaCheckpoint(event.target[0].id);
@@ -270,8 +246,7 @@ export default class CheckpointPage {
   render() {
     const formHtml = `        <div class="sidebar-secundaria">
             <button data-panel="alta" onclick="showPanelCheckpoint('alta')">Agregar punto de control</button>
-            <button data-panel="mostrar" onclick="showPanelCheckpoint('mostrar')">Mostrar puntos de control</button>
-            <button data-panel="listar" onclick="showPanelCheckpoint('listar')">Listar puntos de control</button>
+            <button data-panel="listar" id="list-checkpoints-button" >Listar puntos de control</button>
         </div>
 
         <div class="page-container-check">
@@ -368,5 +343,6 @@ export default class CheckpointPage {
 
   addListener() {
     this.container.addEventListener("submit", this.handleSubmit);
+    document.getElementById("list-checkpoints-button").addEventListener("click",this.listarCheckpoints());
   }
 }
