@@ -264,7 +264,7 @@ function onAvilableDevices(req, res, pathArray) {
   }
   try {
     res.writeHead(200);
-    res.end(JSON.stringify(getAvilableAnimals()));
+    return res.end(JSON.stringify(getAvilableAnimals()));
   } catch (e) {
     res.writeHead(401, e.message);
     return res.end();
@@ -279,6 +279,27 @@ function onAnimals(req, res, body, pathArray) {
       const animals = getAllAnimals();
       res.writeHead(200);
       return res.end(JSON.stringify(animals));
+    }
+
+    if (req.method === "POST") {
+      const id = body?.id;
+      const name = body?.name || "Animal sin nombre";
+      const description = body?.description || "Animal sin descripción";
+
+      if (!id) {
+        res.writeHead(400, "Credenciales del animal insuficientes");
+        return res.end();
+      }
+
+      try {
+        console.log("entre antes de addAnimal");
+        addAnimal(id, name, description);
+        res.writeHead(200, "Animal añadido con éxito");
+        return res.end();
+      } catch (e) {
+        res.writeHead(400, e.message);
+        return res.end();
+      }
     }
 
     res.writeHead(405, "Metodo invalido");
@@ -351,27 +372,6 @@ function onAnimals(req, res, body, pathArray) {
     }
   }
 
-  if (req.method === "POST" && !pathArray[1]) {
-    const id = body?.id;
-    const name = body?.name || "Animal sin nombre";
-    const description = body?.description || "Animal sin descripción";
-
-    if (!id) {
-      res.writeHead(400, "Credenciales del animal insuficientes");
-      return res.end();
-    }
-
-    try {
-      console.log("entre antes de addAnimal");
-      addAnimal(id, name, description);
-      res.writeHead(200, "Animal añadido con éxito");
-      return res.end();
-    } catch (e) {
-      res.writeHead(400, e.message);
-      return res.end();
-    }
-  }
-
   res.writeHead(404, "Metodo invalido");
   return res.end();
 }
@@ -385,6 +385,27 @@ function onCheckpoints(req, res, body, pathArray) {
       const checkpoints = getAllCheckpoints();
       res.writeHead(200);
       return res.end(JSON.stringify(checkpoints));
+    }
+
+    if (req.method === "POST") {
+      const id = body?.id;
+      const lat = body?.lat;
+      const long = body?.long;
+      const description = body?.description || "Checkpoint sin descripción";
+
+      if (!id || !description || !lat || !long) {
+        res.writeHead(400, "Credenciales del checkpoint insuficientes");
+        return res.end();
+      }
+
+      try {
+        addCheckpoint(id, lat, long, description);
+        res.writeHead(200, "Checkpoint añadido con éxito");
+        return res.end();
+      } catch (e) {
+        res.writeHead(400, e.message);
+        return res.end();
+      }
     }
 
     res.writeHead(405, "Metodo invalido");
@@ -439,27 +460,6 @@ function onCheckpoints(req, res, body, pathArray) {
     try {
       modCheckpoint(id, lat, long, description);
       res.writeHead(200, "El checkpoint se modificó correctamente");
-      return res.end();
-    } catch (e) {
-      res.writeHead(400, e.message);
-      return res.end();
-    }
-  }
-
-  if (req.method === "POST" && !pathArray[1]) {
-    const id = body?.id;
-    const lat = body?.lat;
-    const long = body?.long;
-    const description = body?.description || "Checkpoint sin descripción";
-
-    if (!id || !description || !lat || !long) {
-      res.writeHead(400, "Credenciales del checkpoint insuficientes");
-      return res.end();
-    }
-
-    try {
-      addCheckpoint(id, lat, long, description);
-      res.writeHead(200, "Checkpoint añadido con éxito");
       return res.end();
     } catch (e) {
       res.writeHead(400, e.message);
