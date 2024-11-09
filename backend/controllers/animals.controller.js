@@ -5,7 +5,6 @@ import {
   deleteAnimal,
   modifyAnimal,
 } from "../repositories/animals.repositories.js";
-import { v4 as uuidv4 } from "uuid";
 
 export const getAllAnimals = () => {
   const result = getAnimals();
