@@ -375,6 +375,12 @@ function onAnimals(req, res, body, pathArray) {
   return res.end();
 }
 
+function notifyNewCheckpoint(checkpoint) {
+  sseConnections.forEach(connection => {
+    connection.sendSSE(checkpoint);
+  });
+}
+
 function onCheckpoints(req, res, body, pathArray) {
   // Solo delete, patch y get vienen con id
 
@@ -399,6 +405,7 @@ function onCheckpoints(req, res, body, pathArray) {
 
       try {
         addCheckpoint(id, lat, long, description);
+        // notifyNewCheckpoint(id, lat, long);
         res.writeHead(200, "Checkpoint añadido con éxito");
         return res.end();
       } catch (e) {
