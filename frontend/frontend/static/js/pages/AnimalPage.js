@@ -215,11 +215,11 @@ export default class AnimalPage {
   };
 
   modificarAnimalId = (id) => {
-    const animalName = document.getElementById(`name-${id}`).textContent;
-    const animalDescription = document.getElementById(
+    const name = document.getElementById(`name-${id}`).textContent;
+    const description = document.getElementById(
       `description-${id}`
     ).textContent;
-    const animal = { id, animalName, animalDescription };
+    const animal = { id, name, description };
     this.renderPanelModif(animal);
   };
 
@@ -337,31 +337,16 @@ export default class AnimalPage {
                     <input type="text" id="animalIdModif" name="animalIdModif" value="${animal.id}" required>
 
                     <label for="modificar-name">Nuevo nombre del animal:</label>
-                    <input type="text" id="animalNameModif" name="animalNameModif" value="${animal.animalName}" required>
+                    <input type="text" id="animalNameModif" name="animalNameModif" value="${animal.name}" required>
 
                     <label for="nuevo-nombre">Nueva descripcion:</label>
-                    <input type="text" id="animalDescriptionModif" name="animalDescriptionModif" value="${animal.animalDescription}" required>
+                    <input type="text" id="animalDescriptionModif" name="animalDescriptionModif" value="${animal.description}" required>
 
                     <div class="button-container-animal">
                     <button type="submit" id="modif" class="modif-animal">Modificar</button>
                     </div>
                 </form>
             </div>`;
-  };
-
-  addListener = () => {
-    this.container.addEventListener("submit", this.handleSubmit);
-    document
-      .getElementById("reg-animals-button")
-      .addEventListener("click", this.renderPanelAlta);
-
-    document
-      .getElementById("show-animals-button")
-      .addEventListener("click", this.renderPanelMap);
-
-    document
-      .getElementById("list-animals-button")
-      .addEventListener("click", this.renderPanelList);
   };
 
   listAvailableDevices = async () => {
@@ -385,5 +370,21 @@ export default class AnimalPage {
         "Error al listar los dispositivos disponibles: " + response.statusText
       );
     }
+  };
+
+  addListener = () => {
+    this.container.addEventListener("submit", this.handleSubmit);
+
+    document
+      .getElementById("reg-animals-button")
+      .addEventListener("click", this.renderPanelAlta);
+
+    document
+      .getElementById("show-animals-button")
+      .addEventListener("click", this.renderPanelMap);
+
+    document
+      .getElementById("list-animals-button")
+      .addEventListener("click", this.renderPanelList);
   };
 }

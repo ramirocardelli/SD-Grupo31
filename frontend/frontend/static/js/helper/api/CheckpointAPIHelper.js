@@ -1,7 +1,7 @@
 import { CONSTANTS } from "../../constants/constants.js";
 
 export default class CheckpointsAPIHelper {
-  static async handleCheckpoint(action, checkpointData, accessToken) {
+  static async handleCheckpoint(action, checkpoint, accessToken) {
     try {
       //Configuracion header
       const headers = {
@@ -15,21 +15,19 @@ export default class CheckpointsAPIHelper {
       let response;
       switch (action) {
         case "post": {
-          response = await axios.post(url, checkpointData, { headers });
+          response = await axios.post(url, checkpoint, { headers });
           break;
         }
         case "delete": {
-          response = await axios.delete(`${url}/${checkpointData.id}`, {
+          response = await axios.delete(`${url}/${checkpoint.id}`, {
             headers,
           });
           break;
         }
         case "patch": {
-          response = await axios.patch(
-            `${url}/${checkpointData.id}`,
-            checkpointData,
-            { headers }
-          ); //se esta mandando el id en el body, chequear si causa problemas
+          response = await axios.patch(`${url}/${checkpoint.id}`, checkpoint, {
+            headers,
+          }); //se esta mandando el id en el body, chequear si causa problemas
           break;
         }
         case "get": {
