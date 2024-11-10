@@ -40,8 +40,8 @@ function loadPage() {
     history.pushState({}, "", "/login");
     return new LoginPage("layout-content");
   }
-  if (location.pathname === "/") {
-    new HomePage("aylout-content");
+  if (location.pathname === "/home") {
+    new HomePage("layout-content");
   } else if (location.pathname === "/animals") {
     new AnimalPage("layout-content");
   } else if (location.pathname === "/checkpoints") {

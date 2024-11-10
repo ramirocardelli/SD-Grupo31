@@ -59,14 +59,12 @@ export default class LoginPage {
   render() {
     const formHtml = `
             <form id="login-form" class="login-form-container">
-                <h2 class="login-form-title">Iniciar sesión</h2>
+                <h2 class="login-form-title">Bienvenido nuevamente!</h2>
                 <div class="input-container">
-                    <label for="username" class="input-label">Username:</label>
-                    <input type="text" id="username" name="username" class="input-field" required>
+                    <input type="text" id="username" name="username" class="input-field" placeholder="Introduce tu usuario" required>
                 </div>
                 <div class="input-container">
-                    <label for="password" class="input-label">Contraseña:</label>
-                    <input type="password" id="password" name="password" class="input-field" required>
+                    <input type="password" id="password" name="password" class="input-field" placeholder="Introduce tu contraseña" required>  
                 </div>
                 <button type="submit" form="login-form" class="form-submit-button">Iniciar sesión</button>
             </form>

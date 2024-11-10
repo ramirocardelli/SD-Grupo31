@@ -11,7 +11,10 @@ export default class HomePage {
 
   render() {
     let homeHtml = `
-            <h3 class="home-game-list-title">Hola!</h3>
+            <h3>Trabajo practico para sistemas distribuidos</h3>
+            <h3>Grupo 31</h3>
+            <h3>Integrantres:</h3>
+            <h3>Trinitario, Bruno. Cardelli, Ramiro. Frasca, Josefina. Olave, Juan.</h3>
         `;
     this.container.innerHTML = homeHtml;
   }

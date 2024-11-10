@@ -75,4 +75,10 @@ body {
     margin: 0.5rem;
     display: inline-block;
 }
-
+.sidebar-link{
+    color: rgb(0, 0, 0); /* Color del texto */
+    text-decoration: none; /* Sin subrayado */
+}
+.sidebar-link:hover {
+    color: #00BFFF; /* Color celeste al pasar el mouse */
+  }
