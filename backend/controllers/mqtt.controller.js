@@ -1,6 +1,7 @@
 import mqtt from "mqtt";
 import { getAllCheckpoints } from "./checkpoints.controller.js";
 import { animalExists } from "./animals.controller.js";
+import { clients } from "./see.controller.js";
 
 let availableDevices = [];
 const options = {
@@ -79,7 +80,7 @@ function updatePosition(message) {
     }
 
     if (message?.packageNum == message?.totalPackages) {
-      //TODO si se actualiza algun checkpoint enviar el vector de posiciones al evento del mapa en el front
+      clients.forEach((cliente)=>{cliente.write(JSON.stringify(getPositions()))})
     }
   } catch (e) {}
 }
