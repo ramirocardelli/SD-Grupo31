@@ -79,8 +79,7 @@ function updatePosition(message) {
     }
 
     if (message?.packageNum == message?.totalPackages) {
-      //actualizar frontend
-      console.log("frontend actualizado");
+      //TODO si se actualiza algun checkpoint enviar el vector de posiciones al evento del mapa en el front
     }
   } catch (e) {}
 }
@@ -106,7 +105,18 @@ function clearCheckpointAnimals(checkpointId) {
 
 // Funcion para obtener el mapa con posiciones
 export function getPositions() {
-  return positionsMap;
+  const vec=[]
+  positionsMap.forEach((value,key)=>{
+    const obj={
+      id:value,
+      lat:key.lat,
+      long:key.long,
+	    description:key.description,
+	    animals:key.animals,
+    }
+    vec.push(obj)
+  })
+  return vec;
 }
 
 // Funcion para obtener los animales registrables
