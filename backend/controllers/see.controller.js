@@ -3,7 +3,7 @@ const app = express();
 const PORT = 3002;
 export const clients = [];
 
-app.get('/events', (req, res) => {
+app.get('/API/animals/position', (req, res) => {
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
