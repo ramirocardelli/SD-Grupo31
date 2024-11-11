@@ -110,132 +110,159 @@ export default class AnimalPage {
     }
   };
 
-  //TODO
-  showAnimals = async () => {
+  getAnimals = async () => {
     try {
-      const map = L.map("map").setView(
-        [-38.01200620443375, -57.581233775103186],
-        13
+      const accessToken = AuthStateHelper.getAccessToken();
+      const response = await AnimalAPIHelper.handleAnimal(
+        "get",
+        {},
+        accessToken
       );
+      if (response.ok) {
+        alert("te trajiste bien los animales");
+        console.log(response.data);
+        return response.data;
+      } else {
+        alert("Error al traerte los animales: " + response.statusText);
+        return;
+      }
+    } catch (error) {
+      console.error("Error al traerte los animales", error);
+      alert("Ocurrió un error al mostrar los animales");
+      return;
+    }
 
-      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      }).addTo(map);
+  }
 
-      L.marker([-38.01200620443375, -57.581233775103186])
-        .addTo(map)
-        .bindPopup("A pretty CSS popup.<br> Easily customizable.")
-        .openPopup();
-    } catch (e) {}
+  //IN PROGRESS
+  showAnimals = async () => {
+    const checkpoints = this.getAnimals();
+    console.log(checkpoints); //vienen bien
+
+    const map = L.map('map').setView([-38.01200620443375, -57.581233775103186], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+    }).addTo(map);
+
+    checkpoints.forEach((checkpoint) => {
+      const lat = checkpoint.id.lat; // Latitud
+      const long = checkpoint.id.long; // Longitud
+      const description = checkpoint.id.description;
+      
+      // Añade un marcador en el mapa para cada checkpoint
+      L.marker([lat, long]).addTo(map)
+        .bindPopup(`<b>${description}</b>`); // Popup con la descripción del checkpoint
+    });
   };
 
-  listDevices = async () => {
-    const accessToken = AuthStateHelper.getAccessToken();
 
-    const response = await AnimalAPIHelper.handleAnimal("get", "", accessToken);
-    const listado = document.getElementById("listado");
+listDevices = async () => {
+  const accessToken = AuthStateHelper.getAccessToken();
+
+  const response = await AnimalAPIHelper.handleAnimal("get", "", accessToken);
+  const listado = document.getElementById("listado");
+  const tr = document.createElement("tr");
+  const tr_name = document.createElement("th");
+  tr_name.textContent = "Nombre";
+  const tr_desc = document.createElement("th");
+  tr_desc.textContent = "Descripción";
+  const tr_eliminar = document.createElement("th");
+  const tr_modificar = document.createElement("th");
+  tr.appendChild(tr_name);
+  tr.appendChild(tr_desc);
+  tr.appendChild(tr_eliminar);
+  tr.appendChild(tr_modificar);
+  listado.appendChild(tr);
+
+  response.data?.forEach((element) => {
     const tr = document.createElement("tr");
+    // Nombre
     const tr_name = document.createElement("th");
-    tr_name.textContent = "Nombre";
+    tr_name.id = `name-${element.id}`;
+    tr_name.textContent = element.name;
+    // Descripción
     const tr_desc = document.createElement("th");
-    tr_desc.textContent = "Descripción";
-    const tr_eliminar = document.createElement("th");
-    const tr_modificar = document.createElement("th");
+    tr_desc.id = `description-${element.id}`;
+    tr_desc.textContent = element.description;
+
+    // Botón eliminar
+    const tr_eliminar_rh = document.createElement("th");
+    const tr_form_eliminar = document.createElement("form");
+    const tr_eliminar = document.createElement("button");
+    tr_eliminar.type = "submit";
+    tr_eliminar.textContent = "Eliminar";
+    tr_eliminar.className = "eliminar-animal";
+    tr_eliminar.id = element.id;
+    tr_form_eliminar.appendChild(tr_eliminar);
+    tr_eliminar_rh.appendChild(tr_form_eliminar);
+
+    // Botón modificar
+    const tr_modificar_rh = document.createElement("th");
+    const tr_form_modificar = document.createElement("form");
+    const tr_modificar = document.createElement("button");
+    tr_modificar.type = "submit";
+    tr_modificar.textContent = "Modificar";
+    tr_modificar.className = "modificar-animal";
+    tr_modificar.id = element.id;
+    tr_form_modificar.appendChild(tr_modificar);
+    tr_modificar_rh.appendChild(tr_form_modificar);
+
     tr.appendChild(tr_name);
     tr.appendChild(tr_desc);
-    tr.appendChild(tr_eliminar);
-    tr.appendChild(tr_modificar);
+    tr.appendChild(tr_eliminar_rh);
+    tr.appendChild(tr_modificar_rh);
     listado.appendChild(tr);
+  });
+};
 
-    response.data?.forEach((element) => {
-      const tr = document.createElement("tr");
-      // Nombre
-      const tr_name = document.createElement("th");
-      tr_name.id = `name-${element.id}`;
-      tr_name.textContent = element.name;
-      // Descripción
-      const tr_desc = document.createElement("th");
-      tr_desc.id = `description-${element.id}`;
-      tr_desc.textContent = element.description;
+//Manejo de las acciones
+handleSubmit = async (event) => {
+  event.preventDefault();
+  const action = event.submitter.className;
 
-      // Botón eliminar
-      const tr_eliminar_rh = document.createElement("th");
-      const tr_form_eliminar = document.createElement("form");
-      const tr_eliminar = document.createElement("button");
-      tr_eliminar.type = "submit";
-      tr_eliminar.textContent = "Eliminar";
-      tr_eliminar.className = "eliminar-animal";
-      tr_eliminar.id = element.id;
-      tr_form_eliminar.appendChild(tr_eliminar);
-      tr_eliminar_rh.appendChild(tr_form_eliminar);
+  switch (action) {
+    case "alta-animal":
+      this.altaAnimal(event);
+      break;
+    case "baja-animal":
+      const animalId = event.target.elements.animalIdBaja.value.trim();
+      this.bajaAnimal(animalId);
+      break;
+    case "modif-animal":
+      this.modifAnimal(event);
+      break;
+    case "eliminar-animal":
+      this.bajaAnimal(event.target[0].id);
+      break;
+    case "modificar-animal":
+      this.modificarAnimalId(event.target[0].id);
+      break;
+  }
+};
 
-      // Botón modificar
-      const tr_modificar_rh = document.createElement("th");
-      const tr_form_modificar = document.createElement("form");
-      const tr_modificar = document.createElement("button");
-      tr_modificar.type = "submit";
-      tr_modificar.textContent = "Modificar";
-      tr_modificar.className = "modificar-animal";
-      tr_modificar.id = element.id;
-      tr_form_modificar.appendChild(tr_modificar);
-      tr_modificar_rh.appendChild(tr_form_modificar);
+modificarAnimalId = (id) => {
+  const name = document.getElementById(`name-${id}`).textContent;
+  const description = document.getElementById(
+    `description-${id}`
+  ).textContent;
+  const animal = { id, name, description };
+  this.renderPanelModif(animal);
+};
 
-      tr.appendChild(tr_name);
-      tr.appendChild(tr_desc);
-      tr.appendChild(tr_eliminar_rh);
-      tr.appendChild(tr_modificar_rh);
-      listado.appendChild(tr);
-    });
-  };
-
-  //Manejo de las acciones
-  handleSubmit = async (event) => {
-    event.preventDefault();
-    const action = event.submitter.className;
-
-    switch (action) {
-      case "alta-animal":
-        this.altaAnimal(event);
-        break;
-      case "baja-animal":
-        const animalId = event.target.elements.animalIdBaja.value.trim();
-        this.bajaAnimal(animalId);
-        break;
-      case "modif-animal":
-        this.modifAnimal(event);
-        break;
-      case "eliminar-animal":
-        this.bajaAnimal(event.target[0].id);
-        break;
-      case "modificar-animal":
-        this.modificarAnimalId(event.target[0].id);
-        break;
+highlightButton = (buttonDataPanel) => {
+  const buttons = document.querySelectorAll(".sidebar-secundaria button");
+  buttons.forEach((button) => {
+    if (button.getAttribute("data-panel") === buttonDataPanel) {
+      button.classList.add("active");
+    } else {
+      button.classList.remove("active");
     }
-  };
+  });
+};
 
-  modificarAnimalId = (id) => {
-    const name = document.getElementById(`name-${id}`).textContent;
-    const description = document.getElementById(
-      `description-${id}`
-    ).textContent;
-    const animal = { id, name, description };
-    this.renderPanelModif(animal);
-  };
-
-  highlightButton = (buttonDataPanel) => {
-    const buttons = document.querySelectorAll(".sidebar-secundaria button");
-    buttons.forEach((button) => {
-      if (button.getAttribute("data-panel") === buttonDataPanel) {
-        button.classList.add("active");
-      } else {
-        button.classList.remove("active");
-      }
-    });
-  };
-
-  render = () => {
-    let homeHtml = `
+render = () => {
+  let homeHtml = `
               <div class="sidebar-secundaria">
                 <button data-panel="alta" id="reg-animals-button" onclick="">Registrar animal</button>
                 <button data-panel="mostrar" id="show-animals-button">Mostrar animales</button>
@@ -264,13 +291,13 @@ export default class AnimalPage {
                 </form>
             </div>
         `;
-    this.container.innerHTML = homeHtml;
-  };
+  this.container.innerHTML = homeHtml;
+};
 
-  renderPanelList = () => {
-    this.highlightButton("listar");
-    const container = document.getElementById("page-container-animal");
-    container.innerHTML = `
+renderPanelList = () => {
+  this.highlightButton("listar");
+  const container = document.getElementById("page-container-animal");
+  container.innerHTML = `
               <!-- listar -->
               <div id="listar" class="listar-animal form-panel-animal">
                 <table id="listado" class="listado">
@@ -279,26 +306,27 @@ export default class AnimalPage {
               </form>   
               </div>
                   `;
-    this.listDevices();
-  };
+  this.listDevices();
+};
 
-  renderPanelMap = () => {
-    this.highlightButton("mostrar");
-    const container = document.getElementById("page-container-animal");
-    container.innerHTML = `
+renderPanelMap = () => {
+  this.highlightButton("mostrar");
+  const container = document.getElementById("page-container-animal");
+  container.innerHTML = `
             <!-- Mostrar animales -->
             <div id="mostrar" class="form-panel-animal map-panel-animals">
               <h2>Mostrar animales en el Mapa</h2>
               <div id="map"></div>
             </div>
                   `;
-    this.showAnimals();
-  };
+  console.log("antes de showAnimals");
+  this.showAnimals();
+};
 
-  renderPanelAlta = () => {
-    this.highlightButton("alta");
-    const container = document.getElementById("page-container-animal");
-    container.innerHTML = `<div id="alta" class="alta-animal form-panel-animal">
+renderPanelAlta = () => {
+  this.highlightButton("alta");
+  const container = document.getElementById("page-container-animal");
+  container.innerHTML = `<div id="alta" class="alta-animal form-panel-animal">
                   <h2>Registrar animal</h2>
                   <form class="login-form-animal">
   
@@ -322,12 +350,12 @@ export default class AnimalPage {
                       </div>
                   </form>
               </div>`;
-    this.listAvailableDevices();
-  };
+  this.listAvailableDevices();
+};
 
-  renderPanelModif = (animal) => {
-    const container = document.getElementById("page-container-animal");
-    container.innerHTML = `
+renderPanelModif = (animal) => {
+  const container = document.getElementById("page-container-animal");
+  container.innerHTML = `
             <!-- modificacion -->
             <div id="modificacion" class="form-panel-animal">
                 <form class="login-form-animal">
@@ -347,44 +375,44 @@ export default class AnimalPage {
                     </div>
                 </form>
             </div>`;
-  };
+};
 
-  listAvailableDevices = async () => {
-    const accessToken = AuthStateHelper.getAccessToken();
-    const response = await AnimalAPIHelper.handleAnimal(
-      "getAvailableDevices",
-      "",
-      accessToken
+listAvailableDevices = async () => {
+  const accessToken = AuthStateHelper.getAccessToken();
+  const response = await AnimalAPIHelper.handleAnimal(
+    "getAvailableDevices",
+    "",
+    accessToken
+  );
+
+  const select = document.getElementById("list-mac-addr");
+  if (response.ok) {
+    response.data?.devices?.forEach((device) => {
+      const option = document.createElement("option");
+      option.value = device;
+      option.textContent = device;
+      select.appendChild(option);
+    });
+  } else {
+    alert(
+      "Error al listar los dispositivos disponibles: " + response.statusText
     );
+  }
+};
 
-    const select = document.getElementById("list-mac-addr");
-    if (response.ok) {
-      response.data?.devices?.forEach((device) => {
-        const option = document.createElement("option");
-        option.value = device;
-        option.textContent = device;
-        select.appendChild(option);
-      });
-    } else {
-      alert(
-        "Error al listar los dispositivos disponibles: " + response.statusText
-      );
-    }
-  };
+addListener = () => {
+  this.container.addEventListener("submit", this.handleSubmit);
 
-  addListener = () => {
-    this.container.addEventListener("submit", this.handleSubmit);
+  document
+    .getElementById("reg-animals-button")
+    .addEventListener("click", this.renderPanelAlta);
 
-    document
-      .getElementById("reg-animals-button")
-      .addEventListener("click", this.renderPanelAlta);
+  document
+    .getElementById("show-animals-button")
+    .addEventListener("click", this.renderPanelMap);
 
-    document
-      .getElementById("show-animals-button")
-      .addEventListener("click", this.renderPanelMap);
-
-    document
-      .getElementById("list-animals-button")
-      .addEventListener("click", this.renderPanelList);
-  };
+  document
+    .getElementById("list-animals-button")
+    .addEventListener("click", this.renderPanelList);
+};
 }

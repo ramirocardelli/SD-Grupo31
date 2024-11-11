@@ -32,7 +32,7 @@ export default class AnimalAPIHelper {
           break;
         }
         case "get": {
-          response = await axios.get(url, { headers });
+          response = await axios.get(`${url}/position`, { headers }); //en get el header es el segundo param
           break;
         }
         case "getAvailableDevices": {
@@ -42,12 +42,6 @@ export default class AnimalAPIHelper {
           });
           break;
         }
-        /*
-                case 'getOneAnimal': {
-                    response = await axios.get(`${url}/${animalData.id}`, animalData, { headers });
-                    return response.data;
-                }
-                */
         default:
           throw new Error("Acción no válida");
       }
@@ -56,7 +50,7 @@ export default class AnimalAPIHelper {
         status: response.status,
         statusText: response.statusText,
         data: response.data,
-        ok: true, // Indica que la solicitud fue exitosa
+        ok: true, // solicitud exitosa
       };
     } catch (error) {
       console.error("Error en la solicitud de animales:", error);
@@ -64,7 +58,7 @@ export default class AnimalAPIHelper {
         status: error.response?.status || 500,
         statusText: error.response?.statusText || "Error en la solicitud",
         data: error.response?.data,
-        ok: false, // Indica que hubo un error
+        ok: false, // error
       };
     }
   }
