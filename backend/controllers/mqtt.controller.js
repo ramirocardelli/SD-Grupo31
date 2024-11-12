@@ -1,7 +1,7 @@
 import mqtt from "mqtt";
 import { getAllCheckpoints } from "./checkpoints.controller.js";
 import { animalExists } from "./animals.controller.js";
-import { clients } from "./see.controller.js";
+import { clients } from "./sse.controller.js";
 
 let availableDevices = [];
 const options = {
