@@ -2,6 +2,7 @@ import { getUsers } from "../repositories/users.repositories.js";
 import { createHash } from "crypto";
 
 export const login = (username, password) => {
+  // Si el usuario y contraseña son incorrectos, lanza una excepción
   password = createHash("sha256").update(password).digest("hex");
   const user = {
     username,

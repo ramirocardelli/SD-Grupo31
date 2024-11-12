@@ -6,17 +6,17 @@ import {
   modifyCheckpoint,
 } from "../repositories/checkpoints.repositories.js";
 
+// Devuelve un array con todos los checkpoints
 export const getAllCheckpoints = () => {
   return getCheckpoints();
 };
 
+// Devuelve un checkpoint en base a su id
 export const getCheckpoint = (id) => {
   return getOneCheckpoint(id);
 };
 
-//se intenta agregar un checkpoint, preguntando antes si existe, si existiera
-//se MODIFICA el checkpoint, si no se continua con el flujo y se
-//agrega el checkpoint
+// Escribe un checkpoint en el archivo
 export const addCheckpoint = (id, lat, long, description) => {
   const checkpoint = {
     id,
@@ -31,6 +31,7 @@ export const addCheckpoint = (id, lat, long, description) => {
   }
 };
 
+// Modifica un checkpoint en base a su id
 export const modCheckpoint = (id, lat, long, description) => {
   const checkpoint = {
     id,
@@ -38,21 +39,12 @@ export const modCheckpoint = (id, lat, long, description) => {
     long,
     description,
   };
-  if (checkpointExists(id)) {
-    modifyCheckpoint(checkpoint);
-  } else {
-    throw Error("No existe el punto de control a modificar");
-  }
+  modifyCheckpoint(checkpoint);
 };
 
+// Elimina un checkpoint en base a su id
 export const removeCheckpoint = (id) => {
   if (checkpointExists(id)) {
     deleteCheckpoint(id);
   } else throw new Error("No existe el punto de control a eliminar");
 };
-
-//funcion que verifica si el checkpoint existe
-function checkpointExists(id) {
-  const checkpoints = getAllCheckpoints();
-  return checkpoints.some((checkpoint) => checkpoint.id === id);
-}

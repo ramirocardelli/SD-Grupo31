@@ -6,31 +6,31 @@ import {
   modifyAnimal,
 } from "../repositories/animals.repositories.js";
 
+// Devuelve un array con todos los animales
 export const getAllAnimals = () => {
   return getAnimals();
 };
 
+// Devuelve un animal en base a su id
 export const getAnimal = (id) => {
   return getOneAnimal(id);
 };
 
-//se intenta agregar un animal, preguntando antes si existe, si existiera
-//lanza error, si no se continua con el flujo y se
-//agrega el animal
+// Escribe un animal en el archivo
 export const addAnimal = (id, name, description) => {
   const animal = {
     id,
     name,
     description,
   };
-
   if (!animalExists(id)) {
     writeAnimals(animal);
   } else {
-    throw Error("El animal que se quiere agregar ya existe");
+    throw new Error("El animal que se quiere agregar ya existe");
   }
 };
 
+// Modifica un animal en base a su id
 export const modAnimal = (id, name, description) => {
   const animal = {
     id,
@@ -40,17 +40,20 @@ export const modAnimal = (id, name, description) => {
   if (animalExists(id)) {
     modifyAnimal(animal);
   } else {
-    throw Error("No existe el animal a modificar");
+    throw new Error("No existe el animal a modificar");
   }
 };
 
+// Elimina un animal en base a su id
 export const removeAnimal = (id) => {
   if (animalExists(id)) {
     deleteAnimal(id);
-  } else throw new Error("No existe el animal a eliminar");
+  } else {
+    throw new Error("No existe el animal a eliminar");
+  }
 };
 
+// Comprueba si un animal existe en base a su id
 export function animalExists(id) {
-  const animals = getAllAnimals();
-  return animals.some((animal) => animal.id === id);
+  return getAllAnimals().some((animal) => animal.id === id);
 }

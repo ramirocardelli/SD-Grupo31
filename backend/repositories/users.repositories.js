@@ -3,6 +3,7 @@ import "dotenv/config";
 
 const FILE_PATH = process.env.USERREP;
 
+// Devuelve un array con todos los usuarios
 export const getUsers = () => {
   const fileExist = existsSync(FILE_PATH);
   if (fileExist) {
@@ -14,6 +15,7 @@ export const getUsers = () => {
   }
 };
 
+// Devuelve un usuario en base a su id
 export const writeUser = (user) => {
   const users = getUsers();
   users.push(user);

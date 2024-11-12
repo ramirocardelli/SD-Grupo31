@@ -22,8 +22,6 @@ import {
   getAvailableAnimals,
   deleteAvailableDevice,
 } from "./controllers/mqtt.controller.js";
-import express from "express";
-import cors from "cors";
 
 const HTTP_PORT = process.env.PORT;
 const secret = process.env.SECRET;
@@ -31,10 +29,8 @@ const secret = process.env.SECRET;
 // Conexión con el broker MQTT
 connectToBroker();
 
-// usamos express y cors para poder comunicar back/front
-const app = express();
-app.use(cors());
-
+// Este método se encarga de configurar los encabezados CORS para todas las respuestas
+// Sin este método, el navegador bloqueará las solicitudes de la API
 const setCorsHeaders = (res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -44,11 +40,12 @@ const setCorsHeaders = (res) => {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 };
 
-// Raíz de la API
+// Creamos el servidor HTTP
 const server = http.createServer((req, res) => {
+  // Si la solicitud es un OPTIONS, respondemos con los encabezados CORS y un 204 (No content)
   if (req.method === "OPTIONS") {
     setCorsHeaders(res);
-    res.writeHead(204); // No Content
+    res.writeHead(204);
     return res.end();
   }
 
@@ -57,9 +54,11 @@ const server = http.createServer((req, res) => {
 
   // Separamos el path para poder obtener la direccion principal y el recurso
   const pathArray = req.url.split("/");
-  pathArray.shift();
+  pathArray.shift(); // Eliminamos el primer elemento que es una cadena vacía
+
+  // Si el path comienza con "API", lo eliminamos
   if (pathArray[0] == "API") {
-    pathArray.shift(); //asi saco /API
+    pathArray.shift();
   } else {
     res.writeHead(400, "Path incorrecto");
     return res.end();
@@ -94,7 +93,7 @@ const server = http.createServer((req, res) => {
       return;
     }
 
-    // Para las rutas privadas, si el tóken no es válido, no sigue
+    // Para las rutas privadas, si el tóken no es válido, no sigue con la ejecución
     try {
       tokenIsValid(req);
     } catch (e) {
@@ -109,20 +108,20 @@ const server = http.createServer((req, res) => {
       return;
     }
 
-    // El sistema deberá permitir a los Administradores dar de alta, baja, modificar y mostrar Animales.
+    // Todo lo relacionado a los animales
     if (pathArray[0] === "animals") {
-      console.log("entre al path array animals");
       onAnimals(req, res, parsedBody, pathArray);
       return;
     }
 
-    // El sistema deberá permitir a los Administradores dar de alta, baja, modificar y mostrar Puntos de Control
+    // Todo lo relacionado a los puntos de control
     if (pathArray[0] === "checkpoints") {
       onCheckpoints(req, res, parsedBody, pathArray);
       return;
     }
 
-    res.writeHead(404, "Path invalido");
+    // Si no se encuentra la ruta, devolvemos un error 404
+    res.writeHead(404, "Ruta no encontrada");
     return res.end();
   });
 });
@@ -142,21 +141,24 @@ function tokenIsValid(req) {
 
 // Credenciales vienen en el header en formato 64.
 function onLogin(req, res, body, pathArray) {
+  // Si el método no es post, devolvemos un error 405
   if (req.method !== "POST") {
     res.writeHead(405, "Metodo invalido");
     return res.end();
   }
 
   const authHeader = req.headers["authorization"];
-
   if (!authHeader) {
     return res.status(401, "No se proporcionó encabezado de autorización");
   }
 
+  // Verificar que la ruta sea /API/login
   if (pathArray.length > 1) {
-    return res.status(401, "Path equivocado");
+    res.status(401, "Path equivocado");
+    return res.end();
   }
 
+  // Extraemos las credenciales del header de autorización
   const base64Credentials = authHeader.split(" ")[1];
   const credentials = Buffer.from(base64Credentials, "base64")
     .toString("ascii")
@@ -164,12 +166,6 @@ function onLogin(req, res, body, pathArray) {
 
   const username = credentials[0];
   const password = credentials[1];
-
-  // verificar que login no venga con id
-  if (pathArray.length > 1) {
-    res.writeHead(404, "Path invalido");
-    return res.end();
-  }
 
   if (!username || !password) {
     res.writeHead(400, "Credenciales de usuario invalidas");
@@ -195,26 +191,25 @@ function onLogin(req, res, body, pathArray) {
   }
 }
 
-//un hora dura el acces token
 function accessToken(username) {
-  return tokenGenerator(username, 3600);
+  return tokenGenerator(username, 3600); // 1h
 }
 
-//un dia dura el refresh token
 function refreshToken(username) {
-  return tokenGenerator(username, 86400);
+  return tokenGenerator(username, 86400); // 24h
 }
 
 function tokenGenerator(username, seconds) {
+  // Creamos un token JWT con el nombre de usuario y una expiración de "seconds" segundos
   const data = {
     username,
-    //lo que le sumamos es la cantidad de segundos en la que es valido
     exp: Math.floor(Date.now() / 1000) + seconds,
   };
   return jwt.sign(data, secret);
 }
 
 function onRefresh(req, res, body, pathArray) {
+  // Solo post viene con refresh
   if (req.method !== "POST") {
     res.writeHead(405, "Metodo invalido");
     return res.end();
@@ -222,18 +217,21 @@ function onRefresh(req, res, body, pathArray) {
 
   const refreshToken = req.headers["authorization"]?.split(" ")[1];
 
-  // verificar que refresh no venga con id
+  // Verificar que la ruta sea /API/refresh
   if (pathArray.length > 1) {
     res.writeHead(404, "Path invalido");
     return res.end();
   }
 
+  // Si no se proporciona un refreshToken, devolvemos un error 400
   if (!refreshToken) {
     res.writeHead(400, "Token invalid");
     return res.end();
   }
 
   try {
+    // Si el refreshToken es válido, generamos un nuevo token de acceso
+    // En caso contrario, devolvemos un error 401
     const decoded = jwt.verify(refreshToken, secret);
     const newAccessToken = accessToken(decoded?.username);
 
@@ -251,15 +249,18 @@ function onRefresh(req, res, body, pathArray) {
 }
 
 function onAvailableDevices(req, res, pathArray) {
+  // Solo get viene con availableDevices
   if (req.method !== "GET") {
     res.writeHead(405, "Metodo invalido");
     return res.end();
   }
 
+  // Verificar que la ruta sea /API/availableDevices
   if (pathArray.length > 1) {
     res.writeHead(404, "Path invalido");
     return res.end();
   }
+
   try {
     res.writeHead(200);
     return res.end(JSON.stringify(getAvailableAnimals()));
@@ -270,15 +271,16 @@ function onAvailableDevices(req, res, pathArray) {
 }
 
 function onAnimals(req, res, body, pathArray) {
-  // Solo delete, patch y get vienen con id
-  // Si el get viene sin id, devolvemos todos los animales
+  // Si la ruta es /API/animals, sin id
   if (!pathArray[1]) {
+    // Si el get viene sin id, devolvemos todos los animales
     if (req.method === "GET") {
       const animals = getAllAnimals();
       res.writeHead(200);
       return res.end(JSON.stringify(animals));
     }
 
+    // Añadimos un nuevo animal
     if (req.method === "POST") {
       const id = body?.id;
       const name = body?.name || "Animal sin nombre";
@@ -290,7 +292,7 @@ function onAnimals(req, res, body, pathArray) {
       }
 
       try {
-        console.log("entre antes de addAnimal");
+        // Añadimos el animal y eliminamos el dispositivo de la lista de disponibles
         addAnimal(id, name, description);
         deleteAvailableDevice(id);
         res.writeHead(200, "Animal añadido con éxito");
@@ -305,21 +307,22 @@ function onAnimals(req, res, body, pathArray) {
     return res.end();
   }
 
-  // Si el get viene con el id, devolvemos solo ese animal
-  // Para obtener la posición de todos los animales
+  // Si la ruta es /API/animals/position
   if (pathArray[1] === "position") {
+    // Devolvemos todos los animales con sus posiciones correspondientes
     if (req.method === "GET") {
       res.writeHead(200);
       return res.end(JSON.stringify(getPositions()));
     }
-    // Solo get viene con /position, los demas son metodos invalidos
+
     res.writeHead(405, "Metodo invalido");
     return res.end();
   }
 
+  // Si la ruta es /API/animals/[id]
   if (req.method === "GET") {
+    // Devolvemos el animal con el id correspondiente
     const id = pathArray[1];
-
     const animal = getAnimal(id);
 
     if (!animal) {
@@ -331,9 +334,11 @@ function onAnimals(req, res, body, pathArray) {
     return res.end(JSON.stringify(animal));
   }
 
-  // Si el delete viene con el id, eliminamos el animal
+  // Si la ruta es /API/animals/[id]
   if (req.method === "DELETE") {
+    // Eliminamos el animal con el id correspondiente
     const id = pathArray[1];
+
     if (!id) {
       res.writeHead(400, "Id del animal que se quiere eliminar invalido");
       return res.end();
@@ -349,14 +354,15 @@ function onAnimals(req, res, body, pathArray) {
     }
   }
 
-  // Si el patch viene con el id, modificamos el animal
+  // Si la ruta es /API/animals/[id]
   if (req.method === "PATCH") {
+    // Modificamos el animal con el id correspondiente
     const id = pathArray[1];
     const animal = getAnimal(id);
     const name = body?.name || animal?.name;
     const description = body?.description || animal?.description;
 
-    if (!id || !name || !description) {
+    if (!id) {
       res.writeHead(404, "Animal not found");
       return res.end();
     }
@@ -375,35 +381,37 @@ function onAnimals(req, res, body, pathArray) {
   return res.end();
 }
 
+// Server Sent Events
 function notifyNewCheckpoint(checkpoint) {
-  sseConnections.forEach(connection => {
+  sseConnections.forEach((connection) => {
     connection.sendSSE(checkpoint);
   });
 }
 
 function onCheckpoints(req, res, body, pathArray) {
-  // Solo delete, patch y get vienen con id
-
-  // Si el get viene sin id, devolvemos todos los checkpoints
+  // Si la ruta es /API/checkpoints, sin id
   if (!pathArray[1]) {
+    // Si el get viene sin id, devolvemos todos los checkpoints
     if (req.method === "GET") {
       const checkpoints = getAllCheckpoints();
       res.writeHead(200);
       return res.end(JSON.stringify(checkpoints));
     }
 
+    // Añadimos un nuevo checkpoint
     if (req.method === "POST") {
       const id = body?.id;
       const lat = body?.lat;
       const long = body?.long;
       const description = body?.description || "Checkpoint sin descripción";
 
-      if (!id || !description || !lat || !long) {
+      if (!id || !lat || !long) {
         res.writeHead(400, "Credenciales del checkpoint insuficientes");
         return res.end();
       }
 
       try {
+        // Añadimos el checkpoint
         addCheckpoint(id, lat, long, description);
         // notifyNewCheckpoint(id, lat, long);
         res.writeHead(200, "Checkpoint añadido con éxito");
@@ -418,9 +426,10 @@ function onCheckpoints(req, res, body, pathArray) {
     return res.end();
   }
 
+  // Si la ruta es /API/checkpoints/[id]
   if (req.method === "GET") {
+    // Devolvemos el checkpoint con el id correspondiente
     const id = pathArray[1];
-
     const checkpoint = getCheckpoint(id);
 
     if (!checkpoint) {
@@ -432,9 +441,11 @@ function onCheckpoints(req, res, body, pathArray) {
     return res.end(JSON.stringify(checkpoint));
   }
 
-  // Si el delete viene con el id, eliminamos el checkpoint
+  // Si la ruta es /API/checkpoints/[id]
   if (req.method === "DELETE") {
+    // Eliminamos el checkpoint con el id correspondiente
     const id = pathArray[1];
+
     if (!id) {
       res.writeHead(400, "Id del checkpoint que se quiere eliminar invalido");
       return res.end();
@@ -450,15 +461,16 @@ function onCheckpoints(req, res, body, pathArray) {
     }
   }
 
-  // Si el patch viene con el id, modificamos el checkpoint
+  // Si la ruta es /API/checkpoints/[id]
   if (req.method === "PATCH") {
+    // Modificamos el checkpoint con el id correspondiente
     const id = pathArray[1];
     const checkpoint = getCheckpoint(id);
     const lat = body?.lat || checkpoint?.lat;
     const long = body?.long || checkpoint?.long;
     const description = body?.description || checkpoint?.description;
 
-    if (!id || !lat || !long || !description) {
+    if (!id) {
       res.writeHead(404, "Checkpoint not found");
       return res.end();
     }
@@ -477,7 +489,7 @@ function onCheckpoints(req, res, body, pathArray) {
   return res.end();
 }
 
-// Levantamos el server
+// Inicializamos el servidor en el puerto HTTP_PORT
 server.listen(HTTP_PORT, () => {
   console.log(`Servidor escuchando en puerto ${HTTP_PORT}`);
 });
