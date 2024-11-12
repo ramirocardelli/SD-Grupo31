@@ -120,7 +120,6 @@ export default class AnimalPage {
         accessToken
       );
       if (response.ok) {
-        console.log(response.data);
         return response.data;
       } else {
         alert("Error al traerte los animales: " + response.statusText);
@@ -136,10 +135,8 @@ export default class AnimalPage {
   //get inicial
   showAnimals = async () => {
     const checkpoints = await this.getAnimalsPositions();
-    console.log(checkpoints);
-
     const map = L.map("map").setView(
-      [-38.01200620443375, -57.581233775103186],
+      [checkpoints[0].lat, checkpoints[0].long],
       13
     );
 
@@ -148,14 +145,14 @@ export default class AnimalPage {
     }).addTo(map);
 
     checkpoints.forEach((checkpoint) => {
-      const { lat, long, description, animals } = checkpoint.id;
-
+      const { id, lat, long, description, animals } = checkpoint;
+      // Animals es un array con: {id, name, description}
       // Añade un marcador en el mapa para cada checkpoint
-      L.marker([lat, long])
-        .addTo(map)
-        .bindPopup(
-          `<b>Description:</b> ${description}<br><b>Animals:</b> ${animals}`
-        ); // Popup con la descripción del checkpoint, ID y animales
+      let marker = `<b>Descripción del punto de control:</b><span>${description}</span><br><b>Animales:</b>`;
+      animals.forEach((animal) => {
+        marker += `<br><span>${animal.name}</span>`;
+      });
+      L.marker([lat, long]).addTo(map).bindPopup(marker); // Popup con la descripción del checkpoint, ID y animales
     });
   };
 
@@ -362,10 +359,8 @@ export default class AnimalPage {
               <div id="map"></div>
             </div>
                   `;
-    console.log("antes de showAnimals");
     if (!this.map) {
       this.showAnimals(); // Inicializa el mapa
-      console.log("inicialice el mapa");
     }
   };
 
