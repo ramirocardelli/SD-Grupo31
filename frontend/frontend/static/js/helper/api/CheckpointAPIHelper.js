@@ -51,7 +51,7 @@ export default class CheckpointsAPIHelper {
         ok: true, // Indica que la solicitud fue exitosa
       };
     } catch (error) {
-      console.error("Error en la solicitud de animales:", error);
+      console.error("Error en la solicitud de checkpoints:", error);
       return {
         status: error.response?.status || 500,
         statusText: error.response?.statusText || "Error en la solicitud",
