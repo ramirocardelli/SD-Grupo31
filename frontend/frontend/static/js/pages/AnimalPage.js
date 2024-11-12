@@ -228,10 +228,6 @@ export default class AnimalPage {
       case "alta-animal":
         this.altaAnimal(event);
         break;
-      case "baja-animal":
-        const animalId = event.target.elements.animalIdBaja.value.trim();
-        this.bajaAnimal(animalId);
-        break;
       case "modif-animal":
         this.modifAnimal(event);
         break;
