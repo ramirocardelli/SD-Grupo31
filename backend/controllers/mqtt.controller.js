@@ -55,7 +55,7 @@ function updatePosition(message) {
     message = JSON.parse(message);
     console.log("[DEBUG]: " + JSON.stringify(message));
     const receivedAnimals = message?.animals;
-    const arr = [];
+    const animals = [];
 
     if (message?.packageNum == 1) {
       //es el primer paquete, hay que limpiar todo el checkpoint
@@ -65,7 +65,7 @@ function updatePosition(message) {
     receivedAnimals.forEach((animal) => {
       if (animalExists(animal.id) && animal.rssi >= threshold) {
         deleteAnimalInstanceFromCheckpoints(animal.id, message.checkpointId);
-        arr.push(animal);
+        animals.push(animal);
       } else {
         if (!animalExists(animal.id) && !availableDevices.includes(animal.id)) {
           availableDevices.push(animal.id);
@@ -75,12 +75,16 @@ function updatePosition(message) {
 
     if (message?.checkpointId) {
       if (positionsMap.has(message.checkpointId)) {
-        positionsMap.set(message.checkpointId).animals = arr;
+        const checkpoint = positionsMap.get(message.checkpointId);
+        checkpoint.animals = animals;
+        positionsMap.set(message.checkpointId, checkpoint);
       }
     }
 
     if (message?.packageNum == message?.totalPackages) {
-      clients.forEach((cliente)=>{cliente.write(JSON.stringify(getPositions()))})
+      clients.forEach((cliente) => {
+        cliente.write(JSON.stringify(getPositions()));
+      });
     }
   } catch (e) {}
 }
@@ -88,7 +92,7 @@ function updatePosition(message) {
 function deleteAnimalInstanceFromCheckpoints(animalId, checkpointId) {
   positionsMap.checkpointId((value, key) => {
     if (key != checkpointId) {
-      value.animals = value.animals.filter((item) => item.id != animalId);
+      value.animals = value.animals.filter((a) => a.id != animalId);
     }
   });
 }
@@ -106,18 +110,18 @@ function clearCheckpointAnimals(checkpointId) {
 
 // Funcion para obtener el mapa con posiciones
 export function getPositions() {
-  const vec=[]
-  positionsMap.forEach((value,key)=>{
-    const obj={
-      id:value,
-      lat:key.lat,
-      long:key.long,
-	    description:key.description,
-	    animals:key.animals,
-    }
-    vec.push(obj)
-  })
-  return vec;
+  const positions = [];
+  positionsMap.forEach((value, key) => {
+    const obj = {
+      id: key,
+      lat: value.lat,
+      long: value.long,
+      description: value.description,
+      animals: value.animals,
+    };
+    positions.push(obj);
+  });
+  return positions;
 }
 
 // Funcion para obtener los animales registrables
