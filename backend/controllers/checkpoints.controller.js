@@ -48,3 +48,9 @@ export const removeCheckpoint = (id) => {
     deleteCheckpoint(id);
   } else throw new Error("No existe el punto de control a eliminar");
 };
+
+//funcion que verifica si el checkpoint existe
+function checkpointExists(id) {
+  const checkpoints = getAllCheckpoints();
+  return checkpoints.some((checkpoint) => checkpoint.id === id);
+}
