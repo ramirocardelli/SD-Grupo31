@@ -1,6 +1,5 @@
 import { navigateTo } from "../index.js";
 import AuthAPIHelper from "../helper/api/AuthAPIHelper.js";
-import { validateLogin } from "../helper/validations/authValidations.js";
 import UserStateHelper from "../helper/state/UserStateHelper.js";
 import AuthStateHelper from "../helper/state/AuthStateHelper.js";
 
@@ -16,20 +15,6 @@ export default class LoginPage {
   }
 
   async handleSubmit(event) {
-    /*try {
-            event.preventDefault();
-            const id = event.target.elements.id.value.trim();
-            const password = event.target.elements.password.value.trim();
-            validateLogin({ id, password })
-            const userData = await AuthAPIHelper.login({ id, password });
-            const { accessToken, refreshToken, ...rest } = userData;
-            UserStateHelper.setUser(rest);
-            AuthStateHelper.setAuth({ accessToken, refreshToken })
-            navigateTo('/');
-            window.removeEventListener('submit', this.handleSubmit)
-        } catch (e) {
-            alert('Usuario o contraseña incorrectos');
-        }*/
     console.log("Iniciando proceso de inicio de sesión...");
     try {
       event.preventDefault();
@@ -37,18 +22,21 @@ export default class LoginPage {
       const password = event.target.elements.password.value.trim();
 
       console.log("Datos enviados:", { username, password });
+      
+      //enviar solicitud a la API - retorna tokens
+      const userData = await AuthAPIHelper.login({ username, password }); 
 
-      const userData = await AuthAPIHelper.login({ username, password }); //enviar solicitud a la API - retorna tokens
       //debug
       console.log("Datos de usuario:", userData);
 
       const { accessToken, refreshToken, ...rest } = userData;
       UserStateHelper.setUser(rest);
-      AuthStateHelper.setAuth({ accessToken, refreshToken }); //almacenar access token
-      window.location.href = "../";
+      //almacenar access token
+      AuthStateHelper.setAuth({ accessToken, refreshToken }); 
+      window.location.href = "../home";
     } catch (error) {
       console.log(error);
-      // alert("Usuario o contraseña incorrectos");
+      alert("Usuario o contraseña incorrectos");
     }
   }
 

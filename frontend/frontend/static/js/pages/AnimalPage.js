@@ -148,14 +148,14 @@ export default class AnimalPage {
     }).addTo(map);
 
     checkpoints.forEach((checkpoint) => {
-      const { lat, long, description, animals } = checkpoint.id;
+      const { id, lat, long, description, animals } = checkpoint;
 
       // Añade un marcador en el mapa para cada checkpoint
       L.marker([lat, long])
         .addTo(map)
         .bindPopup(
-          `<b>Description:</b> ${description}<br><b>Animals:</b> ${animals}`
-        ); // Popup con la descripción del checkpoint, ID y animales
+          `<b>ID:</b> ${id}<br><b>Description:</b> ${description}<br><b>Animals:</b> ${animals}`
+        ); // Popup con id, la descripción del checkpoint y animales
     });
   };
 
