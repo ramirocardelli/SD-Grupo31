@@ -31,7 +31,11 @@ export default class AnimalAPIHelper {
           }); //se esta mandando el id en el body, chequear si causa problemas
           break;
         }
-        case "get": {
+        case "getAnimals": {
+          response = await axios.get(`${url}`, { headers }); //en get el header es el segundo param
+          break;
+        }
+        case "getAnimalsPositions": {
           response = await axios.get(`${url}/position`, { headers }); //en get el header es el segundo param
           break;
         }

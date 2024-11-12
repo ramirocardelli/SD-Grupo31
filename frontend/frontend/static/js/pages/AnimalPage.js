@@ -6,6 +6,7 @@ export default class AnimalPage {
     this.container = document.getElementById(selector);
     this.render();
     this.addListener();
+    this.initializeSSE();
   }
 
   altaAnimal = async (event) => {
@@ -110,16 +111,16 @@ export default class AnimalPage {
     }
   };
 
-  getAnimals = async () => {
+  getAnimalsPositions = async () => {
     try {
       const accessToken = AuthStateHelper.getAccessToken();
       const response = await AnimalAPIHelper.handleAnimal(
-        "get",
+        "getAnimalsPositions",
         {},
         accessToken
       );
       if (response.ok) {
-        alert("te trajiste bien los animales");
+        console.log("te trajiste bien los animales");
         console.log(response.data);
         return response.data;
       } else {
@@ -134,9 +135,9 @@ export default class AnimalPage {
 
   }
 
-  //IN PROGRESS
+  //get inicial
   showAnimals = async () => {
-    const checkpoints = this.getAnimals();
+    const checkpoints = await this.getAnimalsPositions();
     console.log(checkpoints); //vienen bien
 
     const map = L.map('map').setView([-38.01200620443375, -57.581233775103186], 13);
@@ -146,13 +147,11 @@ export default class AnimalPage {
     }).addTo(map);
 
     checkpoints.forEach((checkpoint) => {
-      const lat = checkpoint.id.lat; // Latitud
-      const long = checkpoint.id.long; // Longitud
-      const description = checkpoint.id.description;
-      
+      const { lat, long, description, animals } = checkpoint.id; 
+
       // Añade un marcador en el mapa para cada checkpoint
       L.marker([lat, long]).addTo(map)
-        .bindPopup(`<b>${description}</b>`); // Popup con la descripción del checkpoint
+        .bindPopup(`<b>Description:</b> ${description}<br><b>Animals:</b> ${animals}`); // Popup con la descripción del checkpoint, ID y animales
     });
   };
 
@@ -160,7 +159,7 @@ export default class AnimalPage {
 listDevices = async () => {
   const accessToken = AuthStateHelper.getAccessToken();
 
-  const response = await AnimalAPIHelper.handleAnimal("get", "", accessToken);
+  const response = await AnimalAPIHelper.handleAnimal("getAnimals", "", accessToken); 
   const listado = document.getElementById("listado");
   const tr = document.createElement("tr");
   const tr_name = document.createElement("th");
@@ -294,6 +293,40 @@ render = () => {
   this.container.innerHTML = homeHtml;
 };
 
+initializeSSE = () => {
+  const eventSource = new EventSource('http://localhost:3002/API/animals/position');
+
+  console.log("front escuchando por puerto 3002 - SSE");
+
+  eventSource.onmessage = (event) => {
+    const checkpoints = JSON.parse(event.data); // ver si no llega ya JSON
+    this.updateMap(checkpoints);
+  };
+  eventSource.onerror = (error) => {
+    console.error("Error en el envio - SSE:", error);
+  };
+};
+
+updateMap = (checkpoints) => {
+  const mapContainer = document.getElementById('map');
+  if (this.map) {
+    if (this.markers) {
+      this.markers.forEach(marker => this.map.removeLayer(marker));
+    }
+    this.markers = [];
+
+    checkpoints.forEach((checkpoint) => {
+      const { lat, long, description, animals } = checkpoint.id;
+      const marker = L.marker([lat, long]).addTo(this.map)
+        .bindPopup(`<b>${description}</b><br>ID: ${id}<br>Animales: ${JSON.stringify(animals)}`);
+
+      this.markers.push(marker); // Guarda el marcador en el array para futuras referencias
+    });
+
+  }
+};
+
+
 renderPanelList = () => {
   this.highlightButton("listar");
   const container = document.getElementById("page-container-animal");
@@ -320,7 +353,10 @@ renderPanelMap = () => {
             </div>
                   `;
   console.log("antes de showAnimals");
-  this.showAnimals();
+  if (!this.map) {
+    this.showAnimals();  // Inicializa el mapa 
+    console.log("inicialice el mapa");
+  }
 };
 
 renderPanelAlta = () => {
