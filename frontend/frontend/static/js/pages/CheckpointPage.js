@@ -220,8 +220,8 @@ export default class CheckpointPage {
   };
 
   modificarCheckpointId(id) {
-    const lat = document.getElementById(`lat-${id}`).textContent;
-    const long = document.getElementById(`long-${id}`).textContent;
+    const lat = document.getElementById(`lat-${id}`).innerHTML;
+    const long = document.getElementById(`long-${id}`).innerHTML;
     const description = document.getElementById(
       `description-${id}`
     ).textContent;
@@ -248,10 +248,10 @@ export default class CheckpointPage {
                     <input type="text" id="checkpointIdModif" name="checkpointIdModif" value="${checkpoint.id}" required>
 
                     <label for="checkpointLatModif">Nueva latitud:</label> <!-- texto ver pasar a coordenadas?-->
-                    <input type="number" id="checkpointLatModif" name="checkpointLatModif" value="${checkpoint.lat}" required>
+                    <input type="number" step="any" min="-90" max="90" id="checkpointLatModif" name="checkpointLatModif" value="${checkpoint.lat}" required>
 
                     <label for="checkpointLongModif">Nueva longitud:</label> <!-- texto ver pasar a coordenadas?-->
-                    <input type="number" id="checkpointLongModif" name="checkpointLongModif" value="${checkpoint.long}" required>
+                    <input type="number" step="any" min="-180" max="180" id="checkpointLongModif" name="checkpointLongModif" value="${checkpoint.long}" required>
 
                     <label for="checkpointDescriptionModif">Nueva descripcion:</label> <!-- texto ver pasar a coordenadas?-->
                     <input type="text" id="checkpointDescriptionModif" name="checkpointDescriptionModif" value="${checkpoint.description}" required>
