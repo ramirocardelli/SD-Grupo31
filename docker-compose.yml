@@ -15,7 +15,7 @@ services:
    depends_on:
      - mosquitto
    container_name: 
-    tp-distribuidos
+    API-gateway
    volumes:
      - ./backend:/usr/src/app
   
