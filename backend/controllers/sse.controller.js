@@ -17,5 +17,5 @@ app.get("/API/animals/position", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Servidor SSE en http://localhost:${PORT}`);
+  console.log(`Servidor SSE en ${PORT}`);
 });

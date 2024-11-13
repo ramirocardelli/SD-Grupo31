@@ -11,6 +11,7 @@ services:
    ports:
      - "3000:3000"
      - "3002:3002"
+     - "3003:3003"
    depends_on:
      - mosquitto
    container_name: 

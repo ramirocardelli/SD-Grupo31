@@ -24,7 +24,7 @@ import {
 } from "./controllers/mqtt.controller.js";
 
 const app = express();
-const HTTP_PORT = process.env.PORT;
+const HTTP_PORT = process.env.PORT_EXP;
 const secret = process.env.SECRET;
 
 // Middleware to parse JSON bodies
@@ -244,7 +244,7 @@ app
 
 // Start the server
 app.listen(HTTP_PORT, () => {
-  console.log(`Servidor escuchando en puerto ${HTTP_PORT}`);
+  console.log(`API con express corriendo en ${HTTP_PORT}`);
 });
 
 // Helper functions to generate tokens

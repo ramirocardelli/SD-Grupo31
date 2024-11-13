@@ -491,5 +491,5 @@ function onCheckpoints(req, res, body, pathArray) {
 
 // Inicializamos el servidor en el puerto HTTP_PORT
 server.listen(HTTP_PORT, () => {
-  console.log(`Servidor escuchando en puerto ${HTTP_PORT}`);
+  console.log(`API vanilla corriendo en ${HTTP_PORT}`);
 });
