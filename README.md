@@ -3,15 +3,17 @@ Ramiro Cardelli
 Josefina Frasca Ponce
 Juan Ignacio Olave
 
-##Tech stack:
+## Tech stack:
 
-#Backend:
+# Backend:
+
 Vainilla JS
 Arduino
 jsonwebtoken, para gestionar los JWT
 nodemon, para demonizar el proceso y contar con hot reload ante modificaciones en los archivos
 
-#Frontend:
+# Frontend:
+
 Axios, para requests HTTP.
 Vanilla JS, HTML y CSS
 
