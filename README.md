@@ -1,54 +1,51 @@
 Bruno Trinitario
+
 Ramiro Cardelli
+
 Josefina Frasca Ponce
+
 Juan Ignacio Olave
 
-##Tech stack:
+## Tech stack:
 
-#Backend:
-Node JS
-Vanilla JS
+# Backend:
+
+Vainilla JS
+
 Arduino
-Librerias: 
-   - cors
-   - express
-   - jsonwebtoken
-   - mqtt
 
-#Frontend:
-Vanilla JS
-HTML
-CSS
-   Librerias:  
-   - Axios
-   - bcrypt
-   - cors
-   - express
-   - jsonwebtoken
-   - Leaflet
+jsonwebtoken, para gestionar los JWT
 
-Instrucciones para ejecutar el proyecto (con docker):
+nodemon, para demonizar el proceso y contar con hot reload ante modificaciones en los archivos
 
-Requisitos:
-- Docker
+# Frontend:
 
-1. Clonar el repositorio
-   - git clone https://github.com/ramirocardelli/SD-Grupo31
-2. Correr el proyecto en docker
-   - Dirigirnos a la ruta donde se clono el repositorio
-   - ejecutar sobre la ruta el comando `docker compose up`
+Axios, para requests HTTP.
 
-Instrucciones para ejecutar el proyecto (con node):
+Vanilla JS, HTML y CSS
 
-Requisitos:
-- Node
+Requerimientos:
 
-1. Clonar el repositorio
-   - git clone https://github.com/ramirocardelli/SD-Grupo31
-2. Correr el proyecto con node
-   - Dirigirnos a la ruta donde se clono el repositorio
-   - sobre la ruta de clonacion ir a ./backend e instalar dependecias `npm install`
-   - Ejecutar la api `node index.js`
-   - sobre la ruta de clonacion ir a ./frontend/api e instalar dependecias `npm install`
-   - Ejecutar el frontend `node index.js`
-   - acceder al front mediante un navegador en la ruta `http://localhost:3001`
+- Docker y Docker Compose
+- Node.js v20 o superior
+
+Instrucciones para ejecutar el proyecto:
+
+1. Levantar broker Mosquitto:
+
+   - Navegar a la carpeta SD-Grupo31 configurar Docker con el archivo docker-compose.yml ejecutando por consola:
+   - docker-compose up
+   - Iniciar mosquitto-broker desde docker
+
+2. Levantar servidor backend:
+
+   - Iniciar tp-distribuidos
+
+3. Levantar servidor Frontend:
+
+   - Navegar hasta SD-Grupo31/Frontend
+   - ejecutar por consola:
+     - npm i
+     - index.js
+
+4. Abrir desde el navegador https://localhost:3000/ para poder visualizar el frontend
