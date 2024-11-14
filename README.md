@@ -1,5 +1,3 @@
-# Integrantes:
-
 Bruno Trinitario
 
 Ramiro Cardelli
@@ -31,13 +29,12 @@ Vanilla JS, HTML y CSS
 - Docker y Docker Compose
 - Node.js v20 o superior
 
-# Instrucciones para ejecutar el proyecto:
+Instrucciones para ejecutar el proyecto:
 
 1. Levantar broker Mosquitto:
 
    - Navegar a la carpeta SD-Grupo31 configurar Docker con el archivo docker-compose.yml ejecutando por consola:
-     
-   ```docker-compose up```
+   - docker-compose up
    - Iniciar mosquitto-broker desde docker
 
 2. Levantar servidor backend:
@@ -48,9 +45,7 @@ Vanilla JS, HTML y CSS
 
    - Navegar hasta SD-Grupo31/Frontend/api
    - ejecutar por consola:
-   
-     ```npm i```
-     
-     ```npm start```
+     - npm i
+     - npm start
 
-4. Abrir desde el navegador https://localhost:3001/ para poder visualizar el frontend
+4. Abrir desde el navegador https://localhost:3000/ para poder visualizar el frontend
