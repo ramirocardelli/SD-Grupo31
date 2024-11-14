@@ -8,44 +8,55 @@ Juan Ignacio Olave
 
 # Tech stack:
 
-## Backend:
-
-Vainilla JS
-
+#Backend:
+Node JS
+Vanilla JS
 Arduino
+Librerias:
 
-jsonwebtoken, para gestionar los JWT
+- cors
+- express
+- jsonwebtoken
+- mqtt
 
-nodemon, para demonizar el proceso y contar con hot reload ante modificaciones en los archivos
+# Frontend:
 
-## Frontend:
+Vanilla JS
+HTML
+CSS
+Librerias:
 
-Axios, para requests HTTP.
+- Axios
+- bcrypt
+- cors
+- express
+- jsonwebtoken
+- Leaflet
 
-Vanilla JS, HTML y CSS
+Instrucciones para ejecutar el proyecto (con docker):
 
-# Requerimientos:
+Requisitos:
 
-- Docker y Docker Compose
-- Node.js v20 o superior
+- Docker
 
-Instrucciones para ejecutar el proyecto:
+1. Clonar el repositorio
+   - git clone https://github.com/ramirocardelli/SD-Grupo31
+2. Correr el proyecto en docker
+   - Dirigirnos a la ruta donde se clono el repositorio
+   - ejecutar sobre la ruta el comando `docker compose up`
 
-1. Levantar broker Mosquitto:
+Instrucciones para ejecutar el proyecto (con node):
 
-   - Navegar a la carpeta SD-Grupo31 configurar Docker con el archivo docker-compose.yml ejecutando por consola:
-   - docker-compose up
-   - Iniciar mosquitto-broker desde docker
+Requisitos:
 
-2. Levantar servidor backend:
+- Node
 
-   - Iniciar tp-distribuidos desde docker
-
-3. Levantar servidor Frontend:
-
-   - Navegar hasta SD-Grupo31/Frontend/api
-   - ejecutar por consola:
-     - npm i
-     - npm start
-
-4. Abrir desde el navegador https://localhost:3000/ para poder visualizar el frontend
+1. Clonar el repositorio
+   - git clone https://github.com/ramirocardelli/SD-Grupo31
+2. Correr el proyecto con node
+   - Dirigirnos a la ruta donde se clono el repositorio
+   - sobre la ruta de clonacion ir a ./backend e instalar dependecias `npm install`
+   - Ejecutar la api `node index.js`
+   - sobre la ruta de clonacion ir a ./frontend/api e instalar dependecias `npm install`
+   - Ejecutar el frontend `node index.js`
+   - acceder al front mediante un navegador en la ruta `http://localhost:3001`
