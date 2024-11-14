@@ -27,10 +27,28 @@ CSS
    - jsonwebtoken
    - Leaflet
 
-Requerimientos:
-   - Docker
+Instrucciones para ejecutar el proyecto (con docker):
 
-Instrucciones para ejecutar el proyecto:
+Requisitos:
+- Docker
 
-1. Levantar el proyecto
-   - ejecutar sobre la ruta ./ el comando `docker compose up`
+1. Clonar el repositorio
+   - git clone https://github.com/ramirocardelli/SD-Grupo31
+2. Correr el proyecto en docker
+   - Dirigirnos a la ruta donde se clono el repositorio
+   - ejecutar sobre la ruta el comando `docker compose up`
+
+Instrucciones para ejecutar el proyecto (con node):
+
+Requisitos:
+- Node
+
+1. Clonar el repositorio
+   - git clone https://github.com/ramirocardelli/SD-Grupo31
+2. Correr el proyecto con node
+   - Dirigirnos a la ruta donde se clono el repositorio
+   - sobre la ruta de clonacion ir a ./backend e instalar dependecias `npm install`
+   - Ejecutar la api `node index.js`
+   - sobre la ruta de clonacion ir a ./frontend/api e instalar dependecias `npm install`
+   - Ejecutar el frontend `node index.js`
+   - acceder al front mediante un navegador en la ruta `http://localhost:3001`
