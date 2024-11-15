@@ -68,7 +68,6 @@ Configuracion:
    - Dentro de la ruta `./backend` existe un archivo llamado `.env` el cual tiene los puertos donde se ejecutaran diferentes modulos de la API siendo:
       - PORT el puerto para la API vanilla
       - PORT_SSE el puerto para mantener comunicacion por eventos con el frontend
-      - PORT_EXP el puerto para la API express
 
 2. Configuracion de puertos en DOCKER 
    ** Se recomienda no cambiar los puertos de las carpetas `.env` si se va a ejecutar el proyecto en docker, solo mapear **
