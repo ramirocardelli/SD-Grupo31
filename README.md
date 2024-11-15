@@ -77,3 +77,24 @@ Configuracion:
          - `Puertos_HOST` son los puertos que la computadora que contiene el proyecto ejecutado 
 3. Configuracion de tipo de API para docker
    - Para elegir que API ejecutar en docker (sea vanilla o express) de debe ir a `./backend` abrir el archivo `Dockerfile` y en la linea `CMD` cambiar `index.js` por `server.js` si se quisiera la API express.
+
+Flujo de la aplicacion:
+
+- El usuario `admin` utiliza la constraseña `admin`.
+- Metodos permitidos + endpoints de la API
+   - [PATCH] [DELETE] IP/API/animals/:id
+   - [GET] [POST] IP/API/animals/
+   - [GET] IP/API/animals/position/
+   - [PATCH] [DELETE] IP/API/checkpoints/:id
+   - [GET] [POST] IP/API/checkpoints/
+   - [POST] IP/API/login/
+   - [POST] IP/API/refresh/
+   - [GET] IP/API/availableDevices/
+- La respuesta a cada peticion se encuentra en el documento definido por `la catedra`
+- Arquitectura
+- Codigos de error
+   - `400`: Ausencia de datos para llevar a cabo una request 
+   - `401`: No existe el token, contraseña invalida
+   - `403`: Token existente pero erróneo 
+   - `404`: Falla en encontrar una ruta/ el contenido solicitado
+   - `500`: Falla en el servidor
