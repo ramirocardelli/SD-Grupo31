@@ -53,10 +53,28 @@ Requisitos:
 
 1. Clonar el repositorio
    - git clone https://github.com/ramirocardelli/SD-Grupo31
+
 2. Correr el proyecto con node
    - Dirigirnos a la ruta donde se clono el repositorio
    - sobre la ruta de clonacion ir a ./backend e instalar dependecias `npm install`
-   - Ejecutar la api `node index.js`
+   - Ejecutar la API vanilla `node index.js` o la API express `node server.js`
    - sobre la ruta de clonacion ir a ./frontend/api e instalar dependecias `npm install`
    - Ejecutar el frontend `node index.js`
    - acceder al front mediante un navegador en la ruta `http://localhost:3001`
+
+Configuracion:
+1. Configuracion de puertos para API y FRONTEND con NODE
+   - Dentro de la ruta `./backend` existe un archivo llamado `.env` el cual tiene los puertos donde se ejecutaran diferentes modulos de la API siendo:
+      - PORT el puerto para la API vanilla
+      - PORT_SSE el puerto para mantener comunicacion por eventos con el frontend
+      - PORT_EXP el puerto para la API express
+   - Dentro  de la ruta `./frontend/api` existe un archivo llamado `.env` el cual tiene los puertos donde se ejecutaran diferentes modulos de la FRONTEND siendo:
+      - PORT el puerto para la pagina web
+
+2. Configuracion de puertos en DOCKER 
+   ** Se recomienda no cambiar los puertos de las carpetas `.env` si se va a ejecutar el proyecto en docker, solo mapear **
+   - Si se decidiera ejecutar el proyecto en docker se puede mapear los puertos de docker y la computadora HOST
+      - Sobre la ruta raiz del proyecto, en el archivo `docker-compose.yml` se pueden encontrar los difrentes servicios `backend`, `frontend` y `mosquitto` cada apartado tiene una seccion de `servicios` donde se ve el mapeo `[Puerto_HOST]:[Puerto_aplicacion_docker]`.
+         - `Puertos_HOST` son los puertos que la computadora que contiene el proyecto ejecutado 
+3. Configuracion de tipo de API para docker
+   - Para elegir que API ejecutar en docker (sea vanilla o express) de debe ir a `./backend` abrir el archivo `Dockerfile` y en la linea `CMD` cambiar `index.js` por `server.js` si se quisiera la API express.

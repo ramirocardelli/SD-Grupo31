@@ -4,6 +4,8 @@ import "dotenv/config";
 import staticRoutes from "./routes/StaticRoutes.js";
 import cors from "cors";
 
+const PORT=process.env.PORT_FRONT
+
 const app = express();
 
 app.use(cors());
@@ -11,8 +13,8 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(staticRoutes);
 
-app.listen(3001, () => {
-  console.log("Server is running on port 3001...");
+app.listen(PORT, () => {
+  console.log(`El frontend esta corrientdo en: ${PORT}...`);
 });
 
 export const router = Router();

@@ -1,6 +1,7 @@
 import express from "express";
+import "dotenv/config";
 const app = express();
-const PORT = 3002;
+const PORT = process.env.PORT_SSE;
 export let clients = [];
 
 app.get("/API/animals/position", (req, res) => {
