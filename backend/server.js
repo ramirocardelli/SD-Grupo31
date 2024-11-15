@@ -24,7 +24,7 @@ import {
 } from "./controllers/mqtt.controller.js";
 
 const app = express();
-const HTTP_PORT = process.env.PORT_EXP;
+const HTTP_PORT = process.env.PORT;
 const secret = process.env.SECRET;
 
 // Middleware to parse JSON bodies
