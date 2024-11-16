@@ -6,4 +6,5 @@ export const CONSTANTS = {
   IP_LOGIN: IP + "/login",
   IP_REFRESH: IP + "/refresh",
   IP_CHECKPOINT: IP + "/checkpoints",
+  IP_POSITIONS: IP + "/animals/position"
 };

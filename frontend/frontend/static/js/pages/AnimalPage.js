@@ -1,6 +1,7 @@
 import AnimalAPIHelper from "../helper/api/AnimalAPIHelper.js";
 import CheckpointsAPIHelper from "../helper/api/CheckpointAPIHelper.js";
 import AuthStateHelper from "../helper/state/AuthStateHelper.js";
+import { CONSTANTS } from "../constants/constants.js";
 
 export default class AnimalPage {
   constructor(selector) {
@@ -290,7 +291,7 @@ export default class AnimalPage {
 
   initializeSSE = () => {
     const eventSource = new EventSource(
-      "http://localhost:3000/API/animals/position"
+      CONSTANTS.IP_POSITIONS
     );
 
     eventSource.onmessage = (event) => {
