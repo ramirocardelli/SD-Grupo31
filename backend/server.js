@@ -22,7 +22,7 @@ import {
   getAvailableAnimals,
   deleteAvailableDevice,
 } from "./controllers/mqtt.controller.js";
-import eventeRoute from "./controllers/sse.controller.js"
+import eventeRoute from "./controllers/sse.controller.js";
 const app = express();
 const HTTP_PORT = process.env.PORT;
 const secret = process.env.SECRET;
@@ -47,15 +47,18 @@ app.use((req, res, next) => {
 // Connect to MQTT broker
 connectToBroker();
 
-app.use("/API/sse",eventeRoute)
+app.use("/API/animals/position", eventeRoute);
 // Middleware to validate JWT token
 const tokenIsValid = (req, res, next) => {
   const token = req.headers["authorization"]?.split(" ")[1];
+  if (!token) {
+    return res.status(401).send("No se proporcionó token de autorización");
+  }
   try {
     jwt.verify(token, secret);
     next();
   } catch (e) {
-    res.status(401).send(e.message);
+    res.status(403).send(e.message);
   }
 };
 
@@ -112,7 +115,7 @@ app.get("/API/availableDevices", tokenIsValid, (req, res) => {
   try {
     res.status(200).json(getAvailableAnimals());
   } catch (e) {
-    res.status(401).send(e.message);
+    res.status(404).send(e.message);
   }
 });
 
@@ -140,10 +143,6 @@ app
       res.status(400).send(e.message);
     }
   });
-
-app.route("/API/animals/position").get(tokenIsValid, (req, res) => {
-  res.status(200).json(getPositions());
-});
 
 app
   .route("/API/animals/:id")

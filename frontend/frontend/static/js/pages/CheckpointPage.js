@@ -328,15 +328,25 @@ export default class CheckpointPage {
     this.listarCheckpoints();
   };
 
+  replaceListener(id, callback) {
+    const old_element = document.getElementById(id);
+    const new_element = old_element.cloneNode(true);
+    old_element.parentNode.replaceChild(new_element, old_element);
+    new_element.addEventListener("click", callback);
+  }
+
   addListeners = () => {
+    // Remove listeners before
+    const old_container = this.container;
+    const new_container = old_container.cloneNode(true);
+    old_container.parentNode.replaceChild(new_container, old_container);
+    this.container = new_container;
     this.container.addEventListener("submit", this.handleSubmit);
 
-    document
-      .getElementById("alta-checkpoints-button")
-      .addEventListener("click", this.renderPanelAlta);
+    // Boton de alta
+    this.replaceListener("alta-checkpoints-button", this.renderPanelAlta);
 
-    document
-      .getElementById("list-checkpoints-button")
-      .addEventListener("click", this.renderPanelList);
+    // Boton de listar
+    this.replaceListener("list-checkpoints-button", this.renderPanelList);
   };
 }

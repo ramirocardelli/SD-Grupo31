@@ -60,7 +60,7 @@ const server = http.createServer((req, res) => {
   if (pathArray[0] == "API") {
     pathArray.shift();
   } else {
-    res.writeHead(400, "Path incorrecto");
+    res.writeHead(404, "Falla en encontrar el contenido solicitado");
     return res.end();
   }
 
@@ -97,7 +97,7 @@ const server = http.createServer((req, res) => {
     try {
       tokenIsValid(req);
     } catch (e) {
-      res.writeHead(401, e.message);
+      res.writeHead(403, "Token existente pero erróneo");
       return res.end();
     }
 
@@ -141,20 +141,20 @@ function tokenIsValid(req) {
 
 // Credenciales vienen en el header en formato 64.
 function onLogin(req, res, body, pathArray) {
-  // Si el método no es post, devolvemos un error 405
+  // Si el método no es post, devolvemos un error 404
   if (req.method !== "POST") {
-    res.writeHead(405, "Metodo invalido");
+    res.writeHead(404, "Falla en encontrar el contenido solicitado");
     return res.end();
   }
 
   const authHeader = req.headers["authorization"];
   if (!authHeader) {
-    return res.status(401, "No se proporcionó encabezado de autorización");
+    return res.writeHead(401, "No se proporcionó encabezado de autorización");
   }
 
   // Verificar que la ruta sea /API/login
   if (pathArray.length > 1) {
-    res.status(401, "Path equivocado");
+    res.writeHead(404, "Falla en encontrar el contenido solicitado");
     return res.end();
   }
 
@@ -168,7 +168,7 @@ function onLogin(req, res, body, pathArray) {
   const password = credentials[1];
 
   if (!username || !password) {
-    res.writeHead(400, "Credenciales de usuario invalidas");
+    res.writeHead(400, "Ausencia de datos para llevar a cabo una request");
     return res.end();
   }
 
@@ -186,7 +186,7 @@ function onLogin(req, res, body, pathArray) {
     res.writeHead(200);
     return res.end(JSON.stringify(tokens));
   } catch (e) {
-    res.writeHead(401, e.message);
+    res.writeHead(404, e.message);
     return res.end();
   }
 }
@@ -211,7 +211,7 @@ function tokenGenerator(username, seconds) {
 function onRefresh(req, res, body, pathArray) {
   // Solo post viene con refresh
   if (req.method !== "POST") {
-    res.writeHead(405, "Metodo invalido");
+    res.writeHead(404, "Falla en encontrar el contenido solicitado");
     return res.end();
   }
 
@@ -231,7 +231,7 @@ function onRefresh(req, res, body, pathArray) {
 
   try {
     // Si el refreshToken es válido, generamos un nuevo token de acceso
-    // En caso contrario, devolvemos un error 401
+    // En caso contrario, devolvemos un error 404
     const decoded = jwt.verify(refreshToken, secret);
     const newAccessToken = accessToken(decoded?.username);
 
@@ -243,7 +243,7 @@ function onRefresh(req, res, body, pathArray) {
     res.writeHead(200);
     return res.end(JSON.stringify(tokens));
   } catch (e) {
-    res.writeHead(401, e.message);
+    res.writeHead(404, e.message);
     return res.end();
   }
 }
@@ -251,7 +251,7 @@ function onRefresh(req, res, body, pathArray) {
 function onAvailableDevices(req, res, pathArray) {
   // Solo get viene con availableDevices
   if (req.method !== "GET") {
-    res.writeHead(405, "Metodo invalido");
+    res.writeHead(404, "Metodo invalido");
     return res.end();
   }
 
@@ -265,7 +265,7 @@ function onAvailableDevices(req, res, pathArray) {
     res.writeHead(200);
     return res.end(JSON.stringify(getAvailableAnimals()));
   } catch (e) {
-    res.writeHead(401, e.message);
+    res.writeHead(404, e.message);
     return res.end();
   }
 }
@@ -303,7 +303,7 @@ function onAnimals(req, res, body, pathArray) {
       }
     }
 
-    res.writeHead(405, "Metodo invalido");
+    res.writeHead(404, "Metodo invalido");
     return res.end();
   }
 
@@ -315,7 +315,7 @@ function onAnimals(req, res, body, pathArray) {
       return res.end(JSON.stringify(getPositions()));
     }
 
-    res.writeHead(405, "Metodo invalido");
+    res.writeHead(404, "Metodo invalido");
     return res.end();
   }
 
@@ -422,7 +422,7 @@ function onCheckpoints(req, res, body, pathArray) {
       }
     }
 
-    res.writeHead(405, "Metodo invalido");
+    res.writeHead(404, "Metodo invalido");
     return res.end();
   }
 
