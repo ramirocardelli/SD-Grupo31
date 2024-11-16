@@ -135,14 +135,14 @@ export default class AnimalPage {
   //get inicial
   showAnimals = async () => {
     const checkpoints = await this.getAnimalsPositions();
-    const map = L.map("map").setView(
+    this.map = L.map("map").setView(
       [checkpoints[0].lat, checkpoints[0].long],
       13
     );
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 18,
-    }).addTo(map);
+    }).addTo(this.map);
 
     checkpoints.forEach((checkpoint) => {
       const { id, lat, long, description, animals } = checkpoint;
@@ -152,7 +152,7 @@ export default class AnimalPage {
       animals.forEach((animal) => {
         marker += `<br><span>${animal.name}</span>`;
       });
-      L.marker([lat, long]).addTo(map).bindPopup(marker); // Popup con la descripción del checkpoint, ID y animales
+      L.marker([lat, long]).addTo(this.map).bindPopup(marker); // Popup con la descripción del checkpoint, ID y animales
     });
   };
 
@@ -293,10 +293,10 @@ export default class AnimalPage {
 
   initializeSSE = () => {
     const eventSource = new EventSource(
-      "http://localhost:3002/API/animals/position"
+      "http://localhost:3000/API/sse"
     );
 
-    console.log("Front escuchando por puerto 3002 - SSE");
+    console.log("Front escuchando por puerto 3000 - SSE");
 
     eventSource.onmessage = (event) => {
       const checkpoints = JSON.parse(event.data); // ver si no llega ya JSON
@@ -308,26 +308,27 @@ export default class AnimalPage {
   };
 
   updateMap = (checkpoints) => {
-    const mapContainer = document.getElementById("map");
-    if (this.map) {
-      if (this.markers) {
-        this.markers.forEach((marker) => this.map.removeLayer(marker));
+    this.map.eachLayer(layer => {
+      if (layer instanceof L.Marker) {
+          this.map.removeLayer(layer);
       }
-      this.markers = [];
+    });
 
-      checkpoints.forEach((checkpoint) => {
-        const { lat, long, description, animals } = checkpoint.id;
-        const marker = L.marker([lat, long])
-          .addTo(this.map)
-          .bindPopup(
-            `<b>${description}</b><br>ID: ${id}<br>Animales: ${JSON.stringify(
-              animals
-            )}`
-          );
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 18,
+    }).addTo(this.map);
 
-        this.markers.push(marker); // Guarda el marcador en el array para futuras referencias
+    console.log(checkpoints[0])
+    checkpoints.forEach((checkpoint) => {
+      const { id, lat, long, description, animals } = checkpoint;
+      // Animals es un array con: {id, name, description}
+      // Añade un marcador en el mapa para cada checkpoint
+      let marker = `<b>Descripción del punto de control:</b><span>${description}</span><br><b>Animales:</b>`;
+      animals.forEach((animal) => {
+        marker += `<br><span>${animal.id}</span>`;
       });
-    }
+      L.marker([lat, long]).addTo(this.map).bindPopup(marker); // Popup con la descripción del checkpoint, ID y animales
+    });
   };
 
   renderPanelList = () => {

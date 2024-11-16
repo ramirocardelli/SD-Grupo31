@@ -22,7 +22,7 @@ import {
   getAvailableAnimals,
   deleteAvailableDevice,
 } from "./controllers/mqtt.controller.js";
-
+import eventeRoute from "./controllers/sse.controller.js"
 const app = express();
 const HTTP_PORT = process.env.PORT;
 const secret = process.env.SECRET;
@@ -47,6 +47,7 @@ app.use((req, res, next) => {
 // Connect to MQTT broker
 connectToBroker();
 
+app.use("/API/sse",eventeRoute)
 // Middleware to validate JWT token
 const tokenIsValid = (req, res, next) => {
   const token = req.headers["authorization"]?.split(" ")[1];

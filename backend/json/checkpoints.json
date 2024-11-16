@@ -1,38 +1,26 @@
 [
   {
     "id": "fec048f4-5ed2-4fc7-9a92-6c6c735dd00d",
-    "lat": -34.6036844,
-    "long": -58.3815591,
-    "description": "Checkpoint 1"
+    "lat": "-37.897817768134196",
+    "long": "-57.65401211495466",
+    "description": "Alimentación"
   },
   {
     "id": "a4c1f0bd-8c34-418f-813f-70483c2671f1",
-    "lat": -34.6036844,
-    "long": -58.3815591,
-    "description": "Checkpoint 3 modificado"
-  },
-  {
-    "id": "ddb6536e-82ed-4798-a182-87d2ef6c9a27",
-    "lat": -34.6036844,
-    "long": -58.3815591,
-    "description": "Checkpoint 33 quise agregar pero ya existe - debo verlo modif"
+    "lat": "-37.89525703845039",
+    "long": "-57.65754520403187",
+    "description": "Vacunación"
   },
   {
     "id": "5e8eaa1b-da42-4348-bfb8-d25e87977ab3",
-    "lat": -34.6036844,
-    "long": -58.3815591,
-    "description": "Checkpoint 2"
+    "lat": -37.90073331805011,
+    "long": -57.65823107075439,
+    "description": "Descanso"
   },
   {
     "id": "ebb3d7b6-1bfa-4174-a188-92b112df0cca",
-    "lat": -34.6036844,
-    "long": -58.3815591,
-    "description": "Checkpoint 20"
-  },
-  {
-    "id": "WTF",
-    "lat": 12.3,
-    "long": -89.9,
-    "description": "asd"
+    "lat": -37.897884787180246,
+    "long": -57.66230951587347,
+    "description": "Ordeño"
   }
 ]
