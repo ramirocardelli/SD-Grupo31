@@ -56,7 +56,10 @@ Requisitos:
 
    - git clone https://github.com/ramirocardelli/SD-Grupo31
 
-2. Correr el proyecto con node
+2. Correr imagen en docker de broker MQTT
+      ejecutar el comando `docker run -d --name [nombre del contenedor] -p [puerto HOST]:1883 eclipse-mosquitto`
+
+3. Correr el proyecto con node
 
    - Dirigirnos a la ruta donde se clono el repositorio
    - sobre la ruta de clonacion ir a ./backend e instalar dependecias `npm install`
@@ -65,13 +68,12 @@ Requisitos:
    - Ejecutar el frontend `node index.js`
    - acceder al front mediante un navegador en la ruta `http://localhost:3001`
 
+
 Configuracion:
 
 1. Configuracion de puertos para API y FRONTEND con NODE
    - Dentro de la ruta `./backend` existe un archivo llamado `.env` el cual tiene los puertos donde se ejecutaran diferentes modulos de la API siendo:
      - PORT el puerto para la API vanilla o API express
-   - Correr imagen en docker de broker MQTT
-      ejecutar el comando `docker run -d --name [nombre del contenedor] -p [puerto HOST]:1883 eclipse-mosquitto`
 
 2. Configuracion de puertos en DOCKER
 
