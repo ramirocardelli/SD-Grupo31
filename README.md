@@ -50,12 +50,14 @@ Instrucciones para ejecutar el proyecto (con node):
 Requisitos:
 
 - Node
+- Docker
 
 1. Clonar el repositorio
 
    - git clone https://github.com/ramirocardelli/SD-Grupo31
 
 2. Correr el proyecto con node
+
    - Dirigirnos a la ruta donde se clono el repositorio
    - sobre la ruta de clonacion ir a ./backend e instalar dependecias `npm install`
    - Ejecutar la API vanilla `node index.js` o la API express `node server.js`
@@ -66,21 +68,26 @@ Requisitos:
 Configuracion:
 
 1. Configuracion de puertos para API y FRONTEND con NODE
-
    - Dentro de la ruta `./backend` existe un archivo llamado `.env` el cual tiene los puertos donde se ejecutaran diferentes modulos de la API siendo:
-     - PORT el puerto para la API vanilla
+     - PORT el puerto para la API vanilla o API express
+   - Correr imagen en docker de broker MQTT
+      ejecutar el comando `docker run -d --name [nombre del contenedor] -p [puerto HOST]:1883 eclipse-mosquitto`
 
 2. Configuracion de puertos en DOCKER
+
    ** Se recomienda no cambiar los puertos de las carpetas `.env` si se va a ejecutar el proyecto en docker, solo mapear **
    - Si se decidiera ejecutar el proyecto en docker se puede mapear los puertos de docker y la computadora HOST
      - Sobre la ruta raiz del proyecto, en el archivo `docker-compose.yml` se pueden encontrar los difrentes servicios `backend`, `frontend` y `mosquitto` cada apartado tiene una seccion de `servicios` donde se ve el mapeo `[Puerto_HOST]:[Puerto_aplicacion_docker]`.
        - `Puertos_HOST` son los puertos que la computadora que contiene el proyecto ejecutado
+
 3. Configuracion de tipo de API para docker
+
    - Para elegir que API ejecutar en docker (sea vanilla o express) de debe ir a `./backend` abrir el archivo `Dockerfile` y en la linea `CMD` cambiar `index.js` por `server.js` si se quisiera la API express.
 
 Flujo de la aplicacion:
 
 - El usuario `admin` utiliza la constraseña `admin`.
+
 - Metodos permitidos + endpoints de la API
   - [PATCH] [DELETE] IP/API/animals/:id
   - [GET] [POST] IP/API/animals/
@@ -90,8 +97,15 @@ Flujo de la aplicacion:
   - [POST] IP/API/login/
   - [POST] IP/API/refresh/
   - [GET] IP/API/availableDevices/
+
 - La respuesta a cada peticion se encuentra en el documento definido por `la catedra`
+
 - Arquitectura
+   El proyecto consta de una API gateway, placas WeMos y una pagina web.
+   La API encargada de responder las consultas hechas por el cliente mediante la pagina web y como receptor
+   de los mensajes enviados y flitrados via MQTT de las placa WeMos, estas recopilan informacion de los collares bluethooth
+   de cada animal, las empaquetan y envian.
+   
 - Codigos de error
   - `400`: Ausencia de datos para llevar a cabo una request
   - `401`: No existe el token, contraseña invalida
