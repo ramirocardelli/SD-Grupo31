@@ -7,9 +7,9 @@
 #include <ArduinoJson.h>
 
 // Constants
-const char* ssid = "Fibertel WiFi704 2.4GHz";
-const char* password = "00437550930";
-const char* mqtt_server = "192.168.0.247";
+const char* ssid = "AndroidAP2c38";
+const char* password = "nomelase1"; 
+const char* mqtt_server = "192.168.102.246";
 const int mqtt_port = 1883;
 const char* mqtt_user = "xd";    // Usuario para MQTT
 const char* mqtt_password = "xd"; // Contraseña para MQTT
@@ -63,13 +63,13 @@ void loop() {
   Serial.println("Scanning for BLE devices...");
   BLEScanResults * foundDevices = pBLEScan->start(scanTime, false);
   std::vector<String> devicesList;
-  std::vector<String> devicesMACList;
+  std::vector<int> devicesMACList;
   // Loop through found devices
   for (int i = 0; i < foundDevices->getCount(); i++) {
 
       BLEAdvertisedDevice device = foundDevices->getDevice(i);
       String deviceString  = String(device.getAddress().toString().c_str());
-      String macString= String(device.getRSSI());
+      int macString= device.getRSSI();
       devicesList.push_back(deviceString);
       devicesMACList.push_back(macString);
     }
@@ -83,9 +83,9 @@ void loop() {
   delay(10000);
 }
 
-void enviarPaquetes(PubSubClient& client,const std::vector<String>& devicesList,const std::vector<String>& devicesMACList){
+void enviarPaquetes(PubSubClient& client,const std::vector<String>& devicesList,const std::vector<int>& devicesMACList){
   int totalDevices = devicesList.size();
-  int batchSize = 3; // Send in batches of 10 devices
+  int batchSize = 10; // Send in batches of 10 devices
   int numBatches = (totalDevices + batchSize - 1) / batchSize;
   int iDevices=0;
 
