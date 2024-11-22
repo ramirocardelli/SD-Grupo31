@@ -23,7 +23,8 @@ export const addAnimal = (id, name, description) => {
     name,
     description,
   };
-  if (!animalExists(id)) {
+
+  if (!animalExists(id)) { 
     writeAnimals(animal);
   } else {
     throw new Error("El animal que se quiere agregar ya existe");
@@ -37,7 +38,9 @@ export const modAnimal = (id, name, description) => {
     name,
     description,
   };
+  console.log("por entrar aca")
   if (animalExists(id)) {
+    console.log("existe")
     modifyAnimal(animal);
   } else {
     throw new Error("No existe el animal a modificar");
@@ -55,5 +58,5 @@ export const removeAnimal = (id) => {
 
 // Comprueba si un animal existe en base a su id
 export function animalExists(id) {
-  return getAllAnimals().some((animal) => animal.id === id);
+  return getAllAnimals().data.some((animal) => animal.id === id);
 }

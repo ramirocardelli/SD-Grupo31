@@ -121,7 +121,7 @@ export default class AnimalPage {
         accessToken
       );
       if (response.ok) {
-        return response.data;
+        return response.data.data;
       } else {
         alert("Error al traerte los animales: " + response.statusText);
         return;
@@ -176,7 +176,7 @@ export default class AnimalPage {
     tr.appendChild(tr_modificar);
     listado.appendChild(tr);
 
-    response.data?.forEach((element) => {
+    response.data?.data?.forEach((element) => {
       const tr = document.createElement("tr");
       // Nombre
       const tr_name = document.createElement("th");
@@ -422,7 +422,7 @@ export default class AnimalPage {
 
     const select = document.getElementById("list-mac-addr");
     if (response.ok) {
-      response.data?.devices?.forEach((device) => {
+      response.data?.data?.devices?.forEach((device) => {
         const option = document.createElement("option");
         option.value = device;
         option.innerHTML = device;

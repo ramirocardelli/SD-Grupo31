@@ -9,7 +9,7 @@ export const getCheckpoints = () => {
   if (fileExist) {
     const file = readFileSync(FILE_PATH, "utf-8");
     const parsedFile = JSON.parse(file);
-    return parsedFile;
+    return {data:parsedFile};
   } else {
     return [];
   }
@@ -17,13 +17,13 @@ export const getCheckpoints = () => {
 
 // Devuelve un checkpoint en base a su id
 export const getOneCheckpoint = (id) => {
-  const checkpoints = getCheckpoints();
+  const checkpoints = getCheckpoints().data;
   return checkpoints.find((a) => a.id === id);
 };
 
 // Escribe un checkpoint en el archivo
 export const writeCheckpoints = (checkpoint) => {
-  const checkpoints = getCheckpoints();
+  const checkpoints = getCheckpoints().data;
   checkpoints.push(checkpoint);
   try {
     writeFileSync(FILE_PATH, JSON.stringify(checkpoints, null, 2));
@@ -34,14 +34,14 @@ export const writeCheckpoints = (checkpoint) => {
 
 // Elimina un checkpoint en base a su id
 export const deleteCheckpoint = (id) => {
-  let checkpoints = getCheckpoints();
+  let checkpoints = getCheckpoints().data;
   checkpoints = checkpoints.filter((a) => a.id !== id);
   writeFileSync(FILE_PATH, JSON.stringify(checkpoints, null, 2));
 };
 
 // Modifica un checkpoint en base a su id
 export const modifyCheckpoint = (checkpoint) => {
-  const checkpoints = getCheckpoints();
+  const checkpoints = getCheckpoints().data;
   const i = checkpoints.findIndex((a) => a.id === checkpoint.id);
   if (i === -1) {
     throw new Error("No existe el checkpoint a modificar");

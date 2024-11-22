@@ -17,7 +17,7 @@ const threshold = -40;
 const positionsMap = new Map();
 
 //Creamos un mapa para cada checkpoint y el listado VACIO de los animales que pertencen a el
-const checkpoints = getAllCheckpoints();
+const checkpoints = getAllCheckpoints().data;
 checkpoints.forEach((checkpoint) => {
   const data = {
     lat: checkpoint.lat,

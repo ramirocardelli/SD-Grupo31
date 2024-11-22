@@ -188,7 +188,7 @@ export default class CheckpointPage {
     tr.appendChild(tr_modificar);
     listado.appendChild(tr);
 
-    response.data?.forEach((element) => {
+    response.data?.data?.forEach((element) => {
       listado.appendChild(this.createRow(element));
     });
   }

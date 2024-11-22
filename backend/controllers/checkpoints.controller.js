@@ -52,5 +52,5 @@ export const removeCheckpoint = (id) => {
 //funcion que verifica si el checkpoint existe
 function checkpointExists(id) {
   const checkpoints = getAllCheckpoints();
-  return checkpoints.some((checkpoint) => checkpoint.id === id);
+  return checkpoints.data.some((checkpoint) => checkpoint.id === id);
 }

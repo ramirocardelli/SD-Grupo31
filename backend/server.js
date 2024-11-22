@@ -162,8 +162,11 @@ app
     }
   })
   .patch(tokenIsValid, (req, res) => {
+    console.log("se quiere patchear")
     const { name, description } = req.body;
     const animal = getAnimal(req.params.id);
+    console.log(animal)
+    console.log(req.body)
     if (!animal) {
       return res.status(404).send("Animal not found");
     }

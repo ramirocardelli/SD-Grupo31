@@ -10,7 +10,7 @@ export const getAnimals = () => {
   if (fileExist) {
     const file = readFileSync(FILE_PATH, "utf-8");
     const parsedFile = JSON.parse(file);
-    return parsedFile;
+    return {data:parsedFile};
   } else {
     return [];
   }
@@ -18,13 +18,13 @@ export const getAnimals = () => {
 
 // Devuelve un animal en base a su id
 export const getOneAnimal = (id) => {
-  const animals = getAnimals();
+  const animals = getAnimals().data;
   return animals.find((a) => a.id === id);
 };
 
 // Escribe un animal en el archivo
 export const writeAnimals = (animal) => {
-  const animals = getAnimals();
+  const animals = getAnimals().data;
   animals.push(animal);
   try {
     writeFileSync(FILE_PATH, JSON.stringify(animals, null, 2));
@@ -35,14 +35,14 @@ export const writeAnimals = (animal) => {
 
 // Elimina un animal en base a su id
 export const deleteAnimal = (id) => {
-  let animals = getAnimals();
+  let animals = getAnimals().data;
   animals = animals.filter((a) => a.id !== id);
   writeFileSync(FILE_PATH, JSON.stringify(animals, null, 2));
 };
 
 // Modifica un animal en base a su id
 export const modifyAnimal = (animal) => {
-  const animals = getAnimals();
+  const animals = getAnimals().data;
   const i = animals.findIndex((a) => a.id === animal.id);
   if (i === -1) {
     throw new Error("No existe el animal a modificar");
@@ -53,5 +53,5 @@ export const modifyAnimal = (animal) => {
 
 // Comprueba si un animal existe en base a su id
 export function animalExists(id) {
-  return getAnimals().some((animal) => animal.id === id);
+  return getAnimals().data.some((animal) => animal.id === id);
 }
