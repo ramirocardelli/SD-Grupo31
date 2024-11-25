@@ -21,6 +21,9 @@ import {
   getPositions,
   getAvailableAnimals,
   deleteAvailableDevice,
+  addCheckpointToList,
+  modifyCheckpoint,
+  deleteCheckpoint
 } from "./controllers/mqtt.controller.js";
 import eventeRoute from "./controllers/sse.controller.js";
 const app = express();
@@ -199,6 +202,7 @@ app
 
     try {
       addCheckpoint(id, lat, long, description);
+      addCheckpointToList(id, lat, long, description);
       res.status(200).send("Checkpoint añadido con éxito");
     } catch (e) {
       res.status(400).send(e.message);
@@ -217,6 +221,7 @@ app
   .delete(tokenIsValid, (req, res) => {
     try {
       removeCheckpoint(req.params.id);
+      deleteCheckpoint(req.params.id)
       res.status(200).send("Se eliminó el checkpoint con éxito");
     } catch (e) {
       res.status(400).send(e.message);
@@ -230,12 +235,11 @@ app
     }
 
     try {
-      modCheckpoint(
-        req.params.id,
-        lat || checkpoint.lat,
-        long || checkpoint.long,
-        description || checkpoint.description
-      );
+      const _lat = lat || checkpoint.lat;
+      const _long = long || checkpoint.long;
+      const _desc = description || checkpoint.description;
+      modCheckpoint(req.params.id, _lat, _long, _desc);
+      modifyCheckpoint(req.params.id, _lat, _long, _desc);
       res.status(200).send("El checkpoint se modificó correctamente");
     } catch (e) {
       res.status(400).send(e.message);

@@ -293,9 +293,7 @@ export default class AnimalPage {
     const eventSource = new EventSource(CONSTANTS.IP_POSITIONS);
 
     eventSource.onmessage = (event) => {
-      console.log(event);
       const checkpoints = JSON.parse(event.data); // ver si no llega ya JSON
-      console.log(checkpoints);
       this.updateMap(checkpoints);
     };
     eventSource.onerror = (error) => {
@@ -314,9 +312,9 @@ export default class AnimalPage {
       maxZoom: 18,
     }).addTo(this.map);
 
-    console.log(checkpoints[0]);
     checkpoints.forEach((checkpoint) => {
       const { id, lat, long, description, animals } = checkpoint;
+      console.log("ID:",id, "ANIMALES:",animals);
       // Animals es un array con: {id, name, description}
       // Añade un marcador en el mapa para cada checkpoint
       let marker = `<b>${description}</b><br><span>${id}</span><br><br><b>Animales:</b>`;
