@@ -290,9 +290,7 @@ export default class AnimalPage {
   };
 
   initializeSSE = () => {
-    const eventSource = new EventSource(
-      CONSTANTS.IP_POSITIONS
-    );
+    const eventSource = new EventSource(CONSTANTS.IP_POSITIONS);
 
     eventSource.onmessage = (event) => {
       console.log(event);
@@ -321,7 +319,8 @@ export default class AnimalPage {
       const { id, lat, long, description, animals } = checkpoint;
       // Animals es un array con: {id, name, description}
       // Añade un marcador en el mapa para cada checkpoint
-      let marker = `<b>${description}</b><br><br><b>Animales:</b>`;
+      let marker = `<b>${description}</b><br><span>${id}</span><br><br><b>Animales:</b>`;
+
       animals.forEach((animal) => {
         marker += `<br><span>${animal.id}</span>`;
       });
