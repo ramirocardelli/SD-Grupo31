@@ -10,7 +10,7 @@ const options = {
   clientID: "adminID",
 };
 
-const mqttUrl = "mqtt://192.168.56.1:1883";
+const mqttUrl = "mqtt://192.168.0.177:1883";
 const client = mqtt.connect(mqttUrl, options);
 const threshold = -40;
 //mapa = {checkpoint.id,[vector de animales]}
@@ -135,4 +135,22 @@ export function deleteAvailableDevice(id) {
   availableDevices = availableDevices.filter(
     (id_elemento) => !(id_elemento == id)
   );
+}
+
+export function addCheckpointToList(id, lat, long, description){
+  const data = {
+    lat: lat,
+    long: long,
+    description: description,
+    animals: [],
+  };
+  positionsMap.set(id, data);
+}
+
+export function modifyCheckpoint(id, lat, long, description){
+  addCheckpointToList(id, lat, long, description);
+}
+
+export function deleteCheckpoint(id){
+  positionsMap.delete(id)
 }
