@@ -1,6 +1,6 @@
 import mqtt from "mqtt";
 import { getAllCheckpoints } from "./checkpoints.controller.js";
-import { animalExists } from "./animals.controller.js";
+import { animalExists, getAnimal } from "./animals.controller.js";
 import { sendSSE } from "./sse.controller.js";
 
 let availableDevices = [];
@@ -64,7 +64,7 @@ function updatePosition(mess) {
     receivedAnimals?.forEach((animal) => {
       if (animalExists(animal.id) && animal.rssi >= threshold) {
         deleteAnimalInstanceFromCheckpoints(animal.id, message?.checkpointID);
-        animals.push(animal);
+        animals.push(searchAnimal(animal.id));
       } else {
         if (!animalExists(animal.id) && !availableDevices.includes(animal.id)) {
           availableDevices.push(animal.id);
@@ -107,6 +107,9 @@ function clearCheckpointAnimals(checkpointId) {
   }
 }
 
+function searchAnimal(id){
+  return getAnimal(id)
+}
 // Funcion para obtener el mapa con posiciones
 export function getPositions() {
   const positions = [];
