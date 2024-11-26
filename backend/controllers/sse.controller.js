@@ -23,7 +23,6 @@ router.get('/', (req, res) => {
 
 export const sendSSE = (data) => {
   clients.forEach((client) => {
-      console.log("cliente",data,client)
       client.write(`data: ${JSON.stringify(data)}\n\n`);
   });
 };
