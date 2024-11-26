@@ -422,7 +422,7 @@ export default class AnimalPage {
 
     const select = document.getElementById("list-mac-addr");
     if (response.ok) {
-      response.data?.data?.devices?.forEach((device) => {
+      response.data?.devices?.forEach((device) => {
         const option = document.createElement("option");
         option.value = device;
         option.innerHTML = device;
