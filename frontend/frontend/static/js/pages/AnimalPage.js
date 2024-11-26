@@ -320,7 +320,7 @@ export default class AnimalPage {
       let marker = `<b>${description}</b><br><span>${id}</span><br><br><b>Animales:</b>`;
 
       animals.forEach((animal) => {
-        marker += `<br><span>${animal.id}</span>`;
+        marker += `<br><span>${animal.name} ${animal.id}</span>`;
       });
       L.marker([lat, long]).addTo(this.map).bindPopup(marker); // Popup con la descripción del checkpoint, ID y animales
     });
