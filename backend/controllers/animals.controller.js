@@ -55,5 +55,5 @@ export const removeAnimal = (id) => {
 
 // Comprueba si un animal existe en base a su id
 export function animalExists(id) {
-  return getAllAnimals().some((animal) => animal.id === id);
+  return getAllAnimals().some((animal) => animal.id == id);
 }

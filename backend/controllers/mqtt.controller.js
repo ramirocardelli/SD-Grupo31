@@ -10,7 +10,7 @@ const options = {
   clientID: "adminID",
 };
 
-const mqttUrl = "mqtt://192.168.0.177:1883";
+const mqttUrl = "mqtt://192.168.102.90:1883";
 const client = mqtt.connect(mqttUrl, options);
 const threshold = -40;
 //mapa = {checkpoint.id,[vector de animales]}
@@ -62,7 +62,7 @@ function updatePosition(mess) {
     }
 
     receivedAnimals?.forEach((animal) => {
-      if (animalExists(animal.id) && animal.rssi >= threshold) {
+      if (animalExists(animal.id)) {
         deleteAnimalInstanceFromCheckpoints(animal.id, message?.checkpointID);
         animals.push(searchAnimal(animal.id));
       } else {
@@ -74,18 +74,18 @@ function updatePosition(mess) {
 
     if (message?.checkpointID) {
       if (positionsMap.has(message.checkpointID)) {
-        const checkpoint = positionsMap.get(message.checkpointID)
+        const checkpoint = positionsMap.get(message.checkpointID);
         checkpoint.animals = animals;
         positionsMap.set(message.checkpointID, checkpoint);
       }
     }
 
     if (message?.packageNum == message?.totalPackages) {
-      console.log("XDXDXDXDXD")
+      console.log("XDXDXDXDXD");
       sendSSE(getPositions());
     }
   } catch (e) {
-    console.log(e)
+    console.log(e);
   }
 }
 
@@ -107,8 +107,8 @@ function clearCheckpointAnimals(checkpointId) {
   }
 }
 
-function searchAnimal(id){
-  return getAnimal(id)
+function searchAnimal(id) {
+  return getAnimal(id);
 }
 // Funcion para obtener el mapa con posiciones
 export function getPositions() {
@@ -140,7 +140,7 @@ export function deleteAvailableDevice(id) {
   );
 }
 
-export function addCheckpointToList(id, lat, long, description){
+export function addCheckpointToList(id, lat, long, description) {
   const data = {
     lat: lat,
     long: long,
@@ -150,10 +150,10 @@ export function addCheckpointToList(id, lat, long, description){
   positionsMap.set(id, data);
 }
 
-export function modifyCheckpoint(id, lat, long, description){
+export function modifyCheckpoint(id, lat, long, description) {
   addCheckpointToList(id, lat, long, description);
 }
 
-export function deleteCheckpoint(id){
-  positionsMap.delete(id)
+export function deleteCheckpoint(id) {
+  positionsMap.delete(id);
 }
